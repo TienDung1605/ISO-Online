@@ -76,8 +76,8 @@ class ReportResourceIT {
     private static final String DEFAULT_UPDATE_BY = "AAAAAAAAAA";
     private static final String UPDATED_UPDATE_BY = "BBBBBBBBBB";
 
-    private static final String DEFAULT_PLAN_ID = "AAAAAAAAAA";
-    private static final String UPDATED_PLAN_ID = "BBBBBBBBBB";
+    private static final Long DEFAULT_PLAN_ID = 1L;
+    private static final Long UPDATED_PLAN_ID = 2L;
 
     private static final String DEFAULT_USER = "AAAAAAAAAA";
     private static final String UPDATED_USER = "BBBBBBBBBB";

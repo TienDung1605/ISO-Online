@@ -2,9 +2,12 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Plan;
 import com.mycompany.myapp.repository.PlanRepository;
+import com.mycompany.myapp.repository.ReportRepository;
+import com.mycompany.myapp.service.dto.PlanDetailDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,9 +36,11 @@ public class PlanResource {
     private String applicationName;
 
     private final PlanRepository planRepository;
+    private final ReportRepository reportRepository;
 
-    public PlanResource(PlanRepository planRepository) {
+    public PlanResource(PlanRepository planRepository, ReportRepository reportRepository) {
         this.planRepository = planRepository;
+        this.reportRepository = reportRepository;
     }
 
     /**
@@ -243,5 +248,47 @@ public class PlanResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * Lay du lieu plan di kem thong tin chi tiet
+     */
+    @GetMapping("plan-detail")
+    public List<PlanDetailDTO> getPlanDetail() {
+        List<Plan> plans = this.planRepository.findAll();
+        List<PlanDetailDTO> planDetailDTOS = new ArrayList<>();
+        for (Plan plan : plans) {
+            PlanDetailDTO planDetailDTO = new PlanDetailDTO();
+            planDetailDTO.setId(plan.getId());
+            planDetailDTO.setCode(plan.getCode());
+            planDetailDTO.setName(plan.getName());
+            planDetailDTO.setSubjectOfAssetmentPlan(plan.getSubjectOfAssetmentPlan());
+            planDetailDTO.setFrequency(plan.getFrequency());
+            planDetailDTO.setTimeStart(plan.getTimeStart());
+            planDetailDTO.setTimeEnd(plan.getTimeEnd());
+            planDetailDTO.setStatusPlan(plan.getStatusPlan());
+            planDetailDTO.setTestObject(plan.getTestObject());
+            planDetailDTO.setReportTypeId(plan.getReportTypeId());
+            planDetailDTO.setReportTypeName(plan.getReportTypeName());
+            planDetailDTO.setNumberOfCheck(plan.getNumberOfCheck());
+            planDetailDTO.setImplementer(plan.getImplementer());
+            planDetailDTO.setPaticipant(plan.getPaticipant());
+            planDetailDTO.setCheckerGroup(plan.getCheckerGroup());
+            planDetailDTO.setCheckerName(plan.getCheckerName());
+            planDetailDTO.setCheckerGroupId(plan.getCheckerGroupId());
+            planDetailDTO.setCheckerId(plan.getCheckerId());
+            planDetailDTO.setGross(plan.getGross());
+            planDetailDTO.setTimeCheck(plan.getTimeCheck());
+            planDetailDTO.setNameResult(plan.getNameResult());
+            planDetailDTO.setScriptId(plan.getScriptId());
+            planDetailDTO.setCreateBy(plan.getCreateBy());
+            planDetailDTO.setStatus(plan.getStatus());
+            planDetailDTO.setCreatedAt(plan.getCreatedAt());
+            planDetailDTO.setUpdatedAt(plan.getUpdatedAt());
+            planDetailDTO.setUpdateBy(plan.getUpdateBy());
+            planDetailDTO.setPlanDetail(this.reportRepository.findAllByPlanId(plan.getId()));
+            planDetailDTOS.add(planDetailDTO);
+        }
+        return planDetailDTOS;
     }
 }
