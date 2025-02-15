@@ -60,7 +60,7 @@ public class Report implements Serializable {
     private String updateBy;
 
     @Column(name = "plan_id")
-    private String planId;
+    private Long planId;
 
     @Column(name = "user")
     private String user;
@@ -249,16 +249,16 @@ public class Report implements Serializable {
         this.updateBy = updateBy;
     }
 
-    public String getPlanId() {
+    public Long getPlanId() {
         return this.planId;
     }
 
-    public Report planId(String planId) {
+    public Report planId(Long planId) {
         this.setPlanId(planId);
         return this;
     }
 
-    public void setPlanId(String planId) {
+    public void setPlanId(Long planId) {
         this.planId = planId;
     }
 

@@ -23,7 +23,7 @@ public class ReportTestSamples {
             .reportTypeId(1L)
             .scoreScale("scoreScale1")
             .updateBy("updateBy1")
-            .planId("planId1")
+            .planId(1L)
             .user("user1");
     }
 
@@ -41,7 +41,7 @@ public class ReportTestSamples {
             .reportTypeId(2L)
             .scoreScale("scoreScale2")
             .updateBy("updateBy2")
-            .planId("planId2")
+            .planId(2L)
             .user("user2");
     }
 
@@ -59,7 +59,7 @@ public class ReportTestSamples {
             .reportTypeId(longCount.incrementAndGet())
             .scoreScale(UUID.randomUUID().toString())
             .updateBy(UUID.randomUUID().toString())
-            .planId(UUID.randomUUID().toString())
+            .planId(longCount.incrementAndGet())
             .user(UUID.randomUUID().toString());
     }
 }
