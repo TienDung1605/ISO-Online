@@ -3,8 +3,12 @@
     <span>Kế hoạch</span>
 
     <div class="d-flex justify-content-end">
-      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary jh-create-entity create-plan"
-        [routerLink]="['/plan/new']">
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-plan"
+        [routerLink]="['/plan/new']"
+      >
         <fa-icon icon="plus"></fa-icon>
         <span>Thêm mới</span>
       </button>
@@ -15,8 +19,28 @@
     <span>No Plans found</span>
   </div>
 
-  <p-table [value]="treeNodes" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }" [expandedRowKeys]="expandedRows"
-    (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)">
+  <p-table
+    #dt2
+    [value]="treeNodes"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '60rem' }"
+    [expandedRowKeys]="expandedRows"
+    (onRowExpand)="onRowExpand($event)"
+    (onRowCollapse)="onRowCollapse($event)"
+    [globalFilterFields]="[
+      'id',
+      'code',
+      'name',
+      'subjectOfAssetmentPlan',
+      'frequency',
+      'timeStart',
+      'timeEnd',
+      'statusPlan',
+      'createdAt',
+      'updatedAt',
+      'updateBy'
+    ]"
+  >
     <ng-template pTemplate="header">
       <tr>
         <th>ID</th>
@@ -32,12 +56,110 @@
         <th>Thời gian cập nhật</th>
         <th>Người cập nhật</th>
       </tr>
+      <tr>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+        <th>
+          <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" class="w-full" placeholder="Search" />
+          </span>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <p-iconField iconPosition="left">
+          <p-inputIcon>
+            <svg width="20" height="20" viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="..." fill="var(--p-primary-color)" />
+              <path d="..." fill="var(--p-text-color)" />
+            </svg>
+          </p-inputIcon>
+          <input type="text" pInputText placeholder="Search" />
+        </p-iconField>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" placeholder="Search keyword" />
+        </span>
+      </div>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-expanded="expanded">
       <tr>
         <td>
-          <p-button type="button" pRipple [pRowToggler]="rowNode" [text]="true" [rounded]="true" [plain]="true"
-            [icon]="rowNode.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></p-button>
+          <p-button
+            type="button"
+            pRipple
+            [pRowToggler]="rowNode"
+            [text]="true"
+            [rounded]="true"
+            [plain]="true"
+            [icon]="rowNode.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></p-button>
         </td>
         <td>{{ rowNode.data.id }}</td>
         <td>{{ rowNode.data.code }}</td>
@@ -60,44 +182,43 @@
             <h5>Table con</h5>
             <p-table [value]="rowNode.children" dataKey="id">
               <ng-template pTemplate="header">
-      <tr>
-        <th>Mã BBKT</th>
-        <th>Tên mẫu BBKT</th>
-        <th>Đối tượng kiểm tra</th>
-        <th>Loại BBKT (ID)</th>
-        <th>Nhóm BBKT</th>
-        <th>Số lần thực hiện kiểm tra</th>
-        <th>Thời gian bắt đầu</th>
-        <th>Thời gian kết thúc</th>
-        <th>Người thực hiện kiểm tra</th>
-        <th>Tần suất kiểm tra</th>
-        <th>Trạng thái</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowNode let-plan="rowData">
-      <tr>
-        <td>{{ rowNode.data.statusPlan }}</td>
-        <td>{{ rowNode.data.testObject }}</td>
-        <td>{{ rowNode.data.reportTypeId }}</td>
-        <td>{{ rowNode.data.reportTypeName }}</td>
-        <td>{{ rowNode.data.numberOfCheck }}</td>
-        <td>{{ rowNode.data.implementer }}</td>
-        <td>{{ rowNode.data.paticipant }}</td>
-        <td>{{ rowNode.data.checkerGroup }}</td>
-        <td>{{ rowNode.data.checkerName }}</td>
-        <td>{{ rowNode.data.checkerGroupId }}</td>
-        <td>{{ rowNode.data.checkerId }}</td>
+                <tr>
+                  <th>Mã BBKT</th>
+                  <th>Tên mẫu BBKT</th>
+                  <th>Đối tượng kiểm tra</th>
+                  <th>Loại BBKT (ID)</th>
+                  <th>Nhóm BBKT</th>
+                  <th>Số lần thực hiện kiểm tra</th>
+                  <th>Thời gian bắt đầu</th>
+                  <th>Thời gian kết thúc</th>
+                  <th>Người thực hiện kiểm tra</th>
+                  <th>Tần suất kiểm tra</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowNode let-plan="rowData">
+                <tr>
+                  <td>{{ rowNode.data.statusPlan }}</td>
+                  <td>{{ rowNode.data.testObject }}</td>
+                  <td>{{ rowNode.data.reportTypeId }}</td>
+                  <td>{{ rowNode.data.reportTypeName }}</td>
+                  <td>{{ rowNode.data.numberOfCheck }}</td>
+                  <td>{{ rowNode.data.implementer }}</td>
+                  <td>{{ rowNode.data.paticipant }}</td>
+                  <td>{{ rowNode.data.checkerGroup }}</td>
+                  <td>{{ rowNode.data.checkerName }}</td>
+                  <td>{{ rowNode.data.checkerGroupId }}</td>
+                  <td>{{ rowNode.data.checkerId }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>
-</div>
-</td>
-</tr>
-</ng-template>
-</p-table>
 
-
-<!-- <p-treeTable [value]="treeNodes" [scrollable]="true" showGridlines [tableStyle]="{'min-width':'50rem'}">
+  <!-- <p-treeTable [value]="treeNodes" [scrollable]="true" showGridlines [tableStyle]="{'min-width':'50rem'}">
   <ng-template pTemplate="header">
     <tr>
       <th>ID</th>
@@ -173,7 +294,7 @@
   </ng-template>
 </p-treeTable> -->
 
-<!-- @if (plans && plans.length > 0) {
+  <!-- @if (plans && plans.length > 0) {
 <div class="table-responsive table-entities" id="entities">
   <table class="table table-striped" aria-describedby="page-heading">
     <thead>

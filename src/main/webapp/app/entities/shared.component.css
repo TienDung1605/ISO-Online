@@ -73,7 +73,7 @@
 }
 
 .btn-primary {
-  background-color: #1679AB;
+  background-color: #1679ab;
   color: white;
   border-radius: 5px;
   padding: 10px 15px;
@@ -130,7 +130,6 @@
 .button-create:hover {
   background-color: #0056b3;
 }
-
 
 /*!
  * SlickGrid custom styling for Bootstrap (https://github.com/ghiscoding/slickgrid-universal)
@@ -554,7 +553,9 @@
 .slickgrid-container .slick-reorder-shadow-row {
   position: absolute;
   z-index: 999999;
-  box-shadow: rgba(0, 0, 0, 0.2) 8px 2px 8px 4px, rgba(0, 0, 0, 0.19) 2px 2px 0px 0px;
+  box-shadow:
+    rgba(0, 0, 0, 0.2) 8px 2px 8px 4px,
+    rgba(0, 0, 0, 0.19) 2px 2px 0px 0px;
 }
 
 .slickgrid-container .slick-selection {
@@ -1105,8 +1106,10 @@
   margin: var(--slick-editor-modal-footer-btn-saving-icon-margin, -1px 5px 0 0);
   -webkit-animation: var(--slick-editor-modal-footer-btn-saving-icon-animation, md-spin 1s infinite linear);
   animation: var(--slick-editor-modal-footer-btn-saving-icon-animation, md-spin 1s infinite linear);
-  content: var(--slick-editor-modal-footer-btn-saving-icon-content,
-      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"><path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"></path></svg>'));
+  content: var(
+    --slick-editor-modal-footer-btn-saving-icon-content,
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"><path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"></path></svg>')
+  );
 }
 
 .slick-editor-modal .slick-editor-modal-content .slick-editor-modal-footer .footer-status-text {
@@ -1429,8 +1432,8 @@ li.hidden {
   margin-top: 3px;
 }
 
-.slick-column-picker-list input[type='checkbox']+label:before,
-.slick-grid-menu-list input[type='checkbox']+label:before {
+.slick-column-picker-list input[type='checkbox'] + label:before,
+.slick-grid-menu-list input[type='checkbox'] + label:before {
   cursor: pointer;
   content: var(--slick-column-picker-checkbox-icon-unchecked, '\f00c');
   color: var(--slick-column-picker-checkbox-color, #31708f);
@@ -1445,13 +1448,13 @@ li.hidden {
   width: var(--slick-column-picker-checkbox-width, 13px);
 }
 
-.slick-column-picker-list input[type='checkbox']+label:hover:before,
-.slick-grid-menu-list input[type='checkbox']+label:hover:before {
+.slick-column-picker-list input[type='checkbox'] + label:hover:before,
+.slick-grid-menu-list input[type='checkbox'] + label:hover:before {
   opacity: var(--slick-column-picker-checkbox-opacity-hover, 0.35);
 }
 
-.slick-column-picker-list input[type='checkbox']:checked+label:before,
-.slick-grid-menu-list input[type='checkbox']:checked+label:before {
+.slick-column-picker-list input[type='checkbox']:checked + label:before,
+.slick-grid-menu-list input[type='checkbox']:checked + label:before {
   opacity: 1;
   content: var(--slick-column-picker-checkbox-icon-checked, '\f00c');
   width: var(--slick-column-picker-checkbox-width, 13px);
@@ -1831,7 +1834,7 @@ li.hidden {
   transition: 0.2s width;
 }
 
-.slick-header-column:hover>.slick-header-button {
+.slick-header-column:hover > .slick-header-button {
   width: var(--slick-header-button-width, 15px);
 }
 
@@ -1898,29 +1901,29 @@ li.hidden {
 }
 
 .slick-headerrow-column input[type='checkbox'],
-.slick-headerrow-column #filter-checkbox-selectall-container>input[type='checkbox'],
+.slick-headerrow-column #filter-checkbox-selectall-container > input[type='checkbox'],
 .slick-column-name input[type='checkbox'],
-.slick-column-name #filter-checkbox-selectall-container>input[type='checkbox'],
+.slick-column-name #filter-checkbox-selectall-container > input[type='checkbox'],
 .slick-cell-checkboxsel input[type='checkbox'],
-.slick-cell-checkboxsel #filter-checkbox-selectall-container>input[type='checkbox'] {
+.slick-cell-checkboxsel #filter-checkbox-selectall-container > input[type='checkbox'] {
   display: none;
 }
 
 .slick-headerrow-column input[type='checkbox'],
-.slick-headerrow-column #filter-checkbox-selectall-container>input[type='checkbox']+label,
+.slick-headerrow-column #filter-checkbox-selectall-container > input[type='checkbox'] + label,
 .slick-column-name input[type='checkbox'],
-.slick-column-name #filter-checkbox-selectall-container>input[type='checkbox']+label,
+.slick-column-name #filter-checkbox-selectall-container > input[type='checkbox'] + label,
 .slick-cell-checkboxsel input[type='checkbox'],
-.slick-cell-checkboxsel #filter-checkbox-selectall-container>input[type='checkbox']+label {
+.slick-cell-checkboxsel #filter-checkbox-selectall-container > input[type='checkbox'] + label {
   margin: 0;
 }
 
-.slick-headerrow-column input[type='checkbox']+label:before,
-.slick-headerrow-column #filter-checkbox-selectall-container>input[type='checkbox']+label:before,
-.slick-column-name input[type='checkbox']+label:before,
-.slick-column-name #filter-checkbox-selectall-container>input[type='checkbox']+label:before,
-.slick-cell-checkboxsel input[type='checkbox']+label:before,
-.slick-cell-checkboxsel #filter-checkbox-selectall-container>input[type='checkbox']+label:before {
+.slick-headerrow-column input[type='checkbox'] + label:before,
+.slick-headerrow-column #filter-checkbox-selectall-container > input[type='checkbox'] + label:before,
+.slick-column-name input[type='checkbox'] + label:before,
+.slick-column-name #filter-checkbox-selectall-container > input[type='checkbox'] + label:before,
+.slick-cell-checkboxsel input[type='checkbox'] + label:before,
+.slick-cell-checkboxsel #filter-checkbox-selectall-container > input[type='checkbox'] + label:before {
   cursor: pointer;
   content: var(--slick-checkbox-selector-icon-unchecked, '\f00c');
   background-color: var(--slick-checkbox-selector-icon-bg-color, inherit);
@@ -1937,21 +1940,21 @@ li.hidden {
   margin: var(--slick-checkbox-selector-icon-margin, 0);
 }
 
-.slick-headerrow-column input[type='checkbox']+label:hover:before,
-.slick-headerrow-column #filter-checkbox-selectall-container>input[type='checkbox']+label:hover:before,
-.slick-column-name input[type='checkbox']+label:hover:before,
-.slick-column-name #filter-checkbox-selectall-container>input[type='checkbox']+label:hover:before,
-.slick-cell-checkboxsel input[type='checkbox']+label:hover:before,
-.slick-cell-checkboxsel #filter-checkbox-selectall-container>input[type='checkbox']+label:hover:before {
+.slick-headerrow-column input[type='checkbox'] + label:hover:before,
+.slick-headerrow-column #filter-checkbox-selectall-container > input[type='checkbox'] + label:hover:before,
+.slick-column-name input[type='checkbox'] + label:hover:before,
+.slick-column-name #filter-checkbox-selectall-container > input[type='checkbox'] + label:hover:before,
+.slick-cell-checkboxsel input[type='checkbox'] + label:hover:before,
+.slick-cell-checkboxsel #filter-checkbox-selectall-container > input[type='checkbox'] + label:hover:before {
   opacity: var(--slick-checkbox-selector-opacity-hover, 0.35);
 }
 
-.slick-headerrow-column input[type='checkbox']:checked+label:before,
-.slick-headerrow-column #filter-checkbox-selectall-container>input[type='checkbox']:checked+label:before,
-.slick-column-name input[type='checkbox']:checked+label:before,
-.slick-column-name #filter-checkbox-selectall-container>input[type='checkbox']:checked+label:before,
-.slick-cell-checkboxsel input[type='checkbox']:checked+label:before,
-.slick-cell-checkboxsel #filter-checkbox-selectall-container>input[type='checkbox']:checked+label:before {
+.slick-headerrow-column input[type='checkbox']:checked + label:before,
+.slick-headerrow-column #filter-checkbox-selectall-container > input[type='checkbox']:checked + label:before,
+.slick-column-name input[type='checkbox']:checked + label:before,
+.slick-column-name #filter-checkbox-selectall-container > input[type='checkbox']:checked + label:before,
+.slick-cell-checkboxsel input[type='checkbox']:checked + label:before,
+.slick-cell-checkboxsel #filter-checkbox-selectall-container > input[type='checkbox']:checked + label:before {
   content: var(--slick-checkbox-selector-icon-checked, '\f00c');
   color: var(--slick-checkbox-selector-checked-color, #31708f);
   opacity: 1;
@@ -2017,8 +2020,8 @@ li.hidden {
   width: 0;
 }
 
-.ms-drop input[type='checkbox']+span:before,
-.ms-drop input[type='radio']+span:before {
+.ms-drop input[type='checkbox'] + span:before,
+.ms-drop input[type='radio'] + span:before {
   cursor: pointer;
   color: var(--slick-multiselect-icon-unchecked-color, #31708f);
   content: var(--slick-multiselect-icon-unchecked, '\f096');
@@ -2035,8 +2038,8 @@ li.hidden {
   vertical-align: var(--slick-multiselect-icon-vertical-align, middle);
 }
 
-.ms-drop input[type='checkbox']:checked+span:before,
-.ms-drop input[type='radio']:checked+span:before {
+.ms-drop input[type='checkbox']:checked + span:before,
+.ms-drop input[type='radio']:checked + span:before {
   content: var(--slick-multiselect-icon-checked, '\f14a');
   opacity: 1;
   height: var(--slick-multiselect-icon-height, 20px);
@@ -2046,7 +2049,7 @@ li.hidden {
   margin: var(--slick-multiselect-icon-margin, 0);
 }
 
-.ms-drop input[type='radio']+span:before {
+.ms-drop input[type='radio'] + span:before {
   content: var(--slick-multiselect-icon-radio-unchecked, '\f10c');
   height: var(--slick-multiselect-icon-radio-height, 20px);
   width: var(--slick-multiselect-icon-radio-width, 20px);
@@ -2055,7 +2058,7 @@ li.hidden {
   margin: var(--slick-multiselect-icon-radio-margin, 0);
 }
 
-.ms-drop input[type='radio']:checked+span:before {
+.ms-drop input[type='radio']:checked + span:before {
   content: var(--slick-multiselect-icon-radio-checked, '\f192');
   color: var(--slick-multiselect-icon-radio-color, #31708f);
   height: var(--slick-multiselect-icon-radio-height, 20px);
@@ -2204,7 +2207,13 @@ input.search-filter {
   border-left: none !important;
 }
 
-.slickgrid-container .slick-headerrow .slick-headerrow-columns .slick-headerrow-column .input-group-prepend+.flatpickr input.compound-input {
+.slickgrid-container
+  .slick-headerrow
+  .slick-headerrow-columns
+  .slick-headerrow-column
+  .input-group-prepend
+  + .flatpickr
+  input.compound-input {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
@@ -2689,14 +2698,16 @@ input.slider-editor-input[type='range'] {
 .slick-empty-data-warning {
   position: relative;
   color: var(--slick-empty-data-warning-color, #000000);
-  font-family: var(--slick-empty-data-warning-font-family,
-      -apple-system,
-      BlinkMacSystemFont,
-      'Segoe UI',
-      Roboto,
-      'Helvetica Neue',
-      Arial,
-      sans-serif);
+  font-family: var(
+    --slick-empty-data-warning-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif
+  );
   font-size: var(--slick-empty-data-warning-font-size, calc(14px + 2px));
   font-style: var(--slick-empty-data-warning-font-style, italic);
   line-height: var(--slick-empty-data-warning-line-height, 18px);
@@ -3274,7 +3285,10 @@ body .slickgrid-container .slick-header-columns .slick-header-column.ui-state-de
   color: var(--slick-hoverHeaderColor, var(--slick-text-color, #333));
 }
 
-.slickgrid-container .slick-header-columns .slick-header-column.ui-sortable-handle.ui-state-hover:not(.slick-header-column-sorted) .slick-sort-indicator:before {
+.slickgrid-container
+  .slick-header-columns
+  .slick-header-column.ui-sortable-handle.ui-state-hover:not(.slick-header-column-sorted)
+  .slick-sort-indicator:before {
   content: var(--slick-icon-sort-asc, '\f0d8');
   font-family: var(--slick-icon-font-family, 'FontAwesome');
   font-size: var(--slick-icon-sort-font-size, 14px);
@@ -3395,11 +3409,17 @@ body .slickgrid-container .slick-header-columns .slick-header-column.ui-state-de
   overflow-y: var(--slick-frozen-overflow-right, scroll) !important;
 }
 
-.slickgrid-container .input-group> :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+.slickgrid-container
+  .input-group
+  > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
   margin-left: 0;
 }
 
-.slickgrid-container .input-group> :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback).ui-slider-horizontal {
+.slickgrid-container
+  .input-group
+  > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(
+    .invalid-feedback
+  ).ui-slider-horizontal {
   margin-left: 10px;
 }
 
@@ -3523,7 +3543,7 @@ body .slickgrid-container .slick-header-columns .slick-header-column.ui-state-de
   background-color: var(--slick-autocomplete-loading-input-bg-color, transparent) !important;
 }
 
-.ui-autocomplete-loading+span:after {
+.ui-autocomplete-loading + span:after {
   -webkit-animation: md-spin 2s infinite linear;
   animation: md-spin 2s infinite linear;
   display: inline-block;
@@ -3578,7 +3598,7 @@ body .slickgrid-container .slick-header-columns .slick-header-column.ui-state-de
   padding-right: 3px;
 }
 
-.ui-autocomplete.autocomplete-custom-four-corners li div.autocomplete-container-list .autocomplete-left>img {
+.ui-autocomplete.autocomplete-custom-four-corners li div.autocomplete-container-list .autocomplete-left > img {
   height: var(--slick-autocomplete-tpl4-icon-left-height, 32px);
   width: var(--slick-autocomplete-tpl4-icon-left-width, 32px);
   margin-top: 0px;
@@ -3650,7 +3670,7 @@ body .slickgrid-container .slick-header-columns .slick-header-column.ui-state-de
   padding-right: 3px;
 }
 
-.ui-autocomplete.autocomplete-custom-two-rows li div.autocomplete-container-list .autocomplete-left>img {
+.ui-autocomplete.autocomplete-custom-two-rows li div.autocomplete-container-list .autocomplete-left > img {
   height: 32px;
   margin-top: 0px;
   background-color: #fff;
@@ -3993,7 +4013,7 @@ body .slickgrid-container .slick-header-columns .slick-header-column.ui-state-de
   border-left: 3px solid #fff;
 }
 
-.btn-name-error>span {
+.btn-name-error > span {
   font-size: 16px;
   line-height: 35px;
 }
@@ -4121,8 +4141,8 @@ input:valid {
   border: 1.5px solid #1a73e8;
 }
 
-.inp-err-nsx:focus~label,
-input:valid~label {
+.inp-err-nsx:focus ~ label,
+input:valid ~ label {
   transform: translateY(-50%) scale(0.8);
   background-color: #fff;
   padding: 0 0.2em;
@@ -4305,9 +4325,15 @@ datalist option focus {
   -ms-transform: translate(-50%, -50%) rotate(45deg) scale(0);
   transform: translate(-50%, -50%) rotate(45deg) scale(0);
   opacity: 0;
-  -webkit-transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6), opacity 0.1s;
-  -o-transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6), opacity 0.1s;
-  transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6), opacity 0.1s;
+  -webkit-transition:
+    all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6),
+    opacity 0.1s;
+  -o-transition:
+    all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6),
+    opacity 0.1s;
+  transition:
+    all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6),
+    opacity 0.1s;
 }
 
 /* actions */
@@ -4609,7 +4635,6 @@ input[type="range"] {
 }
 
 @keyframes pulse0112 {
-
   0%,
   100% {
     transform: scale(0);
@@ -4717,7 +4742,6 @@ input[type="range"] {
 }
 
 @keyframes pulse0112 {
-
   0%,
   100% {
     transform: scale(0);
@@ -4864,7 +4888,7 @@ input[type="range"] {
   margin-bottom: 20px;
 }
 
-.form-header-btn>button {
+.form-header-btn > button {
   padding: 10px 20px;
   height: 42px;
   border: none;
@@ -4886,13 +4910,13 @@ input[type="range"] {
   margin-bottom: 15px;
 }
 
-.form-header-container>label {
+.form-header-container > label {
   display: block;
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-.form-header-container>select,
+.form-header-container > select,
 input[type='text'] {
   width: 100%;
   padding: 10px;
@@ -4901,7 +4925,7 @@ input[type='text'] {
   box-sizing: border-box;
 }
 
-.form-header-container>select,
+.form-header-container > select,
 input[type='text']:focus {
   border-color: #66afe9;
   outline: none;
@@ -5102,7 +5126,7 @@ input.ng-invalid.ng-touched {
   flex-direction: column;
 }
 
-.custom-btn-select-in>span {
+.custom-btn-select-in > span {
   text-align: center;
   padding-bottom: 1rem;
 }
@@ -5115,4 +5139,13 @@ input.ng-invalid.ng-touched {
 .label-btn-select-bb {
   text-align: center;
   padding: 0 0 1rem 0;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.p-input-icon-left input {
+  width: 100%;
+  padding-left: 2rem;
 }

@@ -1,4 +1,4 @@
-import { Component, NgZone, inject, OnInit } from '@angular/core';
+import { Component, NgZone, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -15,24 +15,10 @@ import { PlanDeleteDialogComponent } from '../delete/plan-delete-dialog.componen
 import { TreeTableModule } from 'primeng/treetable';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import {
-  Column,
-  GridOption,
-  Formatters,
-  OnEventArgs,
-  AngularGridInstance,
-  FieldType,
-  Filters,
-  Editors,
-  LongTextEditorOption,
-  Formatter,
-} from 'angular-slickgrid';
-
-// interface TreeNode {
-//   data: IPlan;
-//   children: TreeNode[];
-// }
-
+import { InputTextModule } from 'primeng/inputtext';
+// import { InputIcon } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 @Component({
   standalone: true,
   selector: 'jhi-plan',
@@ -48,22 +34,22 @@ import {
     TreeTableModule,
     TableModule,
     ButtonModule,
-    // ToastModule
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+    // InputIcon
   ],
 })
-
-
 export class PlanComponent implements OnInit {
   subscription: Subscription | null = null;
   plans?: IPlan[];
   isLoading = false;
   treeNodes!: TreeNode[];
   columnDefinitions?: IPlan[];
-  gridOptions: GridOption = {};
-  angularGrid?: AngularGridInstance;
   sortState = sortStateSignal({});
   files?: TreeNode[];
   expandedRows: { [key: string]: boolean } = {};
+  @ViewChild('dt2') dt2!: TreeNode;
   planData = [
     {
       id: '1000',
@@ -84,7 +70,7 @@ export class PlanComponent implements OnInit {
           amount: 65,
           quantity: 1,
           customer: 'David James',
-          status: 'PENDING'
+          status: 'PENDING',
         },
         {
           id: '1000-1',
@@ -93,7 +79,7 @@ export class PlanComponent implements OnInit {
           amount: 130,
           quantity: 2,
           customer: 'Leon Rodrigues',
-          status: 'DELIVERED'
+          status: 'DELIVERED',
         },
         {
           id: '1000-2',
@@ -102,7 +88,7 @@ export class PlanComponent implements OnInit {
           amount: 65,
           quantity: 1,
           customer: 'Juan Alejandro',
-          status: 'RETURNED'
+          status: 'RETURNED',
         },
         {
           id: '1000-3',
@@ -111,10 +97,11 @@ export class PlanComponent implements OnInit {
           amount: 195,
           quantity: 3,
           customer: 'Claire Morrow',
-          status: 'CANCELLED'
-        }
-      ]
-    }]
+          status: 'CANCELLED',
+        },
+      ],
+    },
+  ];
 
   public router = inject(Router);
   protected planService = inject(PlanService);
@@ -174,13 +161,20 @@ export class PlanComponent implements OnInit {
       .subscribe();
   }
 
+  // onFilter(event: Event, field: string):void {
+  //   const element = event.target as HTMLInputElement;
+  //   if (this.dt2) {
+  //     this.dt2.filter(element.value, field, 'contains');
+  //   }
+  // }
+
   load(): void {
     this.queryBackend().subscribe({
       next: (res: EntityArrayResponseType) => {
         this.onResponseSuccess(res);
         this.loadTreeNodes();
         console.log('res ', res);
-        console.log('tree node', this.loadTreeNodes)
+        console.log('tree node', this.loadTreeNodes);
       },
     });
   }
@@ -230,10 +224,10 @@ export class PlanComponent implements OnInit {
           status: plan.status,
           createdAt: plan.createdAt,
           updatedAt: plan.updatedAt,
-          updateBy: plan.updateBy
+          updateBy: plan.updateBy,
         },
         children: [],
-        expanded: false
+        expanded: false,
       }));
     }
   }
@@ -246,7 +240,7 @@ export class PlanComponent implements OnInit {
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
     this.plans = this.refineData(dataFromBody);
     // this.treeNodes = this.transformToTreeNodes(this.plans); // Transform to TreeNode
-    this.convertPlansToTreeNodes()
+    this.convertPlansToTreeNodes();
   }
 
   protected convertPlansToTreeNodes(): void {
@@ -296,7 +290,7 @@ export class PlanComponent implements OnInit {
   protected transformToTreeNodes(plans: IPlan[]): TreeNode[] {
     return plans.map(plan => ({
       data: plan,
-      children: []
+      children: [],
     }));
   }
 }
