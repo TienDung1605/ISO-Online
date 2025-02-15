@@ -1,0 +1,113 @@
+<div>
+  <h2 id="page-heading" data-cy="CheckerGroupHeading">
+    <span>Nhóm đối tượng đánh giá</span>
+
+    <div class="d-flex justify-content-end">
+      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span home.refreshListLabel">Refresh list</span>
+      </button> -->
+
+      <button id="jh-create-entity" data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-checker-group" [routerLink]="['/checker-group/new']">
+        <fa-icon icon="plus"></fa-icon>
+        <span>Thêm mới</span>
+      </button>
+    </div>
+  </h2>
+
+  @if (checkerGroups?.length === 0) {
+  <div class="alert alert-warning" id="no-result">
+    <span>No Checker Groups found</span>
+  </div>
+  }
+
+  @if (checkerGroups && checkerGroups.length > 0) {
+  <div class="table-responsive table-entities" id="entities">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>ID</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="name">
+            <div class="d-flex">
+              <span>Tên</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="status">
+            <div class="d-flex">
+              <span>Trạng thái</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createdAt">
+            <div class="d-flex">
+              <span>Thời gian tạo</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updatedAt">
+            <div class="d-flex">
+              <span>Thời gian cập nhật</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updateBy">
+            <div class="d-flex">
+              <span>Người cập nhật</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (checkerGroup of checkerGroups; track trackId) {
+        <tr data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/checker-group', checkerGroup.id, 'view']">{{ checkerGroup.id }}</a>
+          </td>
+          <td>{{ checkerGroup.name }}</td>
+          <td>{{ checkerGroup.status }}</td>
+          <td>{{ checkerGroup.createdAt | formatMediumDatetime }}</td>
+          <td>{{ checkerGroup.updatedAt | formatMediumDatetime }}</td>
+          <td>{{ checkerGroup.updateBy }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <a [routerLink]="['/checker-group', checkerGroup.id, 'view']" class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span> -->
+              </a>
+
+              <a [routerLink]="['/checker-group', checkerGroup.id, 'edit']" class="btn btn-primary btn-sm"
+                data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span> -->
+              </a>
+
+              <button type="submit" (click)="delete(checkerGroup)" class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span> -->
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>

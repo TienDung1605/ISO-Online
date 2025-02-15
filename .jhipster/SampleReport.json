@@ -1,0 +1,47 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040303"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "frequency",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "reportType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "reportTypeId",
+      "fieldType": "Long"
+    }
+  ],
+  "name": "SampleReport",
+  "relationships": [],
+  "searchEngine": "no"
+}

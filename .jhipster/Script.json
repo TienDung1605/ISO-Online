@@ -1,0 +1,67 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040310"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "scriptCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "scriptName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "timeStart",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "timeEnd",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "frequency",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "subjectOfAssetmentPlan",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "codePlan",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "namePlan",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "timeCheck",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "participant",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Script",
+  "relationships": [],
+  "searchEngine": "no"
+}

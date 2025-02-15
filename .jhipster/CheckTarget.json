@@ -1,0 +1,39 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040257"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "inspectionTarget",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "evaluationLevelId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    }
+  ],
+  "name": "CheckTarget",
+  "relationships": [],
+  "searchEngine": "no"
+}

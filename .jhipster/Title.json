@@ -1,0 +1,39 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040255"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "source",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "dataType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "field",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Title",
+  "relationships": [],
+  "searchEngine": "no"
+}

@@ -1,0 +1,27 @@
+<div class="new-layout">
+  <div class="content-container">
+    <h1 class="display-4">
+      <span>Chào mừng bạn đến với hệ thống đánh giá ISO Online</span>
+      <small>(ISO)</small>
+    </h1>
+
+    <p class="lead" jhiTranslate="home.subtitle">Đây là trang chủ của bạn</p>
+
+    <div>
+      @if (account() !== null) {
+      <div class="alert alert-success">
+        @if (account()) {
+        <span id="home-logged-message" jhiTranslate="home.logged.message"
+          [translateValues]="{ username: account()!.login }">
+          Xin chào, {{ account()!.login }}! Chúc bạn có một ngày làm việc hiệu quả.
+        </span>
+        }
+      </div>
+      } @else {
+      <div>
+        <button class="alert-link" (click)="login()">Đăng nhập</button>
+      </div>
+      }
+    </div>
+  </div>
+</div>

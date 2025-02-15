@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (convert) {
+    <div>
+      <h2 data-cy="convertDetailsHeading"><span>Quy đổi</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ convert.id }}</span>
+        </dd>
+        <dt><span>Tên</span></dt>
+        <dd>
+          <span>{{ convert.name }}</span>
+        </dd>
+        <dt><span>Kiểu</span></dt>
+        <dd>
+          <span>{{ convert.type }}</span>
+        </dd>
+        <dt><span>Thang điểm</span></dt>
+        <dd>
+          <span>{{ convert.mark }}</span>
+        </dd>
+        <dt><span>Thời gian tạo</span></dt>
+        <dd>
+          <span>{{ convert.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ convert.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ convert.updateBy }}</span>
+        </dd>
+        <!-- <dt><span >Score</span></dt>
+          <dd>
+            <span>{{ convert.score }}</span>
+          </dd>
+          <dt><span>Count</span></dt>
+          <dd>
+            <span>{{ convert.count }}</span>
+          </dd> -->
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/convert', convert.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

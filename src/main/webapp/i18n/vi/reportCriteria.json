@@ -1,0 +1,33 @@
+{
+  "isoApp": {
+    "reportCriteria": {
+      "home": {
+        "title": "Report Criteria",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Report Criteria",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Report Criteria",
+        "notFound": "No Report Criteria found"
+      },
+      "created": "Một Report Criteria mới được tạo với định danh {{ param }}",
+      "updated": "Một Report Criteria cập nhật với định danh {{ param }}",
+      "deleted": "Một Report Criteria đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Report Criteria {{ id }}?"
+      },
+      "detail": {
+        "title": "Report Criteria"
+      },
+      "id": "ID",
+      "criteriaName": "Criteria Name",
+      "criteriaGroupName": "Criteria Group Name",
+      "criteriaId": "Criteria Id",
+      "criteriaGroupId": "Criteria Group Id",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By",
+      "frequency": "Frequency",
+      "reportId": "Report Id"
+    }
+  }
+}

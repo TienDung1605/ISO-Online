@@ -1,0 +1,161 @@
+<div>
+  <h2 id="page-heading" data-cy="ConvertHeading">
+    <span>Quy đổi</span>
+
+    <div class="d-flex justify-content-end">
+      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="isoApp.convert.home.refreshListLabel">Refresh list</span>
+      </button> -->
+
+      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary jh-create-entity create-convert"
+        [routerLink]="['/convert/new']">
+        <fa-icon icon="plus"></fa-icon>
+        <span>Thêm mới</span>
+      </button>
+    </div>
+  </h2>
+
+  <p-treeTable [value]="planData" [scrollable]="true" [tableStyle]="{'min-width':'50rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Type</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr [ttRow]="rowNode">
+        <td>
+          <p-treeTableToggler [rowNode]="rowNode" />
+          {{ rowData.name }}
+        </td>
+        <td>{{ rowData.size }}</td>
+        <td>{{ rowData.type }}</td>
+      </tr>
+    </ng-template>
+  </p-treeTable>
+
+  <!-- <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert> -->
+
+  @if (converts?.length === 0) {
+  <div class="alert alert-warning" id="no-result">
+    <span jhiTranslate="isoApp.convert.home.notFound">No Converts found</span>
+  </div>
+  }
+
+  @if (converts && converts.length > 0) {
+  <div class="table-responsive table-entities" id="entities">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>ID</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="name">
+            <div class="d-flex">
+              <span>Tên</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="type">
+            <div class="d-flex">
+              <span>Kiểu</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="mark">
+            <div class="d-flex">
+              <span>Thang điểm</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createdAt">
+            <div class="d-flex">
+              <span>Ngày tạo</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updatedAt">
+            <div class="d-flex">
+              <span>Ngày cập nhật</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updateBy">
+            <div class="d-flex">
+              <span>Người cập nhật</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="score">
+            <div class="d-flex">
+              <span>Tính điểm</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="count">
+            <div class="d-flex">
+              <span>Bước nhảy</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (convert of converts; track trackId) {
+        <tr data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/convert', convert.id, 'view']">{{ convert.id }}</a>
+          </td>
+          <td>{{ convert.name }}</td>
+          <td>{{ convert.type }}</td>
+          <td>{{ convert.mark }}</td>
+          <td>{{ convert.createdAt | formatMediumDatetime }}</td>
+          <td>{{ convert.updatedAt | formatMediumDatetime }}</td>
+          <td>{{ convert.updateBy }}</td>
+          <td>{{ convert.score }}</td>
+          <td>{{ convert.count }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <a [routerLink]="['/convert', convert.id, 'view']" class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span> -->
+              </a>
+
+              <a [routerLink]="['/convert', convert.id, 'edit']" class="btn btn-primary btn-sm"
+                data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span> -->
+              </a>
+
+              <button type="submit" (click)="delete(convert)" class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span> -->
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>

@@ -1,0 +1,29 @@
+{
+  "isoApp": {
+    "criteria": {
+      "home": {
+        "title": "Criteria",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Criteria",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Criteria",
+        "notFound": "No Criteria found"
+      },
+      "created": "Một Criteria mới được tạo với định danh {{ param }}",
+      "updated": "Một Criteria cập nhật với định danh {{ param }}",
+      "deleted": "Một Criteria đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Criteria {{ id }}?"
+      },
+      "detail": {
+        "title": "Criteria"
+      },
+      "id": "ID",
+      "name": "Name",
+      "criterialGroupId": "Criterial Group Id",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By"
+    }
+  }
+}

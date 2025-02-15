@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (checkLevel) {
+    <div>
+      <h2 data-cy="checkLevelDetailsHeading"><span>Cấp độ đánh giá</span></h2>
+
+      <hr />
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ checkLevel.id }}</span>
+        </dd>
+        <dt><span>Tên</span></dt>
+        <dd>
+          <span>{{ checkLevel.name }}</span>
+        </dd>
+        <dt><span>Trạng thái</span></dt>
+        <dd>
+          <span>{{ checkLevel.status }}</span>
+        </dd>
+        <dt><span>Thời gian tạo</span></dt>
+        <dd>
+          <span>{{ checkLevel.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ checkLevel.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ checkLevel.updateBy }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/check-level', checkLevel.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

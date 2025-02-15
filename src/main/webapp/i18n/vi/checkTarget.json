@@ -1,0 +1,30 @@
+{
+  "isoApp": {
+    "checkTarget": {
+      "home": {
+        "title": "Check Targets",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Check Target",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Check Target",
+        "notFound": "No Check Targets found"
+      },
+      "created": "Một Check Target mới được tạo với định danh {{ param }}",
+      "updated": "Một Check Target cập nhật với định danh {{ param }}",
+      "deleted": "Một Check Target đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Check Target {{ id }}?"
+      },
+      "detail": {
+        "title": "Check Target"
+      },
+      "id": "ID",
+      "name": "Name",
+      "inspectionTarget": "Inspection Target",
+      "evaluationLevelId": "Evaluation Level Id",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By"
+    }
+  }
+}

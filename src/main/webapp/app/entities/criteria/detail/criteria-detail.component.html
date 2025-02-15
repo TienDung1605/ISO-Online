@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (criteria) {
+    <div>
+      <h2 data-cy="criteriaDetailsHeading"><span>Criteria</span></h2>
+
+      <hr />
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ criteria.id }}</span>
+        </dd>
+        <dt><span>Tên</span></dt>
+        <dd>
+          <span>{{ criteria.name }}</span>
+        </dd>
+        <dt><span>Nhóm tiêu chí (ID)</span></dt>
+        <dd>
+          <span>{{ criteria.criterialGroupId }}</span>
+        </dd>
+        <dt><span>Trạng thái</span></dt>
+        <dd>
+          <span>{{ criteria.status }}</span>
+        </dd>
+        <dt><span>Thời gian tạo</span></dt>
+        <dd>
+          <span>{{ criteria.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ criteria.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ criteria.updateBy }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/criteria', criteria.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

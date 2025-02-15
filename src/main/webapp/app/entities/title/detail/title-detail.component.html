@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (title) {
+    <div>
+      <h2 data-cy="titleDetailsHeading"><span>Tiêu đề</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ title.id }}</span>
+        </dd>
+        <dt><span>Tên</span></dt>
+        <dd>
+          <span>{{ title.name }}</span>
+        </dd>
+        <dt><span>Nguồn</span></dt>
+        <dd>
+          <span>{{ title.source }}</span>
+        </dd>
+        <dt><span>Thời gian tạo</span></dt>
+        <dd>
+          <span>{{ title.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ title.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Kiểu dữ liệu</span></dt>
+        <dd>
+          <span>{{ title.dataType }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ title.updateBy }}</span>
+        </dd>
+        <dt><span>Field</span></dt>
+        <dd>
+          <span>{{ title.field }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/title', title.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

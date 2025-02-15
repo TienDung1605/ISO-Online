@@ -1,0 +1,36 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040302"
+  },
+  "applications": "*",
+  "documentation": "The Employee entity.",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    }
+  ],
+  "name": "ReportType",
+  "relationships": [],
+  "searchEngine": "no"
+}

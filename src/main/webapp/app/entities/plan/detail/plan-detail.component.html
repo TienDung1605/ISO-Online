@@ -1,0 +1,134 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (plan) {
+      <div>
+        <h2 data-cy="planDetailsHeading"><span jhiTranslate="isoApp.plan.detail.title">Plan</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ plan.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.code">Code</span></dt>
+          <dd>
+            <span>{{ plan.code }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.name">Name</span></dt>
+          <dd>
+            <span>{{ plan.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.subjectOfAssetmentPlan">Subject Of Assetment Plan</span></dt>
+          <dd>
+            <span>{{ plan.subjectOfAssetmentPlan }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.frequency">Frequency</span></dt>
+          <dd>
+            <span>{{ plan.frequency }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.timeStart">Time Start</span></dt>
+          <dd>
+            <span>{{ plan.timeStart | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.timeEnd">Time End</span></dt>
+          <dd>
+            <span>{{ plan.timeEnd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.statusPlan">Status Plan</span></dt>
+          <dd>
+            <span>{{ plan.statusPlan }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.testObject">Test Object</span></dt>
+          <dd>
+            <span>{{ plan.testObject }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.reportTypeId">Report Type Id</span></dt>
+          <dd>
+            <span>{{ plan.reportTypeId }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.reportTypeName">Report Type Name</span></dt>
+          <dd>
+            <span>{{ plan.reportTypeName }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.numberOfCheck">Number Of Check</span></dt>
+          <dd>
+            <span>{{ plan.numberOfCheck }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.implementer">Implementer</span></dt>
+          <dd>
+            <span>{{ plan.implementer }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.paticipant">Paticipant</span></dt>
+          <dd>
+            <span>{{ plan.paticipant }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.checkerGroup">Checker Group</span></dt>
+          <dd>
+            <span>{{ plan.checkerGroup }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.checkerName">Checker Name</span></dt>
+          <dd>
+            <span>{{ plan.checkerName }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.checkerGroupId">Checker Group Id</span></dt>
+          <dd>
+            <span>{{ plan.checkerGroupId }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.checkerId">Checker Id</span></dt>
+          <dd>
+            <span>{{ plan.checkerId }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.gross">Gross</span></dt>
+          <dd>
+            <span>{{ plan.gross }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.timeCheck">Time Check</span></dt>
+          <dd>
+            <span>{{ plan.timeCheck }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.nameResult">Name Result</span></dt>
+          <dd>
+            <span>{{ plan.nameResult }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.scriptId">Script Id</span></dt>
+          <dd>
+            <span>{{ plan.scriptId }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.createBy">Create By</span></dt>
+          <dd>
+            <span>{{ plan.createBy }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.status">Status</span></dt>
+          <dd>
+            <span>{{ plan.status }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ plan.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.updatedAt">Updated At</span></dt>
+          <dd>
+            <span>{{ plan.updatedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.plan.updateBy">Update By</span></dt>
+          <dd>
+            <span>{{ plan.updateBy }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/plan', plan.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

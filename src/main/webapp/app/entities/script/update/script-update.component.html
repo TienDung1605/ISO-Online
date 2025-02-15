@@ -1,0 +1,186 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-script-heading" data-cy="ScriptCreateUpdateHeading" jhiTranslate="isoApp.script.home.createOrEditLabel">
+        Thêm mới hoặc cập nhật Script
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.scriptCode" for="field_scriptCode">Script Code</label>
+          <input
+            type="text"
+            class="form-control"
+            name="scriptCode"
+            id="field_scriptCode"
+            data-cy="scriptCode"
+            formControlName="scriptCode"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.scriptName" for="field_scriptName">Script Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="scriptName"
+            id="field_scriptName"
+            data-cy="scriptName"
+            formControlName="scriptName"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.timeStart" for="field_timeStart">Time Start</label>
+          <div class="d-flex">
+            <input
+              id="field_timeStart"
+              data-cy="timeStart"
+              type="datetime-local"
+              class="form-control"
+              name="timeStart"
+              formControlName="timeStart"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.timeEnd" for="field_timeEnd">Time End</label>
+          <div class="d-flex">
+            <input
+              id="field_timeEnd"
+              data-cy="timeEnd"
+              type="datetime-local"
+              class="form-control"
+              name="timeEnd"
+              formControlName="timeEnd"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.status" for="field_status">Status</label>
+          <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.updateBy" for="field_updateBy">Update By</label>
+          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.frequency" for="field_frequency">Frequency</label>
+          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.subjectOfAssetmentPlan" for="field_subjectOfAssetmentPlan"
+            >Subject Of Assetment Plan</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="subjectOfAssetmentPlan"
+            id="field_subjectOfAssetmentPlan"
+            data-cy="subjectOfAssetmentPlan"
+            formControlName="subjectOfAssetmentPlan"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.codePlan" for="field_codePlan">Code Plan</label>
+          <input type="text" class="form-control" name="codePlan" id="field_codePlan" data-cy="codePlan" formControlName="codePlan" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.namePlan" for="field_namePlan">Name Plan</label>
+          <input type="text" class="form-control" name="namePlan" id="field_namePlan" data-cy="namePlan" formControlName="namePlan" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.timeCheck" for="field_timeCheck">Time Check</label>
+          <div class="d-flex">
+            <input
+              id="field_timeCheck"
+              data-cy="timeCheck"
+              type="datetime-local"
+              class="form-control"
+              name="timeCheck"
+              formControlName="timeCheck"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.createdAt" for="field_createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.updatedAt" for="field_updatedAt">Updated At</label>
+          <div class="d-flex">
+            <input
+              id="field_updatedAt"
+              data-cy="updatedAt"
+              type="datetime-local"
+              class="form-control"
+              name="updatedAt"
+              formControlName="updatedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.script.participant" for="field_participant">Participant</label>
+          <input
+            type="text"
+            class="form-control"
+            name="participant"
+            id="field_participant"
+            data-cy="participant"
+            formControlName="participant"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

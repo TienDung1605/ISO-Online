@@ -1,0 +1,28 @@
+{
+  "isoApp": {
+    "frequency": {
+      "home": {
+        "title": "Frequencies",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Frequency",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Frequency",
+        "notFound": "No Frequencies found"
+      },
+      "created": "Một Frequency mới được tạo với định danh {{ param }}",
+      "updated": "Một Frequency cập nhật với định danh {{ param }}",
+      "deleted": "Một Frequency đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Frequency {{ id }}?"
+      },
+      "detail": {
+        "title": "Frequency"
+      },
+      "id": "ID",
+      "name": "Name",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "status": "Status",
+      "updateBy": "Update By"
+    }
+  }
+}

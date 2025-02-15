@@ -1,0 +1,29 @@
+{
+  "isoApp": {
+    "reportType": {
+      "home": {
+        "title": "Report Types",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Report Type",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Report Type",
+        "notFound": "No Report Types found"
+      },
+      "created": "Một Report Type mới được tạo với định danh {{ param }}",
+      "updated": "Một Report Type cập nhật với định danh {{ param }}",
+      "deleted": "Một Report Type đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Report Type {{ id }}?"
+      },
+      "detail": {
+        "title": "Report Type"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By"
+    }
+  }
+}

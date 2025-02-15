@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (checkerGroup) {
+    <div>
+      <h2 data-cy="checkerGroupDetailsHeading"><span>Nhóm đối tượng đánh giá</span></h2>
+
+      <hr />
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ checkerGroup.id }}</span>
+        </dd>
+        <dt><span>Tên</span></dt>
+        <dd>
+          <span>{{ checkerGroup.name }}</span>
+        </dd>
+        <dt><span>Trạng thái</span></dt>
+        <dd>
+          <span>{{ checkerGroup.status }}</span>
+        </dd>
+        <dt><span>Thời gian tạo</span></dt>
+        <dd>
+          <span>{{ checkerGroup.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ checkerGroup.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ checkerGroup.updateBy }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/checker-group', checkerGroup.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

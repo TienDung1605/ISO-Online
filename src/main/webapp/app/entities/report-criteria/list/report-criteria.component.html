@@ -1,0 +1,166 @@
+<div>
+  <h2 id="page-heading" data-cy="ReportCriteriaHeading">
+    <span jhiTranslate="isoApp.reportCriteria.home.title">Report Criteria</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="isoApp.reportCriteria.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-report-criteria"
+        [routerLink]="['/report-criteria/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="isoApp.reportCriteria.home.createLabel">Thêm mới một Report Criteria</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (reportCriteria?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="isoApp.reportCriteria.home.notFound">No Report Criteria found</span>
+    </div>
+  }
+
+  @if (reportCriteria && reportCriteria.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="criteriaName">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.criteriaName">Criteria Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="criteriaGroupName">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.criteriaGroupName">Criteria Group Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="criteriaId">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.criteriaId">Criteria Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="criteriaGroupId">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.criteriaGroupId">Criteria Group Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updatedAt">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.updatedAt">Updated At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updateBy">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.updateBy">Update By</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="frequency">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.frequency">Frequency</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reportId">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportCriteria.reportId">Report Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reportCriteria of reportCriteria; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/report-criteria', reportCriteria.id, 'view']">{{ reportCriteria.id }}</a>
+              </td>
+              <td>{{ reportCriteria.criteriaName }}</td>
+              <td>{{ reportCriteria.criteriaGroupName }}</td>
+              <td>{{ reportCriteria.criteriaId }}</td>
+              <td>{{ reportCriteria.criteriaGroupId }}</td>
+              <td>{{ reportCriteria.status }}</td>
+              <td>{{ reportCriteria.createdAt | formatMediumDatetime }}</td>
+              <td>{{ reportCriteria.updatedAt | formatMediumDatetime }}</td>
+              <td>{{ reportCriteria.updateBy }}</td>
+              <td>{{ reportCriteria.frequency }}</td>
+              <td>{{ reportCriteria.reportId }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/report-criteria', reportCriteria.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/report-criteria', reportCriteria.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(reportCriteria)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

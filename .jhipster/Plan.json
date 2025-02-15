@@ -1,0 +1,115 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040306"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "subjectOfAssetmentPlan",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "frequency",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "timeStart",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "timeEnd",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "statusPlan",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "testObject",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "reportTypeId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "reportTypeName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "numberOfCheck",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "implementer",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "paticipant",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "checkerGroup",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "checkerName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "checkerGroupId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "checkerId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "gross",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "timeCheck",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nameResult",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "scriptId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "createBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Plan",
+  "relationships": [],
+  "searchEngine": "no"
+}

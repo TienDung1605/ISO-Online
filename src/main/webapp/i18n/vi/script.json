@@ -1,0 +1,37 @@
+{
+  "isoApp": {
+    "script": {
+      "home": {
+        "title": "Scripts",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Script",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Script",
+        "notFound": "No Scripts found"
+      },
+      "created": "Một Script mới được tạo với định danh {{ param }}",
+      "updated": "Một Script cập nhật với định danh {{ param }}",
+      "deleted": "Một Script đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Script {{ id }}?"
+      },
+      "detail": {
+        "title": "Script"
+      },
+      "id": "ID",
+      "scriptCode": "Script Code",
+      "scriptName": "Script Name",
+      "timeStart": "Time Start",
+      "timeEnd": "Time End",
+      "status": "Status",
+      "updateBy": "Update By",
+      "frequency": "Frequency",
+      "subjectOfAssetmentPlan": "Subject Of Assetment Plan",
+      "codePlan": "Code Plan",
+      "namePlan": "Name Plan",
+      "timeCheck": "Time Check",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "participant": "Participant"
+    }
+  }
+}

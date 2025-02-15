@@ -1,0 +1,101 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-report-title-heading" data-cy="ReportTitleCreateUpdateHeading" jhiTranslate="isoApp.reportTitle.home.createOrEditLabel">
+        Thêm mới hoặc cập nhật Report Title
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.name" for="field_name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.source" for="field_source">Source</label>
+          <input type="text" class="form-control" name="source" id="field_source" data-cy="source" formControlName="source" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.field" for="field_field">Field</label>
+          <input type="text" class="form-control" name="field" id="field_field" data-cy="field" formControlName="field" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.dataType" for="field_dataType">Data Type</label>
+          <input type="text" class="form-control" name="dataType" id="field_dataType" data-cy="dataType" formControlName="dataType" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.index" for="field_index">Index</label>
+          <input type="number" class="form-control" name="index" id="field_index" data-cy="index" formControlName="index" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.createdAt" for="field_createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.updatedAt" for="field_updatedAt">Updated At</label>
+          <div class="d-flex">
+            <input
+              id="field_updatedAt"
+              data-cy="updatedAt"
+              type="datetime-local"
+              class="form-control"
+              name="updatedAt"
+              formControlName="updatedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.updateBy" for="field_updateBy">Update By</label>
+          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportTitle.reportId" for="field_reportId">Report Id</label>
+          <input type="number" class="form-control" name="reportId" id="field_reportId" data-cy="reportId" formControlName="reportId" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

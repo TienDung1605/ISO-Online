@@ -1,0 +1,426 @@
+<div>
+  <h2 id="page-heading" data-cy="PlanHeading">
+    <span>Kế hoạch</span>
+
+    <div class="d-flex justify-content-end">
+      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary jh-create-entity create-plan"
+        [routerLink]="['/plan/new']">
+        <fa-icon icon="plus"></fa-icon>
+        <span>Thêm mới</span>
+      </button>
+    </div>
+  </h2>
+
+  <div *ngIf="plans?.length === 0" class="alert alert-warning" id="no-result">
+    <span>No Plans found</span>
+  </div>
+
+  <p-table [value]="treeNodes" dataKey="id" [tableStyle]="{ 'min-width': '60rem' }" [expandedRowKeys]="expandedRows"
+    (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Mã kế hoạch</th>
+        <th>Tên kế hoạch</th>
+        <th>Đối tượng kế hoạch đánh giá</th>
+        <th>Tần suất</th>
+        <th>Thời gian bắt đầu</th>
+        <th>Thời gian kết thúc</th>
+        <th>Trạng thái kế hoạch</th>
+        <th>Người tạo</th>
+        <th>Thời gian tạo</th>
+        <th>Thời gian cập nhật</th>
+        <th>Người cập nhật</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-expanded="expanded">
+      <tr>
+        <td>
+          <p-button type="button" pRipple [pRowToggler]="rowNode" [text]="true" [rounded]="true" [plain]="true"
+            [icon]="rowNode.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></p-button>
+        </td>
+        <td>{{ rowNode.data.id }}</td>
+        <td>{{ rowNode.data.code }}</td>
+        <td>{{ rowNode.data.name }}</td>
+        <td>{{ rowNode.data.subjectOfAssetmentPlan }}</td>
+        <td>{{ rowNode.data.frequency }}</td>
+        <td>{{ rowNode.data.timeStart | formatMediumDatetime }}</td>
+        <td>{{ rowNode.data.timeEnd | formatMediumDatetime }}</td>
+        <td>{{ rowNode.data.statusPlan }}</td>
+        <td>{{ rowNode.data.createdAt | formatMediumDatetime }}</td>
+        <td>{{ rowNode.data.updatedAt | formatMediumDatetime }}</td>
+        <td>{{ rowNode.data.updateBy }}</td>
+      </tr>
+    </ng-template>
+    <!-- table con -->
+    <ng-template pTemplate="rowexpansion" let-rowNode>
+      <tr>
+        <td colspan="11">
+          <div class="p-4">
+            <h5>Table con</h5>
+            <p-table [value]="rowNode.children" dataKey="id">
+              <ng-template pTemplate="header">
+      <tr>
+        <th>Mã BBKT</th>
+        <th>Tên mẫu BBKT</th>
+        <th>Đối tượng kiểm tra</th>
+        <th>Loại BBKT (ID)</th>
+        <th>Nhóm BBKT</th>
+        <th>Số lần thực hiện kiểm tra</th>
+        <th>Thời gian bắt đầu</th>
+        <th>Thời gian kết thúc</th>
+        <th>Người thực hiện kiểm tra</th>
+        <th>Tần suất kiểm tra</th>
+        <th>Trạng thái</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-plan="rowData">
+      <tr>
+        <td>{{ rowNode.data.statusPlan }}</td>
+        <td>{{ rowNode.data.testObject }}</td>
+        <td>{{ rowNode.data.reportTypeId }}</td>
+        <td>{{ rowNode.data.reportTypeName }}</td>
+        <td>{{ rowNode.data.numberOfCheck }}</td>
+        <td>{{ rowNode.data.implementer }}</td>
+        <td>{{ rowNode.data.paticipant }}</td>
+        <td>{{ rowNode.data.checkerGroup }}</td>
+        <td>{{ rowNode.data.checkerName }}</td>
+        <td>{{ rowNode.data.checkerGroupId }}</td>
+        <td>{{ rowNode.data.checkerId }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+</td>
+</tr>
+</ng-template>
+</p-table>
+
+
+<!-- <p-treeTable [value]="treeNodes" [scrollable]="true" showGridlines [tableStyle]="{'min-width':'50rem'}">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>ID</th>
+      <th>Mã kế hoạch</th>
+      <th>Tên kế hoạch</th>
+      <th>Đối tượng kế hoạch đánh giá</th>
+      <th>Tần suất</th>
+      <th>Thời gian bắt đầu</th>
+      <th>Thời gian kết thúc</th>
+      <th>Trạng thái kế hoạch</th>
+      <th>Đối tượng kiểm tra</th>
+      <th>Loại BBKT (ID)</th>
+      <th>Tên loại BBKT</th>
+      <th>Số lần kiểm tra</th>
+      <th>Người thực hiện</th>
+      <th>Người tham gia</th>
+      <th>Nhóm người dùng</th>
+      <th>Tên người dùng</th>
+      <th>Nhóm người dùng (ID)</th>
+      <th>Tên người dùng (ID)</th>
+      <th>Gộp</th>
+      <th>Ngày kiểm tra</th>
+      <th>Tên kết quả đánh giá</th>
+      <th>Kịch bản (ID)</th>
+      <th>Người tạo</th>
+      <th>Trạng thái</th>
+      <th>Thời gian tạo</th>
+      <th>Thời gian cập nhật</th>
+      <th>Người cập nhật</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowNode let-plan="rowData">
+    <tr [ttRow]="rowNode">
+      <td>
+        <p-treeTableToggler [rowNode]="rowNode" />
+        {{ plan.id }}
+      </td>
+      <td>{{ plan.code }}</td>
+      <td>{{ plan.name }}</td>
+      <td>{{ plan.subject }}</td>
+      <td>{{ plan.frequency }}</td>
+      <td>{{ plan.timeStart | formatMediumDatetime }}</td>
+      <td>{{ plan.timeEnd | formatMediumDatetime }}</td>
+      <td>{{ plan.statusPlan }}</td>
+      <td>{{ plan.testObject }}</td>
+      <td>{{ plan.reportTypeId }}</td>
+      <td>{{ plan.reportTypeName }}</td>
+      <td>{{ plan.subjectOfAssetmentPlan }}</td>
+      <td>{{ plan.frequency }}</td>
+      <td>{{ plan.timeStart | formatMediumDatetime }}</td>
+      <td>{{ plan.timeEnd | formatMediumDatetime }}</td>
+      <td>{{ plan.statusPlan }}</td>
+      <td>{{ plan.testObject }}</td>
+      <td>{{ plan.reportTypeId }}</td>
+      <td>{{ plan.reportTypeName }}</td>
+      <td>{{ plan.numberOfCheck }}</td>
+      <td>{{ plan.implementer }}</td>
+      <td>{{ plan.paticipant }}</td>
+      <td>{{ plan.checkerGroup }}</td>
+      <td>{{ plan.checkerName }}</td>
+      <td>{{ plan.checkerGroupId }}</td>
+      <td>{{ plan.checkerId }}</td>
+      <td>{{ plan.gross }}</td>
+      <td>{{ plan.timeCheck }}</td>
+      <td>{{ plan.nameResult }}</td>
+      <td>{{ plan.scriptId }}</td>
+      <td>{{ plan.createBy }}</td>
+      <td>{{ plan.status }}</td>
+      <td>{{ plan.createdAt | formatMediumDatetime }}</td>
+      <td>{{ plan.updatedAt | formatMediumDatetime }}</td>
+      <td>{{ plan.updateBy }}</td>
+    </tr>
+  </ng-template>
+</p-treeTable> -->
+
+<!-- @if (plans && plans.length > 0) {
+<div class="table-responsive table-entities" id="entities">
+  <table class="table table-striped" aria-describedby="page-heading">
+    <thead>
+      <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+        <th scope="col" jhiSortBy="id">
+          <div class="d-flex">
+            <span>ID</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="code">
+          <div class="d-flex">
+            <span>Mã kế hoạch</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="name">
+          <div class="d-flex">
+            <span>Tên kế hoạch</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="subjectOfAssetmentPlan">
+          <div class="d-flex">
+            <span>Đối tượng kế hoạch đánh giá</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="frequency">
+          <div class="d-flex">
+            <span>Tần suất</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="timeStart">
+          <div class="d-flex">
+            <span>Thời gian bắt đầu</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="timeEnd">
+          <div class="d-flex">
+            <span>Thời gian kết thúc</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="statusPlan">
+          <div class="d-flex">
+            <span>Trạng thái kế hoạch</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="testObject">
+          <div class="d-flex">
+            <span>Đối tượng kiểm tra</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="reportTypeId">
+          <div class="d-flex">
+            <span>Loại BBKT (ID)</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="reportTypeName">
+          <div class="d-flex">
+            <span>Tên loại BBKT</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="numberOfCheck">
+          <div class="d-flex">
+            <span>Số lần kiểm tra</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="implementer">
+          <div class="d-flex">
+            <span>Người thực hiện</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="paticipant">
+          <div class="d-flex">
+            <span>Người tham gia</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="checkerGroup">
+          <div class="d-flex">
+            <span>Nhóm người dùng</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="checkerName">
+          <div class="d-flex">
+            <span>Tên người dùng</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="checkerGroupId">
+          <div class="d-flex">
+            <span>Nhóm người dùng (ID)</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="checkerId">
+          <div class="d-flex">
+            <span>Tên người dùng (ID)</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="gross">
+          <div class="d-flex">
+            <span>Gộp</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="timeCheck">
+          <div class="d-flex">
+            <span>Ngày kiểm tra</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="nameResult">
+          <div class="d-flex">
+            <span>Tên kết quả đánh giá</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="scriptId">
+          <div class="d-flex">
+            <span>Kịch bản (ID)</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="createBy">
+          <div class="d-flex">
+            <span>Người tạo</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="status">
+          <div class="d-flex">
+            <span>Trạng thái</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="createdAt">
+          <div class="d-flex">
+            <span>Thời gian tạo</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="updatedAt">
+          <div class="d-flex">
+            <span>Thời gian cập nhật</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col" jhiSortBy="updateBy">
+          <div class="d-flex">
+            <span>Người cập nhật</span>
+
+            <fa-icon class="p-1" icon="sort"></fa-icon>
+          </div>
+        </th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (plan of plans; track trackId) {
+      <tr data-cy="entityTable">
+        <td>
+          <a [routerLink]="['/plan', plan.id, 'view']">{{ plan.id }}</a>
+        </td>
+        <td>{{ plan.code }}</td>
+        <td>{{ plan.name }}</td>
+        <td>{{ plan.subjectOfAssetmentPlan }}</td>
+        <td>{{ plan.frequency }}</td>
+        <td>{{ plan.timeStart | formatMediumDatetime }}</td>
+        <td>{{ plan.timeEnd | formatMediumDatetime }}</td>
+        <td>{{ plan.statusPlan }}</td>
+        <td>{{ plan.testObject }}</td>
+        <td>{{ plan.reportTypeId }}</td>
+        <td>{{ plan.reportTypeName }}</td>
+        <td>{{ plan.numberOfCheck }}</td>
+        <td>{{ plan.implementer }}</td>
+        <td>{{ plan.paticipant }}</td>
+        <td>{{ plan.checkerGroup }}</td>
+        <td>{{ plan.checkerName }}</td>
+        <td>{{ plan.checkerGroupId }}</td>
+        <td>{{ plan.checkerId }}</td>
+        <td>{{ plan.gross }}</td>
+        <td>{{ plan.timeCheck }}</td>
+        <td>{{ plan.nameResult }}</td>
+        <td>{{ plan.scriptId }}</td>
+        <td>{{ plan.createBy }}</td>
+        <td>{{ plan.status }}</td>
+        <td>{{ plan.createdAt | formatMediumDatetime }}</td>
+        <td>{{ plan.updatedAt | formatMediumDatetime }}</td>
+        <td>{{ plan.updateBy }}</td>
+        <td class="text-end">
+          <div class="btn-group">
+            <a [routerLink]="['/plan', plan.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+              <fa-icon icon="eye"></fa-icon>
+            </a>
+
+            <a [routerLink]="['/plan', plan.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+              <fa-icon icon="pencil-alt"></fa-icon>
+            </a>
+
+            <button type="submit" (click)="delete(plan)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+} -->
+</div>

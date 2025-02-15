@@ -1,0 +1,44 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040252"
+  },
+  "applications": "*",
+  "entityTableName": "jhi_convert",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "mark",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "score",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "count",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "Convert",
+  "relationships": [],
+  "searchEngine": "no"
+}

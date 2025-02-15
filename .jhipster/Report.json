@@ -1,0 +1,71 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040307"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sampleReportId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "testOfObject",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "checker",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "frequency",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "reportType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "reportTypeId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "scoreScale",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "planId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "user",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Report",
+  "relationships": [],
+  "searchEngine": "no"
+}

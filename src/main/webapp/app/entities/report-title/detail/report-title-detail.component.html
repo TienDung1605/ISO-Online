@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (reportTitle) {
+      <div>
+        <h2 data-cy="reportTitleDetailsHeading"><span jhiTranslate="isoApp.reportTitle.detail.title">Report Title</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ reportTitle.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.name">Name</span></dt>
+          <dd>
+            <span>{{ reportTitle.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.source">Source</span></dt>
+          <dd>
+            <span>{{ reportTitle.source }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.field">Field</span></dt>
+          <dd>
+            <span>{{ reportTitle.field }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.dataType">Data Type</span></dt>
+          <dd>
+            <span>{{ reportTitle.dataType }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.index">Index</span></dt>
+          <dd>
+            <span>{{ reportTitle.index }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ reportTitle.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.updatedAt">Updated At</span></dt>
+          <dd>
+            <span>{{ reportTitle.updatedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.updateBy">Update By</span></dt>
+          <dd>
+            <span>{{ reportTitle.updateBy }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.reportTitle.reportId">Report Id</span></dt>
+          <dd>
+            <span>{{ reportTitle.reportId }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/report-title', reportTitle.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

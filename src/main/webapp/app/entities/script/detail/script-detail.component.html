@@ -1,0 +1,86 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (script) {
+      <div>
+        <h2 data-cy="scriptDetailsHeading"><span jhiTranslate="isoApp.script.detail.title">Script</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ script.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.scriptCode">Script Code</span></dt>
+          <dd>
+            <span>{{ script.scriptCode }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.scriptName">Script Name</span></dt>
+          <dd>
+            <span>{{ script.scriptName }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.timeStart">Time Start</span></dt>
+          <dd>
+            <span>{{ script.timeStart | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.timeEnd">Time End</span></dt>
+          <dd>
+            <span>{{ script.timeEnd | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.status">Status</span></dt>
+          <dd>
+            <span>{{ script.status }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.updateBy">Update By</span></dt>
+          <dd>
+            <span>{{ script.updateBy }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.frequency">Frequency</span></dt>
+          <dd>
+            <span>{{ script.frequency }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.subjectOfAssetmentPlan">Subject Of Assetment Plan</span></dt>
+          <dd>
+            <span>{{ script.subjectOfAssetmentPlan }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.codePlan">Code Plan</span></dt>
+          <dd>
+            <span>{{ script.codePlan }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.namePlan">Name Plan</span></dt>
+          <dd>
+            <span>{{ script.namePlan }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.timeCheck">Time Check</span></dt>
+          <dd>
+            <span>{{ script.timeCheck | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ script.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.updatedAt">Updated At</span></dt>
+          <dd>
+            <span>{{ script.updatedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.script.participant">Participant</span></dt>
+          <dd>
+            <span>{{ script.participant }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/script', script.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

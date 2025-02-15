@@ -1,0 +1,93 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-inspection-report-titles-heading" data-cy="InspectionReportTitlesCreateUpdateHeading">
+        Thêm mới hoặc cập nhật Inspection Report Titles
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+        <div class="mb-3">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id"
+            [readonly]="true" />
+        </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_nameTitle">Tên tiêu đề</label>
+          <input type="text" class="form-control" name="nameTitle" id="field_nameTitle" data-cy="nameTitle"
+            formControlName="nameTitle" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_source">Nguồn</label>
+          <input type="text" class="form-control" name="source" id="field_source" data-cy="source"
+            formControlName="source" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_field">Field</label>
+          <input type="text" class="form-control" name="field" id="field_field" data-cy="field"
+            formControlName="field" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_dataType">Kiểu dữ liệu</label>
+          <input type="text" class="form-control" name="dataType" id="field_dataType" data-cy="dataType"
+            formControlName="dataType" />
+        </div>
+
+        <!-- <div class="mb-3">
+          <label class="form-label" for="field_timeCreate">Thời gian tạo</label>
+          <div class="d-flex">
+            <input
+              id="field_timeCreate"
+              data-cy="timeCreate"
+              type="datetime-local"
+              class="form-control"
+              name="timeCreate"
+              formControlName="timeCreate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_timeUpdate">Time Update</label>
+          <div class="d-flex">
+            <input
+              id="field_timeUpdate"
+              data-cy="timeUpdate"
+              type="datetime-local"
+              class="form-control"
+              name="timeUpdate"
+              formControlName="timeUpdate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div> -->
+
+        <div class="mb-3">
+          <label class="form-label" for="field_sampleReportId">Mẫu BBKT (ID)</label>
+          <input type="number" class="form-control" name="sampleReportId" id="field_sampleReportId"
+            data-cy="sampleReportId" formControlName="sampleReportId" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary"
+          (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
+        </button>
+
+        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

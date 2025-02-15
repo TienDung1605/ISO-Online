@@ -1,0 +1,28 @@
+{
+  "isoApp": {
+    "checkerGroup": {
+      "home": {
+        "title": "Checker Groups",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Checker Group",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Checker Group",
+        "notFound": "No Checker Groups found"
+      },
+      "created": "Một Checker Group mới được tạo với định danh {{ param }}",
+      "updated": "Một Checker Group cập nhật với định danh {{ param }}",
+      "deleted": "Một Checker Group đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Checker Group {{ id }}?"
+      },
+      "detail": {
+        "title": "Checker Group"
+      },
+      "id": "ID",
+      "name": "Name",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By"
+    }
+  }
+}

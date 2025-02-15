@@ -1,0 +1,32 @@
+{
+  "isoApp": {
+    "reportTitle": {
+      "home": {
+        "title": "Report Titles",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Report Title",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Report Title",
+        "notFound": "No Report Titles found"
+      },
+      "created": "Một Report Title mới được tạo với định danh {{ param }}",
+      "updated": "Một Report Title cập nhật với định danh {{ param }}",
+      "deleted": "Một Report Title đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Report Title {{ id }}?"
+      },
+      "detail": {
+        "title": "Report Title"
+      },
+      "id": "ID",
+      "name": "Name",
+      "source": "Source",
+      "field": "Field",
+      "dataType": "Data Type",
+      "index": "Index",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By",
+      "reportId": "Report Id"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040304"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "nameTitle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "source",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "field",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dataType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "timeCreate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "timeUpdate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "sampleReportId",
+      "fieldType": "Long"
+    }
+  ],
+  "name": "InspectionReportTitles",
+  "relationships": [],
+  "searchEngine": "no"
+}

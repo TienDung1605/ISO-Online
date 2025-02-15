@@ -1,0 +1,73 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (sampleReportCriteria) {
+    <div>
+      <h2 data-cy="sampleReportCriteriaDetailsHeading">
+        <span>Tiêu chí mẫu BBKT</span>
+      </h2>
+
+      <hr />
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.id }}</span>
+        </dd>
+        <dt><span>Tên tiêu chí</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.criteriaName }}</span>
+        </dd>
+        <dt><span>Tên nhóm tiêu chí</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.criteriaGroupName }}</span>
+        </dd>
+        <dt><span>Tiêu chí (ID)</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.criteriaId }}</span>
+        </dd>
+        <dt><span>Nhóm tiêu chí (ID)</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.criteriaGroupId }}</span>
+        </dd>
+        <dt><span>Trạng thái</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.status }}</span>
+        </dd>
+        <dt><span>Thời giạn tạo</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.updateBy }}</span>
+        </dd>
+        <dt><span>Tần suất</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.frequency }}</span>
+        </dd>
+        <dt><span>Mẫu BBKT</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.sampleReportId }}</span>
+        </dd>
+        <dt><span>Detail</span></dt>
+        <dd>
+          <span>{{ sampleReportCriteria.detail }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/sample-report-criteria', sampleReportCriteria.id, 'edit']"
+        class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

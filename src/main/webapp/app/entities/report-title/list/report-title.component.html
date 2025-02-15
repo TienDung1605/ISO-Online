@@ -1,0 +1,150 @@
+<div>
+  <h2 id="page-heading" data-cy="ReportTitleHeading">
+    <span jhiTranslate="isoApp.reportTitle.home.title">Report Titles</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="isoApp.reportTitle.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-report-title"
+        [routerLink]="['/report-title/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="isoApp.reportTitle.home.createLabel">Thêm mới một Report Title</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (reportTitles?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="isoApp.reportTitle.home.notFound">No Report Titles found</span>
+    </div>
+  }
+
+  @if (reportTitles && reportTitles.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.name">Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="source">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.source">Source</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="field">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.field">Field</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dataType">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.dataType">Data Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="index">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.index">Index</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updatedAt">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.updatedAt">Updated At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updateBy">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.updateBy">Update By</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reportId">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.reportTitle.reportId">Report Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reportTitle of reportTitles; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/report-title', reportTitle.id, 'view']">{{ reportTitle.id }}</a>
+              </td>
+              <td>{{ reportTitle.name }}</td>
+              <td>{{ reportTitle.source }}</td>
+              <td>{{ reportTitle.field }}</td>
+              <td>{{ reportTitle.dataType }}</td>
+              <td>{{ reportTitle.index }}</td>
+              <td>{{ reportTitle.createdAt | formatMediumDatetime }}</td>
+              <td>{{ reportTitle.updatedAt | formatMediumDatetime }}</td>
+              <td>{{ reportTitle.updateBy }}</td>
+              <td>{{ reportTitle.reportId }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/report-title', reportTitle.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a [routerLink]="['/report-title', reportTitle.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(reportTitle)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

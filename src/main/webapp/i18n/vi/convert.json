@@ -1,0 +1,31 @@
+{
+  "isoApp": {
+    "convert": {
+      "home": {
+        "title": "Converts",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Convert",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Convert",
+        "notFound": "No Converts found"
+      },
+      "created": "Một Convert mới được tạo với định danh {{ param }}",
+      "updated": "Một Convert cập nhật với định danh {{ param }}",
+      "deleted": "Một Convert đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Convert {{ id }}?"
+      },
+      "detail": {
+        "title": "Convert"
+      },
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "mark": "Mark",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By",
+      "score": "Score",
+      "count": "Count"
+    }
+  }
+}

@@ -1,0 +1,131 @@
+<div>
+  <h2 id="page-heading" data-cy="InspectionReportTitlesHeading">
+    <span>Tiêu đề mẫu BBKT</span>
+
+    <div class="d-flex justify-content-end">
+      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span home.refreshListLabel">Refresh list</span>
+      </button> -->
+
+      <button id="jh-create-entity" data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-inspection-report-titles"
+        [routerLink]="['/inspection-report-titles/new']">
+        <fa-icon icon="plus"></fa-icon>
+        <span>Thêm mới</span>
+      </button>
+    </div>
+  </h2>
+
+  @if (inspectionReportTitles?.length === 0) {
+  <div class="alert alert-warning" id="no-result">
+    <span>No Inspection Report Titles found</span>
+  </div>
+  }
+
+  @if (inspectionReportTitles && inspectionReportTitles.length > 0) {
+  <div class="table-responsive table-entities" id="entities">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>ID</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nameTitle">
+            <div class="d-flex">
+              <span>Tên tiêu đề</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="source">
+            <div class="d-flex">
+              <span>Nguồn</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="field">
+            <div class="d-flex">
+              <span>Field</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="dataType">
+            <div class="d-flex">
+              <span>Kiểu dữ liệu</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="timeCreate">
+            <div class="d-flex">
+              <span>Thời gian tạo</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="timeUpdate">
+            <div class="d-flex">
+              <span>Thời gian cập nhật</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="sampleReportId">
+            <div class="d-flex">
+              <span>Mẫu BBKT (ID)</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (inspectionReportTitles of inspectionReportTitles; track trackId) {
+        <tr data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/inspection-report-titles', inspectionReportTitles.id, 'view']">{{
+              inspectionReportTitles.id }}</a>
+          </td>
+          <td>{{ inspectionReportTitles.nameTitle }}</td>
+          <td>{{ inspectionReportTitles.source }}</td>
+          <td>{{ inspectionReportTitles.field }}</td>
+          <td>{{ inspectionReportTitles.dataType }}</td>
+          <td>{{ inspectionReportTitles.timeCreate | formatMediumDatetime }}</td>
+          <td>{{ inspectionReportTitles.timeUpdate | formatMediumDatetime }}</td>
+          <td>{{ inspectionReportTitles.sampleReportId }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <a [routerLink]="['/inspection-report-titles', inspectionReportTitles.id, 'view']"
+                class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span> -->
+              </a>
+
+              <a [routerLink]="['/inspection-report-titles', inspectionReportTitles.id, 'edit']"
+                class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span> -->
+              </a>
+
+              <button type="submit" (click)="delete(inspectionReportTitles)" class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span> -->
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>

@@ -1,0 +1,227 @@
+entity Convert {
+	name String
+    type String
+    mark String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+    score Integer
+    count Integer
+}
+
+// an ignored comment
+/** not an ignored comment */
+entity Evaluator {
+	name String
+    userGroupId Long
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    status String
+    updateBy String
+}
+entity Frequency {
+	name String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    status String
+    updateBy String
+}
+entity Title {
+	name String
+    source String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    dataType String
+    updateBy String
+    field String
+    
+}
+entity Parts {
+	name String
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+}
+
+entity CheckTarget {
+	name String
+    inspectionTarget String
+    evaluationLevelId Long
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+}
+entity CheckerGroup {
+	name String
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+}
+entity CheckLevel {
+	name String
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+}
+
+entity Criteria {
+	name String
+    criterialGroupId String
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+}
+
+entity CriteriaGroup {
+	name String
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+}
+
+/**
+ * The Employee entity.
+ */
+entity ReportType {
+	code String
+	name String
+	status String
+	createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+	updateBy String
+}
+
+entity SampleReport {
+	name String
+	status Long
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+	updateBy String
+    frequency String
+    code String
+    reportType String
+    reportTypeId Long
+}
+
+entity InspectionReportTitles {
+	nameTitle String
+    source String
+    field String
+    dataType String
+    timeCreate ZonedDateTime
+	timeUpdate ZonedDateTime
+    sampleReportId Long
+}
+entity SampleReportCriteria{
+	criteriaName String
+	criteriaGroupName String
+    criteriaId Long
+    criteriaGroupId Long
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+	updateBy String
+    frequency String
+    sampleReportId Long
+    detail String
+}
+entity Plan {
+	code String
+    name String
+    subjectOfAssetmentPlan String
+    frequency String
+    timeStart ZonedDateTime
+    timeEnd ZonedDateTime
+    statusPlan String
+    testObject String
+    reportTypeId Long
+    reportTypeName String
+    numberOfCheck String
+    implementer String
+    paticipant String
+    checkerGroup String
+    checkerName String
+    checkerGroupId Long
+    checkerId Long
+    gross String
+    timeCheck String
+    nameResult String
+    scriptId Long
+    createBy String
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+}
+entity Report {
+	name String
+    code String
+    sampleReportId Long
+    testOfObject String
+    checker String
+    status String
+    frequency String
+    reportType String
+    reportTypeId Long
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    scoreScale String
+    updateBy String
+    planId String
+    user String
+}
+entity ReportCriteria{
+	criteriaName String
+    criteriaGroupName String
+    criteriaId Long
+    criteriaGroupId Long
+    status String
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+    frequency String
+    reportId Long
+}
+entity ReportTitle{
+	name String
+    source String
+    field String
+    dataType String
+    index Long
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    updateBy String
+	reportId Long
+}
+
+entity Script {
+	scriptCode String
+    scriptName String
+    timeStart ZonedDateTime
+    timeEnd ZonedDateTime
+    status String
+    updateBy String
+    frequency String
+    subjectOfAssetmentPlan String
+    codePlan String
+    namePlan String
+    timeCheck ZonedDateTime
+    createdAt ZonedDateTime
+    updatedAt ZonedDateTime
+    participant String
+}
+
+
+// Set pagination options
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+// Set an angular suffix
+// angularSuffix * with mySuffix

@@ -1,0 +1,57 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (inspectionReportTitles) {
+    <div>
+      <h2 data-cy="inspectionReportTitlesDetailsHeading">
+        <span>Tiêu đề mẫu BBKT</span>
+      </h2>
+
+      <hr />
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.id }}</span>
+        </dd>
+        <dt><span>Tên tiêu đề</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.nameTitle }}</span>
+        </dd>
+        <dt><span>Nguồn</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.source }}</span>
+        </dd>
+        <dt><span>Field</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.field }}</span>
+        </dd>
+        <dt><span>Kiểu dữ liệu</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.dataType }}</span>
+        </dd>
+        <dt><span>Thời gian tạo</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.timeCreate | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.timeUpdate | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Mẫu BBKT (ID)</span></dt>
+        <dd>
+          <span>{{ inspectionReportTitles.sampleReportId }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/inspection-report-titles', inspectionReportTitles.id, 'edit']"
+        class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

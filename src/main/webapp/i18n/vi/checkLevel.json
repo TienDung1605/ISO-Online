@@ -1,0 +1,28 @@
+{
+  "isoApp": {
+    "checkLevel": {
+      "home": {
+        "title": "Check Levels",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Check Level",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Check Level",
+        "notFound": "No Check Levels found"
+      },
+      "created": "Một Check Level mới được tạo với định danh {{ param }}",
+      "updated": "Một Check Level cập nhật với định danh {{ param }}",
+      "deleted": "Một Check Level đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Check Level {{ id }}?"
+      },
+      "detail": {
+        "title": "Check Level"
+      },
+      "id": "ID",
+      "name": "Name",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By"
+    }
+  }
+}

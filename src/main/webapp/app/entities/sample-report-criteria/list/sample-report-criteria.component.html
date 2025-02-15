@@ -1,0 +1,163 @@
+<div>
+  <h2 id="page-heading" data-cy="SampleReportCriteriaHeading">
+    <span>Tiêu chí mẫu BBKT</span>
+
+    <div class="d-flex justify-content-end">
+      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span home.refreshListLabel">Refresh list</span>
+      </button> -->
+
+      <button id="jh-create-entity" data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-sample-report-criteria"
+        [routerLink]="['/sample-report-criteria/new']">
+        <fa-icon icon="plus"></fa-icon>
+        <span>Thêm mới</span>
+      </button>
+    </div>
+  </h2>
+
+  @if (sampleReportCriteria?.length === 0) {
+  <div class="alert alert-warning" id="no-result">
+    <span>No Sample Report Criteria found</span>
+  </div>
+  }
+
+  @if (sampleReportCriteria && sampleReportCriteria.length > 0) {
+  <div class="table-responsive table-entities" id="entities">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>ID</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="criteriaName">
+            <div class="d-flex">
+              <span>Tên tiêu chí</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="criteriaGroupName">
+            <div class="d-flex">
+              <span>Tên nhóm tiêu chí</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="criteriaId">
+            <div class="d-flex">
+              <span>Tiêu chí (ID)</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="criteriaGroupId">
+            <div class="d-flex">
+              <span>Nhóm tiêu chí (ID)</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="status">
+            <div class="d-flex">
+              <span>Trạng thái</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createdAt">
+            <div class="d-flex">
+              <span>Thời gian tạo</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updatedAt">
+            <div class="d-flex">
+              <span>Thời gina cập nhật</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updateBy">
+            <div class="d-flex">
+              <span>Người cập nhật</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="frequency">
+            <div class="d-flex">
+              <span>Tần suất</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="sampleReportId">
+            <div class="d-flex">
+              <span>Mẫu BBKT</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="detail">
+            <div class="d-flex">
+              <span>Detail</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sampleReportCriteria of sampleReportCriteria; track trackId) {
+        <tr data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/sample-report-criteria', sampleReportCriteria.id, 'view']">{{ sampleReportCriteria.id
+              }}</a>
+          </td>
+          <td>{{ sampleReportCriteria.criteriaName }}</td>
+          <td>{{ sampleReportCriteria.criteriaGroupName }}</td>
+          <td>{{ sampleReportCriteria.criteriaId }}</td>
+          <td>{{ sampleReportCriteria.criteriaGroupId }}</td>
+          <td>{{ sampleReportCriteria.status }}</td>
+          <td>{{ sampleReportCriteria.createdAt | formatMediumDatetime }}</td>
+          <td>{{ sampleReportCriteria.updatedAt | formatMediumDatetime }}</td>
+          <td>{{ sampleReportCriteria.updateBy }}</td>
+          <td>{{ sampleReportCriteria.frequency }}</td>
+          <td>{{ sampleReportCriteria.sampleReportId }}</td>
+          <td>{{ sampleReportCriteria.detail }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <a [routerLink]="['/sample-report-criteria', sampleReportCriteria.id, 'view']" class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span> -->
+              </a>
+
+              <a [routerLink]="['/sample-report-criteria', sampleReportCriteria.id, 'edit']"
+                class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span> -->
+              </a>
+
+              <button type="submit" (click)="delete(sampleReportCriteria)" class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span> -->
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>

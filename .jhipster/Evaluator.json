@@ -1,0 +1,36 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040253"
+  },
+  "applications": "*",
+  "documentation": "not an ignored comment",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "userGroupId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Evaluator",
+  "relationships": [],
+  "searchEngine": "no"
+}

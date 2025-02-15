@@ -1,0 +1,142 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-report-criteria-heading"
+        data-cy="ReportCriteriaCreateUpdateHeading"
+        jhiTranslate="isoApp.reportCriteria.home.createOrEditLabel"
+      >
+        Thêm mới hoặc cập nhật Report Criteria
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.criteriaName" for="field_criteriaName">Criteria Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="criteriaName"
+            id="field_criteriaName"
+            data-cy="criteriaName"
+            formControlName="criteriaName"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.criteriaGroupName" for="field_criteriaGroupName"
+            >Criteria Group Name</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="criteriaGroupName"
+            id="field_criteriaGroupName"
+            data-cy="criteriaGroupName"
+            formControlName="criteriaGroupName"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.criteriaId" for="field_criteriaId">Criteria Id</label>
+          <input
+            type="number"
+            class="form-control"
+            name="criteriaId"
+            id="field_criteriaId"
+            data-cy="criteriaId"
+            formControlName="criteriaId"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.criteriaGroupId" for="field_criteriaGroupId"
+            >Criteria Group Id</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="criteriaGroupId"
+            id="field_criteriaGroupId"
+            data-cy="criteriaGroupId"
+            formControlName="criteriaGroupId"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.status" for="field_status">Status</label>
+          <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.createdAt" for="field_createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.updatedAt" for="field_updatedAt">Updated At</label>
+          <div class="d-flex">
+            <input
+              id="field_updatedAt"
+              data-cy="updatedAt"
+              type="datetime-local"
+              class="form-control"
+              name="updatedAt"
+              formControlName="updatedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.updateBy" for="field_updateBy">Update By</label>
+          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.frequency" for="field_frequency">Frequency</label>
+          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="isoApp.reportCriteria.reportId" for="field_reportId">Report Id</label>
+          <input type="number" class="form-control" name="reportId" id="field_reportId" data-cy="reportId" formControlName="reportId" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

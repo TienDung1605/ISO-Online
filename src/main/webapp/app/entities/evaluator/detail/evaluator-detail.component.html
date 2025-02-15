@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (evaluator) {
+    <div>
+      <h2 data-cy="evaluatorDetailsHeading"><span>Thông tin người dánh giá</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ evaluator.id }}</span>
+        </dd>
+        <dt><span>Tên</span></dt>
+        <dd>
+          <span>{{ evaluator.name }}</span>
+        </dd>
+        <dt><span>Nhóm người dùng</span></dt>
+        <dd>
+          <span>{{ evaluator.userGroupId }}</span>
+        </dd>
+        <dt><span>Ngày tạo</span></dt>
+        <dd>
+          <span>{{ evaluator.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Ngày cập nhật</span></dt>
+        <dd>
+          <span>{{ evaluator.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Trạng thái</span></dt>
+        <dd>
+          <span>{{ evaluator.status }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ evaluator.updateBy }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/evaluator', evaluator.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

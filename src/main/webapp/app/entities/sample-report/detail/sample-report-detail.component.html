@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (sampleReport) {
+    <div>
+      <h2 data-cy="sampleReportDetailsHeading"><span>Mẫu biên bản kiểm tra</span></h2>
+
+      <hr />
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ sampleReport.id }}</span>
+        </dd>
+        <dt><span>Tên</span></dt>
+        <dd>
+          <span>{{ sampleReport.name }}</span>
+        </dd>
+        <dt><span>Trạng thái</span></dt>
+        <dd>
+          <span>{{ sampleReport.status }}</span>
+        </dd>
+        <dt><span>Thời gian tạo</span></dt>
+        <dd>
+          <span>{{ sampleReport.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Thời gian cập nhật</span></dt>
+        <dd>
+          <span>{{ sampleReport.updatedAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Người cập nhật</span></dt>
+        <dd>
+          <span>{{ sampleReport.updateBy }}</span>
+        </dd>
+        <dt><span>Tần suất</span></dt>
+        <dd>
+          <span>{{ sampleReport.frequency }}</span>
+        </dd>
+        <dt><span>Mã mấu BBKT</span></dt>
+        <dd>
+          <span>{{ sampleReport.code }}</span>
+        </dd>
+        <dt><span>Loại BBKT</span></dt>
+        <dd>
+          <span>{{ sampleReport.reportType }}</span>
+        </dd>
+        <dt><span>Loại BBKT (ID)</span></dt>
+        <dd>
+          <span>{{ sampleReport.reportTypeId }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+      </button>
+
+      <button type="button" [routerLink]="['/sample-report', sampleReport.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

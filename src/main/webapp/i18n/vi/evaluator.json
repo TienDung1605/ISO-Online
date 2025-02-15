@@ -1,0 +1,29 @@
+{
+  "isoApp": {
+    "evaluator": {
+      "home": {
+        "title": "Evaluators",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Evaluator",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Evaluator",
+        "notFound": "No Evaluators found"
+      },
+      "created": "Một Evaluator mới được tạo với định danh {{ param }}",
+      "updated": "Một Evaluator cập nhật với định danh {{ param }}",
+      "deleted": "Một Evaluator đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Evaluator {{ id }}?"
+      },
+      "detail": {
+        "title": "Evaluator"
+      },
+      "id": "ID",
+      "name": "Name",
+      "userGroupId": "User Group Id",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "status": "Status",
+      "updateBy": "Update By"
+    }
+  }
+}

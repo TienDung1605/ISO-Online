@@ -1,0 +1,32 @@
+{
+  "isoApp": {
+    "sampleReport": {
+      "home": {
+        "title": "Sample Reports",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Sample Report",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Sample Report",
+        "notFound": "No Sample Reports found"
+      },
+      "created": "Một Sample Report mới được tạo với định danh {{ param }}",
+      "updated": "Một Sample Report cập nhật với định danh {{ param }}",
+      "deleted": "Một Sample Report đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Sample Report {{ id }}?"
+      },
+      "detail": {
+        "title": "Sample Report"
+      },
+      "id": "ID",
+      "name": "Name",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By",
+      "frequency": "Frequency",
+      "code": "Code",
+      "reportType": "Report Type",
+      "reportTypeId": "Report Type Id"
+    }
+  }
+}

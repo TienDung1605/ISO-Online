@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "changelogDate": "20250124040308"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "criteriaName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "criteriaGroupName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "criteriaId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "criteriaGroupId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "updateBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "frequency",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "reportId",
+      "fieldType": "Long"
+    }
+  ],
+  "name": "ReportCriteria",
+  "relationships": [],
+  "searchEngine": "no"
+}

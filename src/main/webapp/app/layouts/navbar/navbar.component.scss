@@ -1,0 +1,300 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+
+$sidebar-background-color: #333;
+$sidebar-text-color: #fff;
+$sidebar-width: 250px;
+$sidebar-collapsed-width: 50px;
+$transition-duration: 0.3s;
+$hover-bg-color: rgba(255, 255, 255, 0.1);
+$active-color: #007bff;
+
+.sidebar {
+  width: $sidebar-width;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: $sidebar-background-color;
+  padding-top: 0;
+  color: $sidebar-text-color;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: all $transition-duration ease;
+  z-index: 1000;
+  scrollbar-width: thin;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    text-decoration: none;
+    height: 80px;
+    position: relative;
+
+    .sidebar-img {
+      max-width: 180px;
+      margin-top: 70px;
+      height: auto;
+      transition: all $transition-duration ease;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+  }
+
+  .navbar-nav {
+    margin-top: 30px;
+    padding: 0;
+    list-style: none;
+    transition: all $transition-duration ease;
+
+    .nav-item {
+      margin: 2px 0;
+      position: relative;
+
+      &:not(:last-child) {
+        margin-bottom: 5px;
+      }
+
+      a {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        color: $sidebar-text-color;
+        text-decoration: none;
+        transition: all $transition-duration ease;
+        border-radius: 4px;
+        margin: 0 8px;
+        font-weight: 400;
+        position: relative;
+        z-index: 1;
+
+        fa-icon {
+          width: 20px;
+          text-align: center;
+          margin-right: 10px;
+          font-size: 1.1em;
+          transition: transform $transition-duration ease;
+        }
+
+        .dropdown-item-span {
+          white-space: nowrap;
+          opacity: 1;
+          transition: all $transition-duration ease;
+          letter-spacing: 0.2px;
+        }
+
+        &:hover {
+          background-color: $hover-bg-color;
+          transform: translateX(4px);
+
+          fa-icon {
+            transform: scale(1.1);
+          }
+        }
+
+        &.active {
+          background-color: $active-color;
+          color: #fff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+      }
+
+      .dropdown-menu {
+        background-color: darken($sidebar-background-color, 3%);
+        border: none;
+        border-radius: 4px;
+        margin: 2px 0;
+        padding: 8px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: static;
+        float: none;
+        // transform: none;
+
+        .dropdown-item {
+          padding: 8px 20px 8px 45px;
+          color: $sidebar-text-color;
+          transition: all $transition-duration ease;
+          white-space: normal;
+          line-height: 1.4;
+
+          &:hover {
+            background-color: $hover-bg-color;
+            transform: translateX(4px);
+          }
+
+          &.active {
+            background-color: $active-color;
+          }
+        }
+      }
+
+      &.show {
+        >a {
+          background-color: $hover-bg-color;
+        }
+      }
+    }
+  }
+
+  .user-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 50px;
+    margin-left: 30px;
+    color: #fff;
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+
+      fa-icon {
+        font-size: 14px;
+      }
+
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.sidebar-collapse-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: $sidebar-text-color;
+  cursor: pointer;
+  transition: all $transition-duration ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.sidebar-collapsed {
+  width: $sidebar-collapsed-width;
+
+  .sidebar-brand {
+    padding: 0 5px;
+    justify-content: center;
+    height: 60px;
+
+    .sidebar-img {
+      max-width: 40px;
+      margin-top: 20px;
+    }
+  }
+
+  .navbar-nav {
+    margin-top: 30px;
+
+    .nav-item {
+      a {
+        padding: 10px 0;
+        justify-content: center;
+        margin: 2px 5px;
+
+        fa-icon {
+          margin: 0;
+          font-size: 1.2em;
+        }
+
+        .dropdown-item-span {
+          opacity: 0;
+          width: 0;
+          display: none;
+        }
+
+        &:hover {
+          transform: translateX(0) scale(1.1);
+        }
+      }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        left: $sidebar-collapsed-width;
+        top: 0;
+        margin: 0;
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all $transition-duration ease;
+      }
+
+      &:hover {
+        .dropdown-menu {
+          display: block;
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+  }
+
+  .user-info {
+    padding: 10px 5px;
+
+    .dropdown-item {
+      justify-content: center;
+      padding: 8px 0;
+
+      fa-icon {
+        margin: 0;
+      }
+
+      span {
+        display: none;
+      }
+    }
+  }
+}
+
+.container-fluid {
+  padding-left: $sidebar-width;
+  padding-right: 0;
+  transition: padding-left $transition-duration ease;
+  min-height: 100vh;
+
+  &.sidebar-collapsed {
+    padding-left: $sidebar-collapsed-width;
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "isoApp": {
+    "plan": {
+      "home": {
+        "title": "Plans",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Plan",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Plan",
+        "notFound": "No Plans found"
+      },
+      "created": "Một Plan mới được tạo với định danh {{ param }}",
+      "updated": "Một Plan cập nhật với định danh {{ param }}",
+      "deleted": "Một Plan đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Plan {{ id }}?"
+      },
+      "detail": {
+        "title": "Plan"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "subjectOfAssetmentPlan": "Subject Of Assetment Plan",
+      "frequency": "Frequency",
+      "timeStart": "Time Start",
+      "timeEnd": "Time End",
+      "statusPlan": "Status Plan",
+      "testObject": "Test Object",
+      "reportTypeId": "Report Type Id",
+      "reportTypeName": "Report Type Name",
+      "numberOfCheck": "Number Of Check",
+      "implementer": "Implementer",
+      "paticipant": "Paticipant",
+      "checkerGroup": "Checker Group",
+      "checkerName": "Checker Name",
+      "checkerGroupId": "Checker Group Id",
+      "checkerId": "Checker Id",
+      "gross": "Gross",
+      "timeCheck": "Time Check",
+      "nameResult": "Name Result",
+      "scriptId": "Script Id",
+      "createBy": "Create By",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "updateBy": "Update By"
+    }
+  }
+}

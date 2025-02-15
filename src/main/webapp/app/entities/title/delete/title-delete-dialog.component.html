@@ -1,0 +1,26 @@
+@if (title) {
+  <form name="deleteForm" (ngSubmit)="confirmDelete(title.id!)">
+    <div class="modal-header">
+      <h4 class="modal-title" data-cy="titleDeleteDialogHeading" jhiTranslate="entity.delete.title">Xác nhận hành động xóa</h4>
+
+      <span class="btn btn-close" data-dismiss="modal" aria-hidden="true" (click)="cancel()"></span>
+    </div>
+
+    <div class="modal-body">
+      <jhi-alert-error></jhi-alert-error>
+      <p id="jhi-delete-title-heading" jhiTranslate="isoApp.title.delete.question" [translateValues]="{ id: title.id }">
+        Bạn có chắc là muốn xóa Title {{ title.id }}?
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+        <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+      </button>
+
+      <button id="jhi-confirm-delete-title" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
+        <fa-icon icon="times"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Xóa</span>
+      </button>
+    </div>
+  </form>
+}
