@@ -46,7 +46,12 @@
         }
       }
     ],
-    "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      {
+        "allowExpressions": true
+      }
+    ],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/member-ordering": [
       "error",
@@ -83,16 +88,28 @@
     "@typescript-eslint/unbound-method": "off",
     "arrow-body-style": "error",
     "curly": "error",
-    "eqeqeq": ["error", "always", { "null": "ignore" }],
+    "eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
     "guard-for-in": "error",
     "no-bitwise": "error",
     "no-caller": "error",
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": "off",
     "no-eval": "error",
     "no-labels": "error",
     "no-new": "error",
     "no-new-wrappers": "error",
-    "object-shorthand": ["error", "always", { "avoidExplicitReturnArrows": true }],
+    "object-shorthand": [
+      "error",
+      "always",
+      {
+        "avoidExplicitReturnArrows": true
+      }
+    ],
     "radix": "error",
     "spaced-comment": ["warn", "always"]
   }

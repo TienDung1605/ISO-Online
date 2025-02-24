@@ -3,6 +3,14 @@
     <span>Kế hoạch</span>
 
     <div class="d-flex justify-content-end">
+      <p-button
+        label="Gộp kế hoạch"
+        icon="pi pi-file-plus"
+        aria-label="Gross"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-plan-btn"
+        [severity]="'help'"
+        (onClick)="navigateToGrossScript()"
+      />
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
@@ -14,14 +22,12 @@
       </button>
     </div>
   </h2>
-
-  <div *ngIf="plans?.length === 0" class="alert alert-warning" id="no-result">
-    <span>No Plans found</span>
-  </div>
-
+  <!--
+  <input type='radio' name="gender" />
+  <input type='radio' name="gender" /> -->
   <p-table
     #dt2
-    [value]="treeNodes"
+    [value]="planDetailResults"
     dataKey="id"
     [tableStyle]="{ 'min-width': '60rem' }"
     [expandedRowKeys]="expandedRows"
@@ -40,116 +46,65 @@
       'updatedAt',
       'updateBy'
     ]"
+    showGridlines
+    stripedRows
   >
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Mã kế hoạch</th>
+        <th>STT</th>
+        <th></th>
+        <th style="width: 10%">Mã kế hoạch</th>
         <th>Tên kế hoạch</th>
         <th>Đối tượng kế hoạch đánh giá</th>
         <th>Tần suất</th>
         <th>Thời gian bắt đầu</th>
         <th>Thời gian kết thúc</th>
-        <th>Trạng thái kế hoạch</th>
         <th>Người tạo</th>
+        <th>Người cập nhật</th>
         <th>Thời gian tạo</th>
         <th>Thời gian cập nhật</th>
-        <th>Người cập nhật</th>
+        <th>Trạng thái</th>
+        <th>Tuỳ chọn</th>
       </tr>
       <tr>
+        <th></th>
+        <th></th>
         <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th></th>
+        <th>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th></th>
+        <th>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
+          <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
         </th>
-        <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
-        </th>
-        <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
-        </th>
-        <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
-        </th>
-        <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
-        </th>
-        <th>
-          <span class="p-input-icon-left">
-            <!-- <i class="pi pi-search"></i> -->
-            <input pInputText type="text" class="w-full" placeholder="Search" />
-          </span>
-        </th>
+
+        <th></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="caption">
-      <div class="flex">
-        <p-iconField iconPosition="left">
-          <p-inputIcon>
-            <svg width="20" height="20" viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="..." fill="var(--p-primary-color)" />
-              <path d="..." fill="var(--p-text-color)" />
-            </svg>
-          </p-inputIcon>
-          <input type="text" pInputText placeholder="Search" />
-        </p-iconField>
-        <span class="p-input-icon-left ml-auto">
-          <i class="pi pi-search"></i>
-          <input pInputText type="text" placeholder="Search keyword" />
-        </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowNode let-expanded="expanded">
+    <ng-template pTemplate="body" let-rowNode let-expanded="expanded" let-index="rowIndex">
       <tr>
+        <td>{{ index + 1 }}</td>
         <td>
           <p-button
             type="button"
@@ -161,26 +116,71 @@
             [icon]="rowNode.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
           ></p-button>
         </td>
-        <td>{{ rowNode.data.id }}</td>
-        <td>{{ rowNode.data.code }}</td>
-        <td>{{ rowNode.data.name }}</td>
-        <td>{{ rowNode.data.subjectOfAssetmentPlan }}</td>
-        <td>{{ rowNode.data.frequency }}</td>
-        <td>{{ rowNode.data.timeStart | formatMediumDatetime }}</td>
-        <td>{{ rowNode.data.timeEnd | formatMediumDatetime }}</td>
-        <td>{{ rowNode.data.statusPlan }}</td>
-        <td>{{ rowNode.data.createdAt | formatMediumDatetime }}</td>
-        <td>{{ rowNode.data.updatedAt | formatMediumDatetime }}</td>
-        <td>{{ rowNode.data.updateBy }}</td>
+        <td>{{ rowNode.id }}</td>
+        <td>{{ rowNode.code }}</td>
+        <td>{{ rowNode.name }}</td>
+        <td>{{ rowNode.subjectOfAssetmentPlan }}</td>
+        <td>{{ rowNode.frequency }}</td>
+        <td>{{ rowNode.timeStart }}</td>
+        <td>{{ rowNode.timeEnd }}</td>
+        <td>{{ rowNode.status }}</td>
+        <td>{{ rowNode.createdAt }}</td>
+        <td>{{ rowNode.updatedAt }}</td>
+        <td>{{ rowNode.updateBy }}</td>
+        <td>
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-copy"
+              aria-label="Copy"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'info'"
+            />
+            <p-button
+              icon="pi pi-pencil"
+              aria-label="Edit"
+              [rounded]="true"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'warning'"
+              [routerLink]="['/plan', rowNode.id, 'edit']"
+            />
+            <p-button
+              icon="pi pi-file-plus"
+              aria-label="Gross"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'help'"
+              (onClick)="navigateToInspectionReport(rowNode.id)"
+            />
+            <p-button
+              icon="pi pi-check"
+              aria-label="Check"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'success'"
+              (onClick)="openModalCriteria()"
+            />
+            <p-button
+              icon="pi pi-file-excel"
+              aria-label="Excel"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'success'"
+              (onClick)="openModalInspectionData()"
+            />
+            <p-button
+              icon="pi pi-trash"
+              aria-label="Delete"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'danger'"
+            />
+          </div>
+        </td>
       </tr>
     </ng-template>
     <!-- table con -->
     <ng-template pTemplate="rowexpansion" let-rowNode>
       <tr>
         <td colspan="11">
-          <div class="p-4">
+          <div>
             <h5>Table con</h5>
-            <p-table [value]="rowNode.children" dataKey="id">
+            <p-table [value]="rowNode.planDetail" dataKey="id">
               <ng-template pTemplate="header">
                 <tr>
                   <th>Mã BBKT</th>
@@ -194,21 +194,99 @@
                   <th>Người thực hiện kiểm tra</th>
                   <th>Tần suất kiểm tra</th>
                   <th>Trạng thái</th>
+                  <th>Tuỳ chọn</th>
+                </tr>
+                <tr>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="country.name" placeholder="Search" ariaLabel="Filter Country"></p-columnFilter>
+                  </th>
+                  <th></th>
                 </tr>
               </ng-template>
-              <ng-template pTemplate="body" let-rowNode let-plan="rowData">
+              <ng-template pTemplate="body" let-detail>
                 <tr>
-                  <td>{{ rowNode.data.statusPlan }}</td>
-                  <td>{{ rowNode.data.testObject }}</td>
-                  <td>{{ rowNode.data.reportTypeId }}</td>
-                  <td>{{ rowNode.data.reportTypeName }}</td>
-                  <td>{{ rowNode.data.numberOfCheck }}</td>
-                  <td>{{ rowNode.data.implementer }}</td>
-                  <td>{{ rowNode.data.paticipant }}</td>
-                  <td>{{ rowNode.data.checkerGroup }}</td>
-                  <td>{{ rowNode.data.checkerName }}</td>
-                  <td>{{ rowNode.data.checkerGroupId }}</td>
-                  <td>{{ rowNode.data.checkerId }}</td>
+                  <td>{{ detail.code }}</td>
+                  <td>{{ detail.name }}</td>
+                  <td>{{ detail.testOfObject }}</td>
+                  <td>{{ detail.reportType }}</td>
+                  <td>{{ detail.numberOfCheck }}</td>
+                  <td>{{ detail.implementer }}</td>
+                  <td>{{ detail.paticipant }}</td>
+                  <td>{{ detail.checkerGroup }}</td>
+                  <td>{{ detail.checker }}</td>
+                  <td>{{ detail.frequency }}</td>
+                  <td>{{ detail.status }}</td>
+                  <td>
+                    <div class="action-buttons">
+                      <p-button
+                        icon="pi pi-check"
+                        aria-label="Check"
+                        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                        [severity]="'success'"
+                      />
+                      <p-button
+                        icon="pi pi-eye"
+                        aria-label="View"
+                        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                        [severity]="'info'"
+                      />
+                      <p-button
+                        icon="pi pi-wrench"
+                        aria-label="Report"
+                        [rounded]="true"
+                        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                        [severity]="'danger'"
+                      />
+                      <p-button
+                        icon="pi pi-exclamation-triangle"
+                        aria-label="ReportAgain"
+                        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                        [severity]="'warning'"
+                      />
+                      <p-button
+                        icon="pi pi-file-excel"
+                        aria-label="Excel"
+                        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                        [severity]="'success'"
+                      />
+                      <p-button
+                        icon="pi pi-trash"
+                        aria-label="Delete"
+                        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                        [severity]="'danger'"
+                      />
+                    </div>
+                  </td>
                 </tr>
               </ng-template>
             </p-table>
@@ -218,6 +296,487 @@
     </ng-template>
   </p-table>
 
+  <ng-template #userTesting let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Phân quyền người thực hiện kiểm tra</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <label for="">Nhóm người dùng</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Người dùng</label>
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close('Save click')">Lưu</button>
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Hủy</button>
+    </div>
+  </ng-template>
+
+  <ng-template #gross let-modal class="gross-modal">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-gross-title">Gộp BBKT</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <label for="">Đối tượng kiểm tra</label>
+          <input type="text" name="" id="" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Quy đổi</label>
+          <input type="text" name="" id="" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Mẫu BBKT</label>
+          <input type="text" name="" id="" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Mã kế hoạch</label>
+          <input type="text" name="" id="" class="form-control" />
+        </div>
+        <button type="button" class="btn btn-primary" (click)="modal.close('Save click')">Apply</button>
+      </div>
+
+      <p-table>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>STT</th>
+            <th>Mã kế hoạch</th>
+            <th>Tên kế hoạch kiểm tra</th>
+            <th>Đối tượng kế hoạch đánh giá</th>
+            <th>Tần suất kế hoạch</th>
+            <th>Mã BBKT</th>
+            <th>Tên mẫu BBKT</th>
+            <th>Đối tượng KT</th>
+            <th>Loại BBKT</th>
+            <th>Nhóm BBKT</th>
+            <th>Trạng thái</th>
+            <th>Gộp</th>
+            <th>Ngày kiểm tra</th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode>
+          <tr>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+            <td><input type="text" name="" id="" class="form-control" /></td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class="action-buttons">
+        <p-button
+          label="Huỷ"
+          icon="pi pi-ban"
+          aria-label="Cancel"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+          [severity]="'danger'"
+        />
+        <p-button
+          label="Lưu"
+          icon="pi pi-save"
+          aria-label="Save"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+          [severity]="'info'"
+        />
+        <p-button
+          label="Apply"
+          icon="pi pi-check"
+          aria-label="Apply"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+          [severity]="'success'"
+        />
+        <p-button
+          (onClick)="navigateToInspectionReport(modal)"
+          label="Check"
+          icon="pi pi-pencil"
+          aria-label="Check"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+          [severity]="'warning'"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #criteria let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-criteria-title">Nội dung kiểm tra</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <p-table [value]="planData">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>STT</th>
+          <th>Nhóm tiêu chí</th>
+          <th>Tên tiêu chí</th>
+          <th>Trạng thái</th>
+          <th>Tuỳ chọn</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-criteria let-index="rowIndex">
+        <tr>
+          <td>{{ index + 1 }}</td>
+          <td>{{ criteria.code }}</td>
+          <td>{{ criteria.name }}</td>
+          <td>{{ criteria.status }}</td>
+          <td>
+            <p-button
+              icon="pi pi-check-square"
+              aria-label="Induce"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'success'"
+              (onClick)="openModalEvaluation()"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+
+  <ng-template #evaluationResult let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-evaluation-title">Kết luận tiêu chí</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <label for="">Nhóm tiêu chí</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Tên tiêu chí</label>
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+      <p-table>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>STT</th>
+            <th>Mã BBKT</th>
+            <th>Đối tượng kiểm tra</th>
+            <th>Tần suất</th>
+            <th>Đánh giá</th>
+            <th>Nội dung đánh giá</th>
+            <th>Hình ảnh đánh giá</th>
+            <th>Trạng thái</th>
+          </tr>
+          <tr>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class="action-buttons">
+        <p-button
+          label="Huỷ"
+          icon="pi pi-ban"
+          aria-label="Cancel"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+          [severity]="'danger'"
+        />
+        <p-button
+          label="Lưu"
+          icon="pi pi-save"
+          aria-label="Save"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+          [severity]="'info'"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #inspectionData let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="moda-inspection-data-title">Dữ liệu kiểm tra</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <label for="">Mã kế hoạch</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Tên kế hoạch</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Đối tượng kế hoạch đánh giá</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Tần suất</label>
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+      <p-table>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>STT</th>
+            <th>Mã BBKT</th>
+            <th>Tên BBKT</th>
+            <th>Đối tượng kiểm tra</th>
+            <th>Tổng đợt kiểm tra</th>
+            <th>Thang điểm</th>
+            <th>Tổng điểm quy lỗi</th>
+            <th>Tổng điểm BBKT</th>
+            <th>Điểm trung bình</th>
+            <th>Tổng lỗi</th>
+            <th>Tuỳ chọn</th>
+          </tr>
+          <tr>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body">
+          <tr>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <p-button
+        label="Xuất dữ liệu"
+        icon="pi pi-file-export"
+        aria-label="File"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+        [severity]="'success'"
+        (onClick)="openModalDeltailInspectionData()"
+      />
+    </div>
+  </ng-template>
+
+  <ng-template #detailInspectionData let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-detail-inspection-data-title">Dữ liệu kế hoạch kiểm tra chi tiết</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <label for="">Mã kế hoạch</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Tên kế hoạch</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Đối tượng kế hoạch đánh giá</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Tần suất</label>
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+      <p-table>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>STT</th>
+            <th>Điểm theo đợt kiểm tra</th>
+            <th>Tên BBKT</th>
+            <th>Ngày kiểm tra</th>
+            <th>NC</th>
+            <th>LY</th>
+            <th>Không đạt</th>
+            <th>Tuỳ chọn</th>
+          </tr>
+          <tr>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body">
+          <tr>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td><input type="text" class="form-control" /></td>
+            <td>
+              <p-button
+                icon="pi pi-file-plus"
+                aria-label="Gross"
+                styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                [severity]="'help'"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <p-button
+        icon="pi pi-file-plus"
+        aria-label="Gross"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+        [severity]="'help'"
+        (onClick)="openModalCriteriaConclusion()"
+      />
+    </div>
+  </ng-template>
+
+  <ng-template #criteriaConclusion let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-criteria-conclusion-title">Thông tin tiêu chí kết luận</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <label for="">Ngày kiểm tra</label>
+          <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="">Tên BBKT</label>
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+      <p-table>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>STT</th>
+            <th>Nhóm tiêu chí</th>
+            <th>Tên tiêu chí</th>
+            <th>Kết luận</th>
+            <th>Nội dung đánh giá</th>
+            <th>Hình ảnh đánh giá</th>
+            <th>Trạng thái</th>
+          </tr>
+          <tr>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+            <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </ng-template>
   <!-- <p-treeTable [value]="treeNodes" [scrollable]="true" showGridlines [tableStyle]="{'min-width':'50rem'}">
   <ng-template pTemplate="header">
     <tr>

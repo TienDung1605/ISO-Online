@@ -33,10 +33,15 @@ export class PlanService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/plans');
-
+  protected planDetailUrl = this.applicationConfigService.getEndpointFor('api/plans/plan-detail');
   create(plan: NewPlan): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(plan);
     return this.http.post<RestPlan>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));
+  }
+
+  // custom API plan-detail
+  getPlanDetail(): Observable<any> {
+    return this.http.get<any>(this.planDetailUrl);
   }
 
   update(plan: IPlan): Observable<EntityResponseType> {

@@ -1,7 +1,7 @@
-import { Component, NgZone, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, inject, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'primeng/api'; // Import TreeNode
 
 import SharedModule from 'app/shared/shared.module';
@@ -16,7 +16,6 @@ import { TreeTableModule } from 'primeng/treetable';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-// import { InputIcon } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 @Component({
@@ -37,7 +36,7 @@ import { InputIconModule } from 'primeng/inputicon';
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    // InputIcon
+    NgbModule,
   ],
 })
 export class PlanComponent implements OnInit {
@@ -50,6 +49,15 @@ export class PlanComponent implements OnInit {
   files?: TreeNode[];
   expandedRows: { [key: string]: boolean } = {};
   @ViewChild('dt2') dt2!: TreeNode;
+  planDetailResults: any[] = [];
+  // userTesting: any;
+  @ViewChild('userTesting') userTesting!: TemplateRef<any>;
+  @ViewChild('gross') gross!: TemplateRef<any>;
+  @ViewChild('criteria') criteria!: TemplateRef<any>;
+  @ViewChild('evaluationResult') evaluationResult!: TemplateRef<any>;
+  @ViewChild('inspectionData') inspectionData!: TemplateRef<any>;
+  @ViewChild('detailInspectionData') detailInspectionData!: TemplateRef<any>;
+  @ViewChild('criteriaConclusion') criteriaConclusion!: TemplateRef<any>;
   planData = [
     {
       id: '1000',
@@ -123,7 +131,11 @@ export class PlanComponent implements OnInit {
         }),
       )
       .subscribe();
-
+    this.planService.getPlanDetail().subscribe(res => {
+      this.planDetailResults = res;
+      this.loadTreeNodes();
+      console.log('db trả về', res);
+    });
     // this.loadTreeNodes();
     // console.log('plans', this.plans);
 
@@ -179,6 +191,139 @@ export class PlanComponent implements OnInit {
     });
   }
 
+  // Phân quyền thực hiện kiểm tra
+  openModal(): void {
+    this.modalService
+      .open(this.userTesting, {
+        ariaLabelledBy: 'modal-basic-title',
+        size: 'lg',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
+  // Gộp BBKT
+  openModalGross(): void {
+    this.modalService
+      .open(this.gross, {
+        ariaLabelledBy: 'modal-gross-title',
+        // size: 'xl',
+        // fullscreen: true,
+        backdrop: 'static',
+        windowClass: 'gross-modal',
+        centered: true,
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
+  navigateToInspectionReport(modal: any): void {
+    modal.dismiss();
+    this.router.navigate(['inspection-report']);
+  }
+
+  navigateToGrossScript(): void {
+    this.router.navigate(['gross-script']);
+  }
+
+  openModalCriteria(): void {
+    this.modalService
+      .open(this.criteria, {
+        ariaLabelledBy: 'modal-criteria-title',
+        size: 'xl',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
+  openModalEvaluation(): void {
+    this.modalService
+      .open(this.evaluationResult, {
+        ariaLabelledBy: 'modal-inspection-data-title',
+        size: 'xl',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
+  openModalInspectionData(): void {
+    this.modalService
+      .open(this.inspectionData, {
+        ariaLabelledBy: 'modal-inspection-data-itle',
+        size: 'xl',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
+  openModalDeltailInspectionData(): void {
+    this.modalService
+      .open(this.detailInspectionData, {
+        ariaLabelledBy: 'modal-detail-inspection-data-title',
+        size: 'xl',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
+  openModalCriteriaConclusion(): void {
+    this.modalService
+      .open(this.criteriaConclusion, {
+        ariaDescribedBy: 'modal-criteria-conclusion-title',
+        size: 'xl',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
   onRowExpand(event: any): void {
     const rowData = event.data;
     this.expandedRows[rowData.id] = true;
@@ -195,8 +340,8 @@ export class PlanComponent implements OnInit {
   }
 
   loadTreeNodes(): void {
-    if (this.plans) {
-      this.treeNodes = this.plans.map(plan => ({
+    if (this.planDetailResults) {
+      this.treeNodes = this.planDetailResults.map(plan => ({
         data: {
           id: plan.id,
           code: plan.code,

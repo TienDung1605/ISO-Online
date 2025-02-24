@@ -21,165 +21,264 @@
             </span>
           </a>
         </li>
+        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a
+            class="dropdown-item"
+            routerLink="/plan"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="collapseNavbar()"
+          >
+            <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+            <span class="dropdown-item-span">Kế hoạch</span>
+          </a>
+        </li>
         <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
         @if (account() !== null) {
-        <li ngbDropdown class="nav-item dropdown pointer" display="dynamic" routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }">
-          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu"
-            data-cy="entity">
-            <span>
-              <fa-icon icon="th-list"></fa-icon>
-              <span>Quản lý</span>
-            </span>
-          </a>
-          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
-            <li>
-              <a class="dropdown-item" routerLink="/convert" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Quy đổi</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/evaluator" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Người đánh giá</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/frequency" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Tần suất</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/title" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Tiêu đề</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/parts" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Bộ phận</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/check-target" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Đối tượng đánh
-                  giá</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/checker-group" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Nhóm đối tượng đánh
-                  giá</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/check-level" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Cấp độ đánh giá</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/criteria" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Tiêu chí</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/criteria-group" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Nhóm tiêu chí</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/report-type" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Loại biên bản kiểm
-                  tra</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/sample-report" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Mẫu biên bản kiểm
-                  tra</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/inspection-report-titles" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Tiêu đề của
-                  mẫu BBKT</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/sample-report-criteria" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Tiêu chí mẫu
-                  BBKT</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/plan" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Kế hoạch</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/report" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Báo cáo</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/report-criteria" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Tiêu chí báo cáo</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/report-title" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Tiêu đề báo cáo</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/script" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span class="dropdown-item-span">Kịch bản</span>
-              </a>
-            </li>
-            <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
-          </ul>
-        </li>
+          <li
+            ngbDropdown
+            class="nav-item dropdown pointer"
+            display="dynamic"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
+              <span>
+                <fa-icon icon="th-list"></fa-icon>
+                <span>Quản lý</span>
+              </span>
+            </a>
+            <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/convert"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Quy đổi</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/evaluator"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Người đánh giá</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/frequency"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Tần suất</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/title"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Tiêu đề</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/parts"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Bộ phận</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/check-target"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Đối tượng đánh giá</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/checker-group"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Nhóm đối tượng đánh giá</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/check-level"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Cấp độ đánh giá</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/criteria"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Tiêu chí</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/criteria-group"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Nhóm tiêu chí</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/report-type"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Loại biên bản kiểm tra</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/sample-report"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Mẫu biên bản kiểm tra</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/inspection-report-titles"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Tiêu đề của mẫu BBKT</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/sample-report-criteria"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Tiêu chí mẫu BBKT</span>
+                </a>
+              </li>
+              <li></li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/report"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Báo cáo</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/report-criteria"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Tiêu chí báo cáo</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/report-title"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Tiêu đề báo cáo</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/script"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="collapseNavbar()"
+                >
+                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                  <span class="dropdown-item-span">Kịch bản</span>
+                </a>
+              </li>
+              <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
+            </ul>
+          </li>
         }
-        <li *jhiHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer" display="dynamic"
-          routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu"
-            data-cy="adminMenu">
+        <li
+          *jhiHasAnyAuthority="'ROLE_ADMIN'"
+          ngbDropdown
+          class="nav-item dropdown pointer"
+          display="dynamic"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu" data-cy="adminMenu">
             <span>
               <fa-icon icon="users-cog"></fa-icon>
               <span jhiTranslate="global.menu.admin.main">Quản trị</span>
@@ -200,8 +299,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/admin/configuration" routerLinkActive="active"
-                (click)="collapseNavbar()">
+              <a class="dropdown-item" routerLink="/admin/configuration" routerLinkActive="active" (click)="collapseNavbar()">
                 <fa-icon icon="cogs" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="global.menu.admin.configuration">Cấu hình</span>
               </a>
@@ -213,63 +311,72 @@
               </a>
             </li>
             @if (openAPIEnabled) {
-            <li>
-              <a class="dropdown-item" routerLink="/admin/docs" routerLinkActive="active" (click)="collapseNavbar()">
-                <fa-icon icon="book" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.admin.apidocs">API</span>
-              </a>
-            </li>
+              <li>
+                <a class="dropdown-item" routerLink="/admin/docs" routerLinkActive="active" (click)="collapseNavbar()">
+                  <fa-icon icon="book" [fixedWidth]="true"></fa-icon>
+                  <span jhiTranslate="global.menu.admin.apidocs">API</span>
+                </a>
+              </li>
             }
           </ul>
         </li>
         @if (languages && languages.length > 1) {
-        <li ngbDropdown class="nav-item dropdown pointer" display="dynamic">
-          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown">
-            <span>
-              <fa-icon icon="flag"></fa-icon>
-              <span jhiTranslate="global.menu.language">Ngôn ngữ</span>
-            </span>
-          </a>
-          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="languagesnavBarDropdown">
-            @for (language of languages; track $index) {
-            <li>
-              <a class="dropdown-item" [jhiActiveMenu]="language" href="javascript:void(0);"
-                (click)="changeLanguage(language); collapseNavbar()">{{ language | findLanguageFromKey }}</a>
-            </li>
-            }
-          </ul>
-        </li>
+          <li ngbDropdown class="nav-item dropdown pointer" display="dynamic">
+            <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown">
+              <span>
+                <fa-icon icon="flag"></fa-icon>
+                <span jhiTranslate="global.menu.language">Ngôn ngữ</span>
+              </span>
+            </a>
+            <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="languagesnavBarDropdown">
+              @for (language of languages; track $index) {
+                <li>
+                  <a
+                    class="dropdown-item"
+                    [jhiActiveMenu]="language"
+                    href="javascript:void(0);"
+                    (click)="changeLanguage(language); collapseNavbar()"
+                    >{{ language | findLanguageFromKey }}</a
+                  >
+                </li>
+              }
+            </ul>
+          </li>
         }
-        <li ngbDropdown class="nav-item dropdown pointer" display="dynamic" routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }">
-          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu"
-            data-cy="accountMenu">
+        <li
+          ngbDropdown
+          class="nav-item dropdown pointer"
+          display="dynamic"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu" data-cy="accountMenu">
             @if (!account()?.imageUrl) {
-            <span>
-              <fa-icon icon="user"></fa-icon>
-              <span jhiTranslate="global.menu.account.main">Tài khoản</span>
-            </span>
+              <span>
+                <fa-icon icon="user"></fa-icon>
+                <span jhiTranslate="global.menu.account.main">Tài khoản</span>
+              </span>
             } @else {
-            <span>
-              <img [src]="account()!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />
-            </span>
+              <span>
+                <img [src]="account()!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />
+              </span>
             }
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
             @if (account() !== null) {
-            <li>
-              <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
-                <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.account.logout">Đăng xuất</span>
-              </a>
-            </li>
+              <li>
+                <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
+                  <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>
+                  <span jhiTranslate="global.menu.account.logout">Đăng xuất</span>
+                </a>
+              </li>
             } @else {
-            <li>
-              <a class="dropdown-item" (click)="login()" id="login" data-cy="login">
-                <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.account.login">Đăng nhập</span>
-              </a>
-            </li>
+              <li>
+                <a class="dropdown-item" (click)="login()" id="login" data-cy="login">
+                  <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+                  <span jhiTranslate="global.menu.account.login">Đăng nhập</span>
+                </a>
+              </li>
             }
           </ul>
         </li>

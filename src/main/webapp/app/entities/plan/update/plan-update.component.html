@@ -1,72 +1,68 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-plan-heading" data-cy="PlanCreateUpdateHeading" jhiTranslate="isoApp.plan.home.createOrEditLabel">
-        Thêm mới hoặc cập nhật Plan
+<div>
+  <div class="col-8" style="width: 100%">
+    <form name="editForm" role="form" novalidate [formGroup]="editForm">
+      <h2 id="jhi-plan-heading" data-cy="PlanCreateUpdateHeading">
+        {{ isEditMode ? 'Cập nhật Kế hoạch đánh giá' : 'Thêm mới Kế hoạch đánh giá' }}
       </h2>
+      @if (isEditMode) {
+        <div class="col-container">
+          <label class="col-m4-25 col-container-child" for="field_id" style="width: 100px">ID</label>
+          <input type="number" class="inp-style" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+      }
 
-      <div>
-        <jhi-alert-error></jhi-alert-error>
-
-        @if (editForm.controls.id.value !== null) {
-          <div class="mb-3">
-            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+      <div style="display: flex; flex-direction: column">
+        <div class="col-container">
+          <div class="col-m4-25 col-container-child">
+            <label for="field_code">Mã kế hoạch</label>
+            <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
           </div>
-        }
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.code" for="field_code">Code</label>
-          <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
+          <div class="col-m4-25 col-container-child">
+            <label for="field_name">Tên kế hoạch</label>
+            <input type="text" class="inp-style" name="name" id="field_name" data-cy="name" formControlName="name" />
+          </div>
+
+          <div class="col-m4-25 col-container-child">
+            <label for="field_subjectOfAssetmentPlan">Đối tượng kế hoạch đánh giá</label>
+            <input
+              type="text"
+              class="inp-style"
+              name="subjectOfAssetmentPlan"
+              id="field_subjectOfAssetmentPlan"
+              data-cy="subjectOfAssetmentPlan"
+              formControlName="subjectOfAssetmentPlan"
+            />
+          </div>
         </div>
+        <div class="col-container">
+          <div class="col-m4-25 col-container-child">
+            <label for="field_frequency">Tần suất</label>
+            <input type="text" class="inp-style" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+          </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.name" for="field_name">Name</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
-        </div>
+          <div class="col-m4-25 col-container-child">
+            <label for="field_timeStart">Thời gian bắt đầu</label>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.subjectOfAssetmentPlan" for="field_subjectOfAssetmentPlan"
-            >Subject Of Assetment Plan</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            name="subjectOfAssetmentPlan"
-            id="field_subjectOfAssetmentPlan"
-            data-cy="subjectOfAssetmentPlan"
-            formControlName="subjectOfAssetmentPlan"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.frequency" for="field_frequency">Frequency</label>
-          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.timeStart" for="field_timeStart">Time Start</label>
-          <div class="d-flex">
             <input
               id="field_timeStart"
               data-cy="timeStart"
               type="datetime-local"
-              class="form-control"
+              class="inp-style"
               name="timeStart"
               formControlName="timeStart"
               placeholder="YYYY-MM-DD HH:mm"
             />
           </div>
-        </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.timeEnd" for="field_timeEnd">Time End</label>
-          <div class="d-flex">
+          <div class="col-m4-25 col-container-child">
+            <label for="field_timeEnd">Thời gian kết thúc</label>
+
             <input
               id="field_timeEnd"
               data-cy="timeEnd"
               type="datetime-local"
-              class="form-control"
+              class="inp-style"
               name="timeEnd"
               formControlName="timeEnd"
               placeholder="YYYY-MM-DD HH:mm"
@@ -74,203 +70,326 @@
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.statusPlan" for="field_statusPlan">Status Plan</label>
-          <input
-            type="text"
-            class="form-control"
-            name="statusPlan"
-            id="field_statusPlan"
-            data-cy="statusPlan"
-            formControlName="statusPlan"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.testObject" for="field_testObject">Test Object</label>
-          <input
-            type="text"
-            class="form-control"
-            name="testObject"
-            id="field_testObject"
-            data-cy="testObject"
-            formControlName="testObject"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.reportTypeId" for="field_reportTypeId">Report Type Id</label>
-          <input
-            type="number"
-            class="form-control"
-            name="reportTypeId"
-            id="field_reportTypeId"
-            data-cy="reportTypeId"
-            formControlName="reportTypeId"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.reportTypeName" for="field_reportTypeName">Report Type Name</label>
-          <input
-            type="text"
-            class="form-control"
-            name="reportTypeName"
-            id="field_reportTypeName"
-            data-cy="reportTypeName"
-            formControlName="reportTypeName"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.numberOfCheck" for="field_numberOfCheck">Number Of Check</label>
-          <input
-            type="text"
-            class="form-control"
-            name="numberOfCheck"
-            id="field_numberOfCheck"
-            data-cy="numberOfCheck"
-            formControlName="numberOfCheck"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.implementer" for="field_implementer">Implementer</label>
-          <input
-            type="text"
-            class="form-control"
-            name="implementer"
-            id="field_implementer"
-            data-cy="implementer"
-            formControlName="implementer"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.paticipant" for="field_paticipant">Paticipant</label>
-          <input
-            type="text"
-            class="form-control"
-            name="paticipant"
-            id="field_paticipant"
-            data-cy="paticipant"
-            formControlName="paticipant"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.checkerGroup" for="field_checkerGroup">Checker Group</label>
-          <input
-            type="text"
-            class="form-control"
-            name="checkerGroup"
-            id="field_checkerGroup"
-            data-cy="checkerGroup"
-            formControlName="checkerGroup"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.checkerName" for="field_checkerName">Checker Name</label>
-          <input
-            type="text"
-            class="form-control"
-            name="checkerName"
-            id="field_checkerName"
-            data-cy="checkerName"
-            formControlName="checkerName"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.checkerGroupId" for="field_checkerGroupId">Checker Group Id</label>
-          <input
-            type="number"
-            class="form-control"
-            name="checkerGroupId"
-            id="field_checkerGroupId"
-            data-cy="checkerGroupId"
-            formControlName="checkerGroupId"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.checkerId" for="field_checkerId">Checker Id</label>
-          <input type="number" class="form-control" name="checkerId" id="field_checkerId" data-cy="checkerId" formControlName="checkerId" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.gross" for="field_gross">Gross</label>
-          <input type="text" class="form-control" name="gross" id="field_gross" data-cy="gross" formControlName="gross" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.timeCheck" for="field_timeCheck">Time Check</label>
-          <input type="text" class="form-control" name="timeCheck" id="field_timeCheck" data-cy="timeCheck" formControlName="timeCheck" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.nameResult" for="field_nameResult">Name Result</label>
-          <input
-            type="text"
-            class="form-control"
-            name="nameResult"
-            id="field_nameResult"
-            data-cy="nameResult"
-            formControlName="nameResult"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.scriptId" for="field_scriptId">Script Id</label>
-          <input type="number" class="form-control" name="scriptId" id="field_scriptId" data-cy="scriptId" formControlName="scriptId" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.createBy" for="field_createBy">Create By</label>
-          <input type="text" class="form-control" name="createBy" id="field_createBy" data-cy="createBy" formControlName="createBy" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.status" for="field_status">Status</label>
-          <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.createdAt" for="field_createdAt">Created At</label>
-          <div class="d-flex">
+        <!-- <div class="mb-3">
+            <label class="form-label" statusPlan" for="field_statusPlan">Status Plan</label>
             <input
-              id="field_createdAt"
-              data-cy="createdAt"
-              type="datetime-local"
+              type="text"
               class="form-control"
-              name="createdAt"
-              formControlName="createdAt"
-              placeholder="YYYY-MM-DD HH:mm"
+              name="statusPlan"
+              id="field_statusPlan"
+              data-cy="statusPlan"
+              formControlName="statusPlan"
             />
           </div>
-        </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.updatedAt" for="field_updatedAt">Updated At</label>
-          <div class="d-flex">
+          <div class="mb-3">
+            <label class="form-label" testObject" for="field_testObject">Test Object</label>
             <input
-              id="field_updatedAt"
-              data-cy="updatedAt"
-              type="datetime-local"
+              type="text"
               class="form-control"
-              name="updatedAt"
-              formControlName="updatedAt"
-              placeholder="YYYY-MM-DD HH:mm"
+              name="testObject"
+              id="field_testObject"
+              data-cy="testObject"
+              formControlName="testObject"
             />
           </div>
-        </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.plan.updateBy" for="field_updateBy">Update By</label>
-          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
-        </div>
+          <div class="mb-3">
+            <label class="form-label" reportTypeId" for="field_reportTypeId">Report Type Id</label>
+            <input
+              type="number"
+              class="form-control"
+              name="reportTypeId"
+              id="field_reportTypeId"
+              data-cy="reportTypeId"
+              formControlName="reportTypeId"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" reportTypeName" for="field_reportTypeName">Report Type Name</label>
+            <input
+              type="text"
+              class="form-control"
+              name="reportTypeName"
+              id="field_reportTypeName"
+              data-cy="reportTypeName"
+              formControlName="reportTypeName"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" numberOfCheck" for="field_numberOfCheck">Number Of Check</label>
+            <input
+              type="text"
+              class="form-control"
+              name="numberOfCheck"
+              id="field_numberOfCheck"
+              data-cy="numberOfCheck"
+              formControlName="numberOfCheck"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" implementer" for="field_implementer">Implementer</label>
+            <input
+              type="text"
+              class="form-control"
+              name="implementer"
+              id="field_implementer"
+              data-cy="implementer"
+              formControlName="implementer"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" paticipant" for="field_paticipant">Paticipant</label>
+            <input
+              type="text"
+              class="form-control"
+              name="paticipant"
+              id="field_paticipant"
+              data-cy="paticipant"
+              formControlName="paticipant"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" checkerGroup" for="field_checkerGroup">Checker Group</label>
+            <input
+              type="text"
+              class="form-control"
+              name="checkerGroup"
+              id="field_checkerGroup"
+              data-cy="checkerGroup"
+              formControlName="checkerGroup"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" checkerName" for="field_checkerName">Checker Name</label>
+            <input
+              type="text"
+              class="form-control"
+              name="checkerName"
+              id="field_checkerName"
+              data-cy="checkerName"
+              formControlName="checkerName"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" checkerGroupId" for="field_checkerGroupId">Checker Group Id</label>
+            <input
+              type="number"
+              class="form-control"
+              name="checkerGroupId"
+              id="field_checkerGroupId"
+              data-cy="checkerGroupId"
+              formControlName="checkerGroupId"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" checkerId" for="field_checkerId">Checker Id</label>
+            <input type="number" class="form-control" name="checkerId" id="field_checkerId" data-cy="checkerId" formControlName="checkerId" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" gross" for="field_gross">Gross</label>
+            <input type="text" class="form-control" name="gross" id="field_gross" data-cy="gross" formControlName="gross" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" timeCheck" for="field_timeCheck">Time Check</label>
+            <input type="text" class="form-control" name="timeCheck" id="field_timeCheck" data-cy="timeCheck" formControlName="timeCheck" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" nameResult" for="field_nameResult">Name Result</label>
+            <input
+              type="text"
+              class="form-control"
+              name="nameResult"
+              id="field_nameResult"
+              data-cy="nameResult"
+              formControlName="nameResult"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" scriptId" for="field_scriptId">Script Id</label>
+            <input type="number" class="form-control" name="scriptId" id="field_scriptId" data-cy="scriptId" formControlName="scriptId" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" createBy" for="field_createBy">Create By</label>
+            <input type="text" class="form-control" name="createBy" id="field_createBy" data-cy="createBy" formControlName="createBy" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" status" for="field_status">Status</label>
+            <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" createdAt" for="field_createdAt">Created At</label>
+            <div class="d-flex">
+              <input
+                id="field_createdAt"
+                data-cy="createdAt"
+                type="datetime-local"
+                class="form-control"
+                name="createdAt"
+                formControlName="createdAt"
+                placeholder="YYYY-MM-DD HH:mm"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" updatedAt" for="field_updatedAt">Updated At</label>
+            <div class="d-flex">
+              <input
+                id="field_updatedAt"
+                data-cy="updatedAt"
+                type="datetime-local"
+                class="form-control"
+                name="updatedAt"
+                formControlName="updatedAt"
+                placeholder="YYYY-MM-DD HH:mm"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" updateBy" for="field_updateBy">Update By</label>
+            <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
+          </div> -->
       </div>
+      <div class="d-flex justify-content-end">
+        <button
+          id="jh-create-entity"
+          data-cy="entityCreateButton"
+          class="btn btn-primary jh-create-entity create-plan"
+          (click)="addNewRow()"
+        >
+          <fa-icon icon="plus"></fa-icon>
+          <span>Thêm mới</span>
+        </button>
+      </div>
+      <p-table
+        [value]="planDetailResults"
+        [paginator]="true"
+        [rows]="10"
+        [responsive]="true"
+        styleClass="p-datatable-gridlines"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [autoLayout]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>STT</th>
+            <th>Cấp độ</th>
+            <th>Đối tượng kiểm tra</th>
+            <th>Loại BBKT</th>
+            <th>Mẫu BBKT</th>
+            <th>Mã BBKT</th>
+            <th>Nhóm BBKT</th>
+            <th>Tần suất kiểm tra</th>
+            <th>Thang điểm</th>
+            <th>Tuỳ chọn</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-index="rowIndex">
+          <tr>
+            <td>
+              {{ index + 1 }}
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.checkerName }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.code }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.createBy }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.frequency }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.implementer }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.name }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.nameResult }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select name="" id="">
+                <option *ngFor="let data of planDetailResults">
+                  {{ data.numberOfCheck }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <p-button
+                  icon="pi pi-pencil"
+                  aria-label="Edit"
+                  [rounded]="true"
+                  styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                  [severity]="'warning'"
+                />
+                <p-button
+                  icon="pi pi-user-edit"
+                  aria-label="Gross"
+                  styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                  [severity]="'help'"
+                  (onClick)="openModalUser()"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  aria-label="Delete"
+                  styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                  [severity]="'danger'"
+                  (onClick)="deleteRow(index)"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
@@ -290,3 +409,26 @@
     </form>
   </div>
 </div>
+
+<ng-template #userTesting let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Phân quyền người thực hiện kiểm tra</h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <label for="">Nhóm người dùng</label>
+        <input type="text" class="form-control" />
+      </div>
+      <div class="col-md-6">
+        <label for="">Người dùng</label>
+        <input type="text" class="form-control" />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close('Save click')">Lưu</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Hủy</button>
+  </div>
+</ng-template>
