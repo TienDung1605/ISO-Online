@@ -35,13 +35,15 @@
       "Report",
       "ReportCriteria",
       "ReportTitle",
-      "Script"
+      "Script",
+      "Source",
+      "Fields"
     ],
     "feignClient": null,
     "gradleEnterpriseHost": null,
     "jhipsterVersion": "8.2.1",
     "languages": ["vi"],
-    "lastLiquibaseTimestamp": 1737691390000,
+    "lastLiquibaseTimestamp": 1740476746000,
     "messageBroker": false,
     "microfrontend": null,
     "microfrontends": [],

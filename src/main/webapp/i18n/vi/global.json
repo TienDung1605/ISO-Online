@@ -26,7 +26,9 @@
         "report": "Report",
         "reportCriteria": "Report Criteria",
         "reportTitle": "Report Title",
-        "script": "Script"
+        "script": "Script",
+        "source": "Source",
+        "fields": "Fields"
       },
       "account": {
         "main": "Tài khoản",
