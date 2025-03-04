@@ -34,6 +34,21 @@ export class CriteriaComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
+  criterias: ICriteria[] = [];
+  filteredCriteria: ICriteria[] = [];
+
+  searchTerms: { [key: string]: string } = {
+    name: '',
+    criterialGroupId: '',
+    status: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+  };
+
+  page: number = 1;
+  pageSize: number = 10;
+  totalItems: number = 0;
 
   public router = inject(Router);
   protected criteriaService = inject(CriteriaService);
@@ -49,9 +64,7 @@ export class CriteriaComponent implements OnInit {
       .pipe(
         tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
         tap(() => {
-          if (!this.criteria || this.criteria.length === 0) {
-            this.load();
-          }
+          this.load();
         }),
       )
       .subscribe();
@@ -70,11 +83,100 @@ export class CriteriaComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
-    });
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.criteriaService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe({
+        next: response => {
+          this.filteredCriteria = response.body ?? [];
+          this.criteria = [...this.filteredCriteria];
+          this.totalItems = Number(response.headers.get('X-Total-Count'));
+        },
+      });
+  }
+
+  onPageChange(page: number): void {
+    if (!Number.isNaN(page) && page > 0) {
+      this.page = page;
+      console.log('Valid page number:', this.page);
+      this.load();
+    } else {
+      console.error('Invalid page number:', page);
+      this.page = 1;
+      this.load();
+    }
+  }
+
+  // onPageSizeChange(event: Event): void {
+  //   const target = event.target as HTMLSelectElement;
+  //   this.pageSize = Number(target.value);
+  //   this.page = 1;
+  //   this.load();
+  //   console.log('Page size changed to:', this.pageSize);
+  // }
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    if (!target) {
+      console.error('Invalid event target');
+      return;
+    }
+
+    const newSize = parseInt(target.value, 10);
+    if (isNaN(newSize) || newSize <= 0) {
+      console.error('Invalid page size:', target.value);
+      this.pageSize = 10;
+    } else {
+      this.pageSize = newSize;
+    }
+
+    console.log('Page size changed to:', this.pageSize);
+    this.page = 1;
+    this.load();
+  }
+
+  // searchTable(): void {
+  //   this.criteria = this.filteredCriteria.filter(convert => {
+  //     const nameMatch = !this.searchTerms.name ||
+  //       (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+  //     const criterialGroupIdMatch = !this.searchTerms.criterialGroupId ||
+  //       (convert.criterialGroupId && convert.criterialGroupId.toLowerCase().includes(this.searchTerms.criterialGroupId.toLowerCase()));
+
+  //     const statusMatch = !this.searchTerms.status ||
+  //       (convert.status && convert.status.toString().includes(this.searchTerms.status));
+
+  //     const createdAtMatch = !this.searchTerms.createdAt ||
+  //       (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
+
+  //     const updatedAtMatch = !this.searchTerms.updatedAt ||
+  //       (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+  //     const updateByMatch = !this.searchTerms.updateBy ||
+  //       (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+  //     return nameMatch && criterialGroupIdMatch && statusMatch && createdAtMatch &&
+  //       updatedAtMatch && updateByMatch;
+  //   });
+  // }
+
+  searchTable(): void {
+    this.criteria = this.filteredCriteria.filter(
+      criteria =>
+        (!this.searchTerms.name || criteria.name?.toLowerCase().includes(this.searchTerms.name.toLowerCase())) &&
+        (!this.searchTerms.criterialGroupId || criteria.criterialGroupId?.toString().includes(this.searchTerms.criterialGroupId)) &&
+        (!this.searchTerms.status || criteria.status?.toString().includes(this.searchTerms.status)) &&
+        (!this.searchTerms.createdAt || criteria.createdAt?.toString().includes(this.searchTerms.createdAt)) &&
+        (!this.searchTerms.updatedAt || criteria.updatedAt?.toString().includes(this.searchTerms.updatedAt)) &&
+        (!this.searchTerms.updateBy || criteria.updateBy?.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase())),
+    );
   }
 
   navigateToWithComponentValues(event: SortState): void {

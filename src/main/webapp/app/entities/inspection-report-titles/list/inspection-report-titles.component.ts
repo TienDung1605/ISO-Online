@@ -35,6 +35,18 @@ export class InspectionReportTitlesComponent implements OnInit {
 
   sortState = sortStateSignal({});
 
+  inspectionReportTitle: IInspectionReportTitles[] = [];
+  filteredInspectionReportTitles: IInspectionReportTitles[] = [];
+  searchTerms: { [key: string]: string } = {
+    nameTitle: '',
+    source: '',
+    field: '',
+    dataType: '',
+    timeCreate: '',
+    timeUpdate: '',
+    sampleReportId: '',
+  };
+
   public router = inject(Router);
   protected inspectionReportTitlesService = inject(InspectionReportTitlesService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -71,10 +83,42 @@ export class InspectionReportTitlesComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.inspectionReportTitlesService.query().subscribe(response => {
+      this.filteredInspectionReportTitles = response.body ?? [];
+      this.inspectionReportTitles = [...this.filteredInspectionReportTitles];
+    });
+  }
+
+  searchTable(): void {
+    this.inspectionReportTitles = this.filteredInspectionReportTitles.filter(convert => {
+      const nameTitleMatch =
+        !this.searchTerms.nameTitle ||
+        (convert.nameTitle && convert.nameTitle.toLowerCase().includes(this.searchTerms.nameTitle.toLowerCase()));
+
+      const sourceMatch =
+        !this.searchTerms.source || (convert.source && convert.source.toLowerCase().includes(this.searchTerms.source.toLowerCase()));
+
+      const fieldMatch = !this.searchTerms.field || (convert.field && convert.field.toString().includes(this.searchTerms.field));
+
+      const dataTypeMatch =
+        !this.searchTerms.dataType || (convert.dataType && convert.dataType.toString().includes(this.searchTerms.dataType));
+
+      const timeCreateMatch =
+        !this.searchTerms.timeCreate || (convert.timeCreate && convert.timeCreate.toString().includes(this.searchTerms.timeCreate));
+
+      const timeUpdateMatch =
+        !this.searchTerms.timeUpdate || convert.timeUpdate?.toString().toLowerCase().includes(this.searchTerms.timeUpdate.toLowerCase());
+
+      const sampleReportIdMatch =
+        !this.searchTerms.sampleReportId ||
+        (convert.sampleReportId && convert.sampleReportId.toString().includes(this.searchTerms.sampleReportId));
+
+      return nameTitleMatch && sourceMatch && fieldMatch && dataTypeMatch && timeCreateMatch && timeUpdateMatch && sampleReportIdMatch;
     });
   }
 

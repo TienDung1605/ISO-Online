@@ -32,8 +32,19 @@ export class CheckerGroupComponent implements OnInit {
   subscription: Subscription | null = null;
   checkerGroups?: ICheckerGroup[];
   isLoading = false;
-
+  filteredCheckerGroups: ICheckerGroup[] = [];
   sortState = sortStateSignal({});
+  searchTerms: { [key: string]: string } = {
+    name: '',
+    status: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
 
   public router = inject(Router);
   protected checkerGroupService = inject(CheckerGroupService);
@@ -70,10 +81,54 @@ export class CheckerGroupComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.checkerGroupService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(response => {
+        this.filteredCheckerGroups = response.body ?? [];
+        this.checkerGroups = [...this.filteredCheckerGroups];
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
+  }
+
+  searchTable(): void {
+    this.checkerGroups = this.filteredCheckerGroups.filter(convert => {
+      const nameMatch =
+        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const statusMatch =
+        !this.searchTerms.status || (convert.status && convert.status.toLowerCase().includes(this.searchTerms.status.toLowerCase()));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy ||
+        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      return nameMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
     });
   }
 

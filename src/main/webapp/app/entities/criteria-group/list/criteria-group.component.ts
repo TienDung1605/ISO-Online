@@ -34,6 +34,19 @@ export class CriteriaGroupComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
+  criteriaGroup: ICriteriaGroup[] = [];
+  filteredCriteriaGroup: ICriteriaGroup[] = [];
+  searchTerms: { [key: string]: string } = {
+    name: '',
+    status: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
 
   public router = inject(Router);
   protected criteriaGroupService = inject(CriteriaGroupService);
@@ -70,10 +83,54 @@ export class CriteriaGroupComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.criteriaGroupService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(response => {
+        this.filteredCriteriaGroup = response.body ?? [];
+        this.criteriaGroups = [...this.filteredCriteriaGroup];
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
+  }
+
+  searchTable(): void {
+    this.criteriaGroups = this.filteredCriteriaGroup.filter(convert => {
+      const nameMatch =
+        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const statusMatch =
+        !this.searchTerms.status || (convert.status && convert.status.toLowerCase().includes(this.searchTerms.status.toLowerCase()));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy ||
+        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      return nameMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
     });
   }
 

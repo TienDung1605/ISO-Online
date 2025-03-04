@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IConvert } from '../convert.model';
 import { ConvertService } from '../service/convert.service';
 import { ConvertFormService, ConvertFormGroup } from './convert-form.service';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -20,15 +23,31 @@ import { ConvertFormService, ConvertFormGroup } from './convert-form.service';
 export class ConvertUpdateComponent implements OnInit {
   isSaving = false;
   convert: IConvert | null = null;
-
+  account: Account | null = null;
   protected convertService = inject(ConvertService);
   protected convertFormService = inject(ConvertFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: ConvertFormGroup = this.convertFormService.createConvertFormGroup();
 
   ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ convert }) => {
+      this.convert = convert;
+      if (convert) {
+        this.updateForm(convert);
+      }
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+
+      if (account) {
+        this.editForm.patchValue({
+          updateBy: account.login,
+        });
+      }
+    });
+
     this.activatedRoute.data.subscribe(({ convert }) => {
       this.convert = convert;
       if (convert) {
@@ -44,6 +63,11 @@ export class ConvertUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const convert = this.convertFormService.getConvert(this.editForm);
+    if (this.account) {
+      convert.updateBy = this.account.login;
+      convert.createdAt = dayjs();
+      convert.updatedAt = dayjs();
+    }
     if (convert.id !== null) {
       this.subscribeToSaveResponse(this.convertService.update(convert));
     } else {

@@ -34,6 +34,20 @@ export class EvaluatorComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
+  evaluator: IEvaluator[] = [];
+  filteredEvaluators: IEvaluator[] = [];
+  searchTerms: { [key: string]: string } = {
+    id: '',
+    userGroupId: '',
+    createdAt: '',
+    updatedAt: '',
+    status: '',
+    updateBy: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
 
   public router = inject(Router);
   protected evaluatorService = inject(EvaluatorService);
@@ -70,10 +84,57 @@ export class EvaluatorComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.evaluatorService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(response => {
+        this.filteredEvaluators = response.body ?? [];
+        this.evaluators = [...this.filteredEvaluators];
+        this.totalItems = Number(response.headers.get('X-Total-Count'));
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
+  }
+
+  searchTable(): void {
+    this.evaluators = this.filteredEvaluators.filter(convert => {
+      const nameMatch =
+        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const userGroupIdMatch =
+        !this.searchTerms.userGroupId || convert.userGroupId?.toString().toLowerCase().includes(this.searchTerms.userGroupId.toLowerCase());
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy ||
+        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      const statusMatch = !this.searchTerms.status || (convert.status && convert.status.toString().includes(this.searchTerms.status));
+
+      return nameMatch && userGroupIdMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
     });
   }
 

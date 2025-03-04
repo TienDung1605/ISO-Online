@@ -307,15 +307,15 @@
               {{ index + 1 }}
             </td>
             <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
+              <select [(ngModel)]="planDetailResults[index].checkerName">
+                <option *ngFor="let data of planDetailResults" [value]="data.checkerName">
                   {{ data.checkerName }}
                 </option>
               </select>
             </td>
             <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
+              <select [(ngModel)]="planDetailResults[index].code">
+                <option *ngFor="let data of planDetailResults" [value]="data.code">
                   {{ data.code }}
                 </option>
               </select>

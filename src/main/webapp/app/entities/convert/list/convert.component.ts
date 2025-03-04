@@ -1,7 +1,7 @@
 import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
@@ -13,6 +13,8 @@ import { EntityArrayResponseType, ConvertService } from '../service/convert.serv
 import { ConvertDeleteDialogComponent } from '../delete/convert-delete-dialog.component';
 import { TreeTableModule } from 'primeng/treetable';
 import { TreeNode } from 'primeng/api';
+// import { Account } from 'app/core/auth/account.model';
+// import { AccountService } from 'app/core/auth/account.service';
 @Component({
   standalone: true,
   selector: 'jhi-convert',
@@ -27,69 +29,35 @@ import { TreeNode } from 'primeng/api';
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
-    TreeTableModule
+    TreeTableModule,
+    NgbPaginationModule,
   ],
 })
 export class ConvertComponent implements OnInit {
   subscription: Subscription | null = null;
   converts?: IConvert[];
   isLoading = false;
-  treeNodes?: TreeNode[];
-  planData = [
-    {
-      "data": {
-        "name1": "Applications",
-        "size": "200mb",
-        "type": "Folder"
-      },
-      "children": [
-        {
-          "data": {
-            "name": "Angular",
-            "size": "25mb",
-            "type": "Folder"
-          },
-          "children": [
-            {
-              "data": {
-                "name": "angular.app",
-                "size": "10mb",
-                "type": "Application"
-              }
-            },
-            {
-              "data": {
-                "name": "cli.app",
-                "size": "10mb",
-                "type": "Application"
-              }
-            },
-            {
-              "data": {
-                "name": "mobile.app",
-                "size": "5mb",
-                "type": "Application"
-              }
-            }
-          ]
-        },
-        {
-          "data": {
-            "name": "editor.app",
-            "size": "25mb",
-            "type": "Application"
-          }
-        },
-        {
-          "data": {
-            "name": "settings.app",
-            "size": "50mb",
-            "type": "Application"
-          }
-        }
-      ]
-    }]
   sortState = sortStateSignal({});
+  convert: IConvert[] = [];
+  filteredConverts: IConvert[] = [];
+
+  page = 0;
+  pageSize = 10;
+  totalItems = 0;
+
+  searchTerms: { [key: string]: string } = {
+    id: '',
+    name: '',
+    type: '',
+    mark: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+    score: '',
+    count: '',
+  };
+
+  // account: Account | null = null;
 
   public router = inject(Router);
   protected convertService = inject(ConvertService);
@@ -97,6 +65,7 @@ export class ConvertComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
+  // protected accountService = inject(AccountService);
 
   trackId = (_index: number, item: IConvert): number => this.convertService.getConvertIdentifier(item);
 
@@ -131,10 +100,65 @@ export class ConvertComponent implements OnInit {
         this.onResponseSuccess(res);
       },
     });
+
+    // this.convertService.query({
+    //   page: this.page,
+    //   size: this.pageSize,
+    //   sort: this.sortState()
+    // }).subscribe(response => {
+    //   this.converts = response.body ?? [];
+    //   this.filteredConverts = [...this.converts];
+    //   this.totalItems = Number(response.headers.get('X-Total-Count'));
+    //   console.log('kq', this.converts)
+    // });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+    console.log('page', this.page);
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    setTimeout(() => {
+      this.load();
+    }, 100);
+    console.log('page size', this.pageSize);
   }
 
   navigateToWithComponentValues(event: SortState): void {
     this.handleNavigation(event);
+  }
+
+  searchTable(): void {
+    this.converts = this.filteredConverts.filter(convert => {
+      const nameMatch =
+        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const typeMatch =
+        !this.searchTerms.type || (convert.type && convert.type.toLowerCase().includes(this.searchTerms.type.toLowerCase()));
+
+      const markMatch = !this.searchTerms.mark || (convert.mark && convert.mark.toString().includes(this.searchTerms.mark));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy ||
+        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      const scoreMatch = !this.searchTerms.score || (convert.score && convert.score.toString().includes(this.searchTerms.score));
+
+      const countMatch = !this.searchTerms.count || (convert.count && convert.count.toString().includes(this.searchTerms.count));
+
+      return nameMatch && typeMatch && markMatch && createdAtMatch && updatedAtMatch && updateByMatch && scoreMatch && countMatch;
+    });
   }
 
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {

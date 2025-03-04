@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IEvaluator } from '../evaluator.model';
 import { EvaluatorService } from '../service/evaluator.service';
 import { EvaluatorFormService, EvaluatorFormGroup } from './evaluator-form.service';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -22,15 +25,33 @@ import { EvaluatorFormService, EvaluatorFormGroup } from './evaluator-form.servi
 export class EvaluatorUpdateComponent implements OnInit {
   isSaving = false;
   evaluator: IEvaluator | null = null;
+  account: Account | null = null;
 
   protected evaluatorService = inject(EvaluatorService);
   protected evaluatorFormService = inject(EvaluatorFormService);
   protected activatedRoute = inject(ActivatedRoute);
+  protected accountService = inject(AccountService);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: EvaluatorFormGroup = this.evaluatorFormService.createEvaluatorFormGroup();
 
   ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ evaluator }) => {
+      this.evaluator = evaluator;
+      if (evaluator) {
+        this.updateForm(evaluator);
+      }
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+
+      if (account) {
+        this.editForm.patchValue({
+          updateBy: account.login,
+        });
+      }
+    });
+
     this.activatedRoute.data.subscribe(({ evaluator }) => {
       this.evaluator = evaluator;
       if (evaluator) {
@@ -46,6 +67,12 @@ export class EvaluatorUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const evaluator = this.evaluatorFormService.getEvaluator(this.editForm);
+    if (this.account) {
+      evaluator.updateBy = this.account.login;
+      evaluator.createdAt = dayjs();
+      evaluator.updatedAt = dayjs();
+      // evaluator.status = this.status
+    }
     if (evaluator.id !== null) {
       this.subscribeToSaveResponse(this.evaluatorService.update(evaluator));
     } else {

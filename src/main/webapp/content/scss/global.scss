@@ -86,17 +86,16 @@ Generic styles
   position: relative;
   overflow: hidden;
   overflow-x: auto;
-  width: 100%;
+  width: 99%;
 }
 
-// Xét vị trí cho số lượng
 .column-item {
   text-align: center;
 }
 
 .card {
   position: relative;
-  width: 100%;
+  width: 99%;
   height: 90vh;
   overflow: auto;
 }
@@ -220,7 +219,7 @@ Custom alerts for notification
 entity list page css
 ========================================================================== */
 
-.table-entities thead th .d-flex>* {
+.table-entities thead th .d-flex > * {
   margin: auto 0;
 }
 
@@ -235,7 +234,7 @@ entity detail page css
 }
 
 @media screen and (min-width: 768px) {
-  .row-md.jh-entity-details> {
+  .row-md.jh-entity-details > {
     dt {
       float: left;
       overflow: hidden;

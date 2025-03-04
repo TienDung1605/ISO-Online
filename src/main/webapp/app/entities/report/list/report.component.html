@@ -3,10 +3,10 @@
     <span jhiTranslate="isoApp.report.home.title">Reports</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span jhiTranslate="isoApp.report.home.refreshListLabel">Refresh list</span>
-      </button>
+      </button> -->
 
       <button
         id="jh-create-entity"
@@ -20,7 +20,7 @@
     </div>
   </h2>
 
-  <jhi-alert-error></jhi-alert-error>
+  <!-- <jhi-alert-error></jhi-alert-error>
 
   <jhi-alert></jhi-alert>
 
@@ -28,7 +28,7 @@
     <div class="alert alert-warning" id="no-result">
       <span jhiTranslate="isoApp.report.home.notFound">No Reports found</span>
     </div>
-  }
+  } -->
 
   @if (reports && reports.length > 0) {
     <div class="table-responsive table-entities" id="entities">

@@ -34,6 +34,22 @@ export class TitleComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
+  title: ITitle[] = [];
+  filteredTitles: ITitle[] = [];
+  searchTerms: { [key: string]: string } = {
+    id: '',
+    name: '',
+    source: '',
+    createdAt: '',
+    updatedAt: '',
+    dataType: '',
+    updateBy: '',
+    field: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
 
   public router = inject(Router);
   protected titleService = inject(TitleService);
@@ -70,10 +86,56 @@ export class TitleComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.titleService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(respone => {
+        this.filteredTitles = respone.body ?? [];
+        this.titles = [...this.filteredTitles];
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
+  }
+
+  searchTable(): void {
+    this.titles = this.filteredTitles.filter(title => {
+      const nameMatch = !this.searchTerms.name || (title.name && title.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const sourceMatch =
+        !this.searchTerms.source || (title.source && title.source.toLowerCase().includes(this.searchTerms.source.toLowerCase()));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (title.createdAt && title.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (title.updatedAt && title.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy || (title.updateBy && title.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      const fieldMatch = !this.searchTerms.field || (title.field && title.field.toString().includes(this.searchTerms.field));
+
+      const dataTypeMatch = !this.searchTerms.dataType || (title.dataType && title.dataType.toString().includes(this.searchTerms.dataType));
+
+      return nameMatch && sourceMatch && fieldMatch && createdAtMatch && updatedAtMatch && updateByMatch && dataTypeMatch;
     });
   }
 

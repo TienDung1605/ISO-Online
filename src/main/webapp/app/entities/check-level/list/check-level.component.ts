@@ -35,6 +35,20 @@ export class CheckLevelComponent implements OnInit {
 
   sortState = sortStateSignal({});
 
+  filteredCheckLevels: ICheckLevel[] = [];
+  searchTerms: { [key: string]: string } = {
+    id: '',
+    name: '',
+    status: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
+
   public router = inject(Router);
   protected checkLevelService = inject(CheckLevelService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -57,6 +71,25 @@ export class CheckLevelComponent implements OnInit {
       .subscribe();
   }
 
+  searchTable(): void {
+    this.checkLevels = this.filteredCheckLevels.filter(convert => {
+      const nameMatch =
+        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy ||
+        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      return nameMatch && createdAtMatch && updatedAtMatch && updateByMatch;
+    });
+  }
+
   delete(checkLevel: ICheckLevel): void {
     const modalRef = this.modalService.open(CheckLevelDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.checkLevel = checkLevel;
@@ -70,11 +103,33 @@ export class CheckLevelComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
-    });
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.checkLevelService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(response => {
+        this.filteredCheckLevels = response.body ?? [];
+        this.checkLevels = [...this.filteredCheckLevels];
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
   }
 
   navigateToWithComponentValues(event: SortState): void {

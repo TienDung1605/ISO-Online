@@ -34,6 +34,24 @@ export class SampleReportComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
+  sampleReport: ISampleReport[] = [];
+  filteredSampleReports: ISampleReport[] = [];
+  searchTerms: { [key: string]: string } = {
+    id: '',
+    name: '',
+    status: '',
+    frequency: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+    code: '',
+    reportType: '',
+    reportTypeId: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
 
   public router = inject(Router);
   protected sampleReportService = inject(SampleReportService);
@@ -70,10 +88,80 @@ export class SampleReportComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+
+    this.sampleReportService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(respone => {
+        this.filteredSampleReports = respone.body ?? [];
+        this.sampleReports = [...this.filteredSampleReports];
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
+  }
+
+  searchTable(): void {
+    this.sampleReports = this.filteredSampleReports.filter(sampleReport => {
+      const nameMatch =
+        !this.searchTerms.name || (sampleReport.name && sampleReport.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const statusMatch =
+        !this.searchTerms.status ||
+        (typeof sampleReport.status === 'string' &&
+          (sampleReport.status as string).toLowerCase().includes(this.searchTerms.status.toLowerCase()));
+
+      const frequencyMatch =
+        !this.searchTerms.frequency || (sampleReport.frequency && sampleReport.frequency.toString().includes(this.searchTerms.frequency));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (sampleReport.createdAt && sampleReport.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (sampleReport.updatedAt && sampleReport.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy ||
+        (sampleReport.updateBy && sampleReport.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      const codeMatch = !this.searchTerms.code || (sampleReport.code && sampleReport.code.toString().includes(this.searchTerms.code));
+
+      const reportTypeMatch =
+        !this.searchTerms.reportType ||
+        (sampleReport.reportType && sampleReport.reportType.toString().includes(this.searchTerms.reportType));
+
+      const reportTypeIdMatch =
+        !this.searchTerms.reportTypeId ||
+        (sampleReport.reportTypeId && sampleReport.reportTypeId.toString().includes(this.searchTerms.reportTypeId));
+
+      return (
+        nameMatch &&
+        statusMatch &&
+        frequencyMatch &&
+        createdAtMatch &&
+        updatedAtMatch &&
+        updateByMatch &&
+        codeMatch &&
+        reportTypeMatch &&
+        reportTypeIdMatch
+      );
     });
   }
 

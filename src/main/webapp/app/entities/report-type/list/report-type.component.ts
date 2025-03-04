@@ -34,6 +34,21 @@ export class ReportTypeComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
+  reportType: IReportType[] = [];
+  filteredReportTypes: IReportType[] = [];
+  searchTerms: { [key: string]: string } = {
+    id: '',
+    name: '',
+    code: '',
+    status: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
 
   public router = inject(Router);
   protected reportTypeService = inject(ReportTypeService);
@@ -70,10 +85,56 @@ export class ReportTypeComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.reportTypeService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(respone => {
+        this.filteredReportTypes = respone.body ?? [];
+        this.reportTypes = [...this.filteredReportTypes];
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
+  }
+
+  searchTable(): void {
+    this.reportTypes = this.filteredReportTypes.filter(reportType => {
+      const nameMatch =
+        !this.searchTerms.name || (reportType.name && reportType.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const codeMatch =
+        !this.searchTerms.code || (reportType.code && reportType.code.toLowerCase().includes(this.searchTerms.code.toLowerCase()));
+
+      const statusMatch = !this.searchTerms.status || (reportType.status && reportType.status.toString().includes(this.searchTerms.status));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (reportType.createdAt && reportType.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (reportType.updatedAt && reportType.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy ||
+        (reportType.updateBy && reportType.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      return nameMatch && codeMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
     });
   }
 

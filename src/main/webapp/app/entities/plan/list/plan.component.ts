@@ -48,7 +48,7 @@ export class PlanComponent implements OnInit {
   sortState = sortStateSignal({});
   files?: TreeNode[];
   expandedRows: { [key: string]: boolean } = {};
-  @ViewChild('dt2') dt2!: TreeNode;
+  @ViewChild('dt2') dt2!: any;
   planDetailResults: any[] = [];
   // userTesting: any;
   @ViewChild('userTesting') userTesting!: TemplateRef<any>;
@@ -58,6 +58,7 @@ export class PlanComponent implements OnInit {
   @ViewChild('inspectionData') inspectionData!: TemplateRef<any>;
   @ViewChild('detailInspectionData') detailInspectionData!: TemplateRef<any>;
   @ViewChild('criteriaConclusion') criteriaConclusion!: TemplateRef<any>;
+  @ViewChild('evaluationPlan') evaluationPlan!: TemplateRef<any>;
   planData = [
     {
       id: '1000',
@@ -110,6 +111,47 @@ export class PlanComponent implements OnInit {
       ],
     },
   ];
+
+  planDetails = [
+    {
+      id: 1,
+      level: 'Cấp 1',
+      checkTarget: 'Đối tượng 1',
+      reportType: 'Loại 1',
+      reportTemplate: 'Mẫu 1',
+      reportCode: 'BBKT001',
+      reportGroup: 'Nhóm 1',
+      frequency: 'Hàng ngày',
+      scoreScale: '10',
+    },
+    {
+      id: 2,
+      level: 'Cấp 2',
+      checkTarget: 'Đối tượng 2',
+      reportType: 'Loại 2',
+      reportTemplate: 'Mẫu 2',
+      reportCode: 'BBKT002',
+      reportGroup: 'Nhóm 2',
+      frequency: 'Hàng tuần',
+      scoreScale: '10',
+    },
+    {
+      id: 3,
+      level: 'Cấp 2',
+      checkTarget: 'Đối tượng 3',
+      reportType: 'Loại 2',
+      reportTemplate: 'Mẫu 2',
+      reportCode: 'BBKT003',
+      reportGroup: 'Nhóm 2',
+      frequency: 'Hàng tháng',
+      scoreScale: '10',
+    },
+  ];
+
+  columnWidths = {
+    'min-width': '960px',
+    width: '100%',
+  };
 
   public router = inject(Router);
   protected planService = inject(PlanService);
@@ -230,8 +272,8 @@ export class PlanComponent implements OnInit {
       );
   }
 
-  navigateToInspectionReport(modal: any): void {
-    modal.dismiss();
+  navigateToInspectionReport(): void {
+    // modal.dismiss();
     this.router.navigate(['inspection-report']);
   }
 
@@ -324,6 +366,23 @@ export class PlanComponent implements OnInit {
       );
   }
 
+  openModalEvaluationPlan(): void {
+    this.modalService
+      .open(this.evaluationPlan, {
+        ariaDescribedBy: 'modal-evaluation-plan-title',
+        size: 'xl',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
+  }
+
   onRowExpand(event: any): void {
     const rowData = event.data;
     this.expandedRows[rowData.id] = true;
@@ -375,6 +434,10 @@ export class PlanComponent implements OnInit {
         expanded: false,
       }));
     }
+  }
+
+  onGlobalSearch(event: any): void {
+    this.dt2.filterGlobal(event.target.value, 'contains');
   }
 
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {

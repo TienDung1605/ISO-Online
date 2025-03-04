@@ -96,7 +96,9 @@
           <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th>
-          <p-checkbox [(ngModel)]="selectAll" [binary]="true" (onChange)="toggleSelectAll()" inputId="selectAll"> </p-checkbox>
+          <p-tableHeaderCheckbox />
+          <!-- <p-checkbox [(ngModel)]="selectAll" [binary]="true" (onChange)="toggleSelectAll()" inputId="selectAll">
+          </p-checkbox> -->
         </th>
         <th>
           <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
@@ -117,7 +119,8 @@
         <td>{{ script.reportGroup }}</td>
         <td>{{ script.status }}</td>
         <td>
-          <p-checkbox [(ngModel)]="script.merge" binary="true"></p-checkbox>
+          <p-tableCheckbox [value]="script" />
+          <!-- <p-checkbox [(ngModel)]="script.merge" binary="true"></p-checkbox> -->
         </td>
         <td>{{ script.checkDate }}</td>
       </tr>

@@ -32,8 +32,21 @@ export class PartsComponent implements OnInit {
   subscription: Subscription | null = null;
   parts?: IParts[];
   isLoading = false;
-
   sortState = sortStateSignal({});
+  part: IParts[] = [];
+  filteredParts: IParts[] = [];
+  searchTerms: { [key: string]: string } = {
+    id: '',
+    name: '',
+    status: '',
+    createdAt: '',
+    updatedAt: '',
+    updateBy: '',
+  };
+
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
 
   public router = inject(Router);
   protected partsService = inject(PartsService);
@@ -70,10 +83,52 @@ export class PartsComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.partsService
+      .query({
+        page: this.page - 1,
+        size: this.pageSize,
+        sort: this.sortState(),
+      })
+      .subscribe(respone => {
+        this.filteredParts = respone.body ?? [];
+        this.parts = [...this.filteredParts];
+      });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.pageSize = Number(target.value);
+    this.page = 1;
+    this.load();
+  }
+
+  searchTable(): void {
+    this.parts = this.filteredParts.filter(part => {
+      const nameMatch = !this.searchTerms.name || (part.name && part.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+
+      const statusMatch =
+        !this.searchTerms.status || (part.status && part.status.toLowerCase().includes(this.searchTerms.status.toLowerCase()));
+
+      const createdAtMatch =
+        !this.searchTerms.createdAt || (part.createdAt && part.createdAt.toString().includes(this.searchTerms.createdAt));
+
+      const updatedAtMatch =
+        !this.searchTerms.updatedAt || (part.updatedAt && part.updatedAt.toString().includes(this.searchTerms.updatedAt));
+
+      const updateByMatch =
+        !this.searchTerms.updateBy || (part.updateBy && part.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+
+      return nameMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
     });
   }
 
