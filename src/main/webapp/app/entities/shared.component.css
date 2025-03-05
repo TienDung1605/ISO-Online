@@ -2341,6 +2341,16 @@ select::-webkit-scrollbar-thumb:hover {
   }
 }
 
+:host ::ng-deep .p-paginator {
+  .p-paginator-current {
+    margin-left: auto;
+  }
+
+  .p-paginator-rpp-options {
+    margin-left: auto;
+  }
+}
+
 /* .gross-modal {
   width: 400px;
 } */

@@ -217,23 +217,54 @@
     </select>
   </div> -->
   }
-  @if (converts && converts.length > 0) {
-    <div>
-      <div class="d-flex justify-content-center">
-        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-      </div>
 
-      <div class="d-flex justify-content-center">
-        <ngb-pagination
-          [collectionSize]="totalItems"
-          [page]="page"
-          [pageSize]="itemsPerPage"
-          [maxSize]="5"
-          [rotate]="true"
-          [boundaryLinks]="true"
-          (pageChange)="navigateToPage($event)"
-        ></ngb-pagination>
-      </div>
-    </div>
-  }
+  <p-table
+    [value]="convertResult"
+    [paginator]="true"
+    [rows]="rows"
+    [showCurrentPageReport]="true"
+    [totalRecords]="totalRecords"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>STT</th>
+        <th>Tên</th>
+        <th>Kiểu</th>
+        <th>Thang điểm</th>
+        <th>Ngày tạo</th>
+        <th>Ngày cập nhật</th>
+        <th>Người cập nhật</th>
+        <th>Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-convert let-index="rowIndex">
+      <tr>
+        <td></td>
+        <td>{{ convert.name }}</td>
+        <td>{{ convert.type }}</td>
+        <td>{{ convert.mark }}</td>
+        <td>{{ convert.createdAt | formatMediumDatetime }}</td>
+        <td>{{ convert.updatedAt | formatMediumDatetime }}</td>
+        <td>{{ convert.updateBy }}</td>
+        <td></td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <!-- <p-paginator [rows]="rows" [totalRecords]="totalRecords" [rowsPerPageOptions]="[5,10,20,30]"
+    (onPageChange)="onPageChange($event)" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"></p-paginator> -->
 </div>

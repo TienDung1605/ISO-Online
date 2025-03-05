@@ -16,6 +16,9 @@ import { TreeNode } from 'primeng/api';
 import { ItemCountComponent } from 'app/shared/pagination';
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
 import { HttpHeaders } from '@angular/common/http';
+import { PaginatorModule } from 'primeng/paginator';
+import { TableModule } from 'primeng/table';
+
 // import { Account } from 'app/core/auth/account.model';
 // import { AccountService } from 'app/core/auth/account.service';
 @Component({
@@ -35,6 +38,8 @@ import { HttpHeaders } from '@angular/common/http';
     TreeTableModule,
     NgbPaginationModule,
     ItemCountComponent,
+    PaginatorModule,
+    TableModule,
   ],
 })
 export class ConvertComponent implements OnInit {
@@ -44,10 +49,14 @@ export class ConvertComponent implements OnInit {
   sortState = sortStateSignal({});
   convert: IConvert[] = [];
   filteredConverts: IConvert[] = [];
-
+  convertResult: any[] = [];
   page = 1;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
+
+  first = 0;
+  rows = 5;
+  totalRecords = 0;
 
   searchTerms: { [key: string]: string } = {
     id: '',
@@ -105,22 +114,25 @@ export class ConvertComponent implements OnInit {
       },
     });
 
-    // this.convertService.query({
-    //   page: this.page,
-    //   size: this.itemsPerPage,
-    //   sort: this.sortState()
-    // }).subscribe(response => {
-    //   this.converts = response.body ?? [];
-    //   this.filteredConverts = [...this.converts];
-    //   this.totalItems = Number(response.headers.get('X-Total-Count'));
-    //   console.log('kq', this.converts)
-    // });
+    this.convertService
+      .query({
+        page: this.page,
+        size: this.itemsPerPage,
+        sort: this.sortState(),
+      })
+      .subscribe(response => {
+        this.converts = response.body ?? [];
+        this.convertResult = response.body ?? [];
+        this.filteredConverts = [...this.converts];
+        this.totalItems = Number(response.headers.get('X-Total-Count'));
+        console.log('kq', this.converts);
+      });
   }
 
-  onPageChange(page: number): void {
-    this.page = page;
+  onPageChange(event: any): void {
+    this.first = event.first;
+    this.itemsPerPage = event.rows;
     this.load();
-    console.log('page', this.page);
   }
 
   onPageSizeChange(event: Event): void {
@@ -195,16 +207,21 @@ export class ConvertComponent implements OnInit {
   }
 
   protected queryBackend(): Observable<EntityArrayResponseType> {
-    const { page } = this;
-
     this.isLoading = true;
-    const pageToLoad: number = page;
     const queryObject: any = {
-      page: pageToLoad - 1,
-      size: this.itemsPerPage,
+      page: this.first / this.rows,
+      size: this.rows,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
-    return this.convertService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
+    return this.convertService.query(queryObject).pipe(
+      tap((response: EntityArrayResponseType) => {
+        this.isLoading = false;
+        if (response.body) {
+          this.converts = response.body;
+          this.totalItems = Number(response.headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+        }
+      }),
+    );
   }
 
   protected handleNavigation(page: number, sortState: SortState): void {
