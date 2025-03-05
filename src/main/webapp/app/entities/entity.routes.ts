@@ -106,6 +106,11 @@ const routes: Routes = [
     data: { pageTitle: 'isoApp.grossScript.home.title' },
     loadChildren: () => import('./gross-script/gross-script.routes'),
   },
+  {
+    path: 'field',
+    data: { pageTitle: 'isoApp.field.home.title' },
+    loadChildren: () => import('./fields/fields.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

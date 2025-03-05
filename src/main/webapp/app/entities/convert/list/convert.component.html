@@ -204,25 +204,36 @@
         </tbody>
       </table>
     </div>
-    <div class="d-flex justify-content-between p-2">
-      <ngb-pagination
-        [(page)]="page"
-        [pageSize]="pageSize"
-        [collectionSize]="totalItems"
-        [maxSize]="5"
-        [rotate]="true"
-        [boundaryLinks]="true"
-        (pageChange)="onPageChange($event)"
-        class="mb-0"
-      >
-      </ngb-pagination>
+    <!-- <div class="d-flex justify-content-between p-2">
+    <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="totalItems" [maxSize]="5" [rotate]="true"
+      [boundaryLinks]="true" (pageChange)="onPageChange($event)" class="mb-0">
+    </ngb-pagination>
 
-      <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (change)="onPageSizeChange($event)">
-        <option value="10">10</option>
-        <option [ngValue]="20">20</option>
-        <option [ngValue]="30">30</option>
-        <option [ngValue]="40">40</option>
-      </select>
+    <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (change)="onPageSizeChange($event)">
+      <option value="10">10</option>
+      <option [ngValue]="20">20</option>
+      <option [ngValue]="30">30</option>
+      <option [ngValue]="40">40</option>
+    </select>
+  </div> -->
+  }
+  @if (converts && converts.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
     </div>
   }
 </div>

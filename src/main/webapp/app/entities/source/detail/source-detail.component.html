@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (source) {
+      <div>
+        <h2 data-cy="sourceDetailsHeading"><span jhiTranslate="isoApp.source.detail.title">Source</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ source.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.source.name">Name</span></dt>
+          <dd>
+            <span>{{ source.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.source.source">Source</span></dt>
+          <dd>
+            <span>{{ source.source }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.source.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ source.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.source.updatedAt">Updated At</span></dt>
+          <dd>
+            <span>{{ source.updatedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="isoApp.source.createBy">Create By</span></dt>
+          <dd>
+            <span>{{ source.createBy }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/source', source.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

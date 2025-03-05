@@ -1,0 +1,137 @@
+<div>
+  <h2 id="page-heading" data-cy="SourceHeading">
+    <span jhiTranslate="isoApp.source.home.title">Sources</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="isoApp.source.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-source"
+        [routerLink]="['/source/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="isoApp.source.home.createLabel">Thêm mới một Source</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (sources?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="isoApp.source.home.notFound">No Sources found</span>
+    </div>
+  }
+
+  @if (sources && sources.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.source.name">Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="source">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.source.source">Source</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.source.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updatedAt">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.source.updatedAt">Updated At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createBy">
+              <div class="d-flex">
+                <span jhiTranslate="isoApp.source.createBy">Create By</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (source of sources; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/source', source.id, 'view']">{{ source.id }}</a>
+              </td>
+              <td>{{ source.name }}</td>
+              <td>{{ source.source }}</td>
+              <td>{{ source.createdAt | formatMediumDatetime }}</td>
+              <td>{{ source.updatedAt | formatMediumDatetime }}</td>
+              <td>{{ source.createBy }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/source', source.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a [routerLink]="['/source', source.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(source)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (sources && sources.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,29 @@
+{
+  "isoApp": {
+    "fields": {
+      "home": {
+        "title": "Fields",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Fields",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Fields",
+        "notFound": "No Fields found"
+      },
+      "created": "Một Fields mới được tạo với định danh {{ param }}",
+      "updated": "Một Fields cập nhật với định danh {{ param }}",
+      "deleted": "Một Fields đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Fields {{ id }}?"
+      },
+      "detail": {
+        "title": "Fields"
+      },
+      "id": "ID",
+      "name": "Name",
+      "fieldName": "Field Name",
+      "sourceId": "Source Id",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "createBy": "Create By"
+    }
+  }
+}

@@ -13,6 +13,9 @@ import { EntityArrayResponseType, ConvertService } from '../service/convert.serv
 import { ConvertDeleteDialogComponent } from '../delete/convert-delete-dialog.component';
 import { TreeTableModule } from 'primeng/treetable';
 import { TreeNode } from 'primeng/api';
+import { ItemCountComponent } from 'app/shared/pagination';
+import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
+import { HttpHeaders } from '@angular/common/http';
 // import { Account } from 'app/core/auth/account.model';
 // import { AccountService } from 'app/core/auth/account.service';
 @Component({
@@ -31,6 +34,7 @@ import { TreeNode } from 'primeng/api';
     FormatMediumDatePipe,
     TreeTableModule,
     NgbPaginationModule,
+    ItemCountComponent,
   ],
 })
 export class ConvertComponent implements OnInit {
@@ -41,9 +45,9 @@ export class ConvertComponent implements OnInit {
   convert: IConvert[] = [];
   filteredConverts: IConvert[] = [];
 
-  page = 0;
-  pageSize = 10;
+  page = 1;
   totalItems = 0;
+  itemsPerPage = ITEMS_PER_PAGE;
 
   searchTerms: { [key: string]: string } = {
     id: '',
@@ -103,7 +107,7 @@ export class ConvertComponent implements OnInit {
 
     // this.convertService.query({
     //   page: this.page,
-    //   size: this.pageSize,
+    //   size: this.itemsPerPage,
     //   sort: this.sortState()
     // }).subscribe(response => {
     //   this.converts = response.body ?? [];
@@ -121,16 +125,12 @@ export class ConvertComponent implements OnInit {
 
   onPageSizeChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
+    this.itemsPerPage = Number(target.value);
     this.page = 1;
     setTimeout(() => {
       this.load();
     }, 100);
-    console.log('page size', this.pageSize);
-  }
-
-  navigateToWithComponentValues(event: SortState): void {
-    this.handleNavigation(event);
+    console.log('page size', this.itemsPerPage);
   }
 
   searchTable(): void {
@@ -161,13 +161,24 @@ export class ConvertComponent implements OnInit {
     });
   }
 
+  navigateToWithComponentValues(event: SortState): void {
+    this.handleNavigation(this.page, event);
+  }
+
+  navigateToPage(page: number): void {
+    this.handleNavigation(page, this.sortState());
+  }
+
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {
+    const page = params.get(PAGE_HEADER);
+    this.page = +(page ?? 1);
     this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data[DEFAULT_SORT_DATA]));
   }
 
   protected onResponseSuccess(response: EntityArrayResponseType): void {
+    this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.converts = this.refineData(dataFromBody);
+    this.converts = dataFromBody;
   }
 
   protected refineData(data: IConvert[]): IConvert[] {
@@ -179,16 +190,27 @@ export class ConvertComponent implements OnInit {
     return data ?? [];
   }
 
+  protected fillComponentAttributesFromResponseHeader(headers: HttpHeaders): void {
+    this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+  }
+
   protected queryBackend(): Observable<EntityArrayResponseType> {
+    const { page } = this;
+
     this.isLoading = true;
+    const pageToLoad: number = page;
     const queryObject: any = {
+      page: pageToLoad - 1,
+      size: this.itemsPerPage,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
     return this.convertService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
   }
 
-  protected handleNavigation(sortState: SortState): void {
+  protected handleNavigation(page: number, sortState: SortState): void {
     const queryParamsObj = {
+      page,
+      size: this.itemsPerPage,
       sort: this.sortService.buildSortParam(sortState),
     };
 
