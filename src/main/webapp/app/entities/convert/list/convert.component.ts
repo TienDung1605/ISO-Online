@@ -52,11 +52,16 @@ export class ConvertComponent implements OnInit {
   convertResult: any[] = [];
   page = 1;
   totalItems = 0;
-  itemsPerPage = ITEMS_PER_PAGE;
+  itemsPerPage = 10;
 
-  first = 0;
-  rows = 5;
-  totalRecords = 0;
+  pageSize = 10;
+  pageSizes: number[] = [5, 10, 20, 50];
+  selectedPageSize: number = 10;
+  rows = 10;
+
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
 
   searchTerms: { [key: string]: string } = {
     id: '',
@@ -108,41 +113,48 @@ export class ConvertComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
-    });
-
+    this.isLoading = true;
     this.convertService
       .query({
-        page: this.page,
-        size: this.itemsPerPage,
+        page: Math.floor(this.first / this.selectedPageSize),
+        size: this.selectedPageSize,
         sort: this.sortState(),
       })
-      .subscribe(response => {
-        this.converts = response.body ?? [];
-        this.convertResult = response.body ?? [];
-        this.filteredConverts = [...this.converts];
-        this.totalItems = Number(response.headers.get('X-Total-Count'));
-        console.log('kq', this.converts);
+      .subscribe({
+        next: response => {
+          if (response.body) {
+            this.converts = response.body;
+            this.convertResult = [...this.converts];
+            this.totalRecords = Number(response.headers.get('X-Total-Count'));
+            this.isLoading = false;
+            console.log('convert Result', this.convertResult);
+          }
+        },
       });
   }
 
-  onPageChange(event: any): void {
-    this.first = event.first;
-    this.itemsPerPage = event.rows;
-    this.load();
-  }
+  // onPageChange(event: any): void {
+  //   this.first = event.first;
+  //   this.itemsPerPage = event.rows;
+  //   this.load();
+  // }
 
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.itemsPerPage = Number(target.value);
-    this.page = 1;
+  // onPageSizeChange(event: Event): void {
+  //   const target = event.target as HTMLSelectElement;
+  //   this.itemsPerPage = Number(target.value);
+  //   this.page = 1;
+  //   setTimeout(() => {
+  //     this.load();
+  //   }, 100);
+  //   console.log('page size', this.itemsPerPage);
+  // }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
     setTimeout(() => {
       this.load();
-    }, 100);
-    console.log('page size', this.itemsPerPage);
+    }, 200);
   }
 
   searchTable(): void {

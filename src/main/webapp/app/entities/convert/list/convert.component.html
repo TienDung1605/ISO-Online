@@ -3,11 +3,6 @@
     <span>Quy đổi</span>
 
     <div class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="isoApp.convert.home.refreshListLabel">Refresh list</span>
-      </button> -->
-
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
@@ -20,214 +15,145 @@
     </div>
   </h2>
 
-  <!-- <jhi-alert-error></jhi-alert-error>
-
-  <jhi-alert></jhi-alert> -->
-  <!--
-  @if (converts?.length === 0) {
-  <div class="alert alert-warning" id="no-result">
-    <span jhiTranslate="isoApp.convert.home.notFound">No Converts found</span>
-  </div>
-  } -->
-
-  @if (converts && converts.length > 0) {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped table-bordered" aria-describedby="page-heading">
-        <thead>
-          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span>ID</span>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="name">
-              <div class="d-flex">
-                <span>Tên</span>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="type">
-              <div class="d-flex">
-                <span>Kiểu</span>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="mark">
-              <div class="d-flex">
-                <span>Thang điểm</span>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="createdAt">
-              <div class="d-flex">
-                <span>Ngày tạo</span>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="updatedAt">
-              <div class="d-flex">
-                <span>Ngày cập nhật</span>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="updateBy">
-              <div class="d-flex">
-                <span>Người cập nhật</span>
-              </div>
-            </th>
-            <!-- <th scope="col" jhiSortBy="score">
+  <!-- @if (converts && converts.length > 0) {
+  <div class="table-responsive table-entities" id="entities">
+    <table class="table table-striped table-bordered" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <th scope="col" jhiSortBy="id">
             <div class="d-flex">
-              <span>Tính điểm</span>
+              <span>ID</span>
             </div>
           </th>
-          <th scope="col" jhiSortBy="count">
+          <th scope="col" jhiSortBy="name">
             <div class="d-flex">
-              <span>Bước nhảy</span>
+              <span>Tên</span>
             </div>
-          </th> -->
-            <th scope="col">
-              <div class="d-flex">
-                <span>Tuỳ chọn</span>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <thead>
-          <tr>
-            <th></th>
-            <th>
-              <input
-                type="text"
-                placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.name"
-                (input)="searchTable()"
-                class="form-control d-inline-block w-auto mr-2"
-              />
-            </th>
-            <th>
-              <input
-                type="text"
-                placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.type"
-                (input)="searchTable()"
-                class="form-control d-inline-block w-auto mr-2"
-              />
-            </th>
-            <th>
-              <input
-                type="text"
-                placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.mark"
-                (input)="searchTable()"
-                class="form-control d-inline-block w-auto mr-2"
-              />
-            </th>
-            <th>
-              <input
-                type="datetime-local"
-                placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.createdAt"
-                (input)="searchTable()"
-                class="form-control d-inline-block w-auto mr-2"
-              />
-            </th>
-            <th>
-              <input
-                type="text"
-                placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.updatedAt"
-                (input)="searchTable()"
-                class="form-control d-inline-block w-auto mr-2"
-              />
-            </th>
-            <th>
-              <input
-                type="text"
-                placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.updateBy"
-                (input)="searchTable()"
-                class="form-control d-inline-block w-auto mr-2"
-              />
-            </th>
-            <!-- <th><input type="text" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.score" (input)="searchTable()"
-              class="form-control d-inline-block w-auto mr-2"></th>
-          <th><input type="text" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.count" (input)="searchTable()"
-              class="form-control d-inline-block w-auto mr-2"></th> -->
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (convert of converts; track trackId) {
-            <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/convert', convert.id, 'view']">{{ convert.id }}</a>
-              </td>
-              <td>{{ convert.name }}</td>
-              <td>{{ convert.type }}</td>
-              <td>{{ convert.mark }}</td>
-              <td>{{ convert.createdAt | formatMediumDatetime }}</td>
-              <td>{{ convert.updatedAt | formatMediumDatetime }}</td>
-              <td>{{ convert.updateBy }}</td>
-              <!-- <td>{{ convert.score }}</td>
-          <td>{{ convert.count }}</td> -->
-              <td class="text-end">
-                <div class="btn-group action-buttons">
-                  <a
-                    [routerLink]="['/convert', convert.id, 'view']"
-                    class="btn btn-info btn-sm compact-btn"
-                    data-cy="entityDetailsButton"
-                    style="border-radius: 8px"
-                  >
-                    <fa-icon icon="eye"></fa-icon>
-                    <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span> -->
-                  </a>
+          </th>
+          <th scope="col" jhiSortBy="type">
+            <div class="d-flex">
+              <span>Kiểu</span>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="mark">
+            <div class="d-flex">
+              <span>Thang điểm</span>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createdAt">
+            <div class="d-flex">
+              <span>Ngày tạo</span>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updatedAt">
+            <div class="d-flex">
+              <span>Ngày cập nhật</span>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updateBy">
+            <div class="d-flex">
+              <span>Người cập nhật</span>
+            </div>
+          </th>
 
-                  <a
-                    [routerLink]="['/convert', convert.id, 'edit']"
-                    class="btn btn-primary btn-sm compact-btn"
-                    data-cy="entityEditButton"
-                    style="border-radius: 8px"
-                  >
-                    <fa-icon icon="pencil-alt"></fa-icon>
-                    <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span> -->
-                  </a>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Tuỳ chọn</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th></th>
+          <th>
+            <input type="text" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.name" (input)="searchTable()"
+              class="form-control d-inline-block w-auto mr-2" />
+          </th>
+          <th>
+            <input type="text" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.type" (input)="searchTable()"
+              class="form-control d-inline-block w-auto mr-2" />
+          </th>
+          <th>
+            <input type="text" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.mark" (input)="searchTable()"
+              class="form-control d-inline-block w-auto mr-2" />
+          </th>
+          <th>
+            <input type="datetime-local" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.createdAt"
+              (input)="searchTable()" class="form-control d-inline-block w-auto mr-2" />
+          </th>
+          <th>
+            <input type="text" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.updatedAt" (input)="searchTable()"
+              class="form-control d-inline-block w-auto mr-2" />
+          </th>
+          <th>
+            <input type="text" placeholder="Tìm kiếm" [(ngModel)]="searchTerms.updateBy" (input)="searchTable()"
+              class="form-control d-inline-block w-auto mr-2" />
+          </th>
 
-                  <button
-                    type="submit"
-                    (click)="delete(convert)"
-                    class="btn btn-danger btn-sm compact-btn"
-                    data-cy="entityDeleteButton"
-                    style="border-radius: 8px"
-                  >
-                    <fa-icon icon="times"></fa-icon>
-                    <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span> -->
-                  </button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (convert of converts; track trackId) {
+        <tr data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/convert', convert.id, 'view']">{{ convert.id }}</a>
+          </td>
+          <td>{{ convert.name }}</td>
+          <td>{{ convert.type }}</td>
+          <td>{{ convert.mark }}</td>
+          <td>{{ convert.createdAt | formatMediumDatetime }}</td>
+          <td>{{ convert.updatedAt | formatMediumDatetime }}</td>
+          <td>{{ convert.updateBy }}</td>
+
+          <td class="text-end">
+            <div class="btn-group action-buttons">
+              <a [routerLink]="['/convert', convert.id, 'view']" class="btn btn-info btn-sm compact-btn"
+                data-cy="entityDetailsButton" style="border-radius: 8px">
+                <fa-icon icon="eye"></fa-icon>
+              </a>
+
+              <a [routerLink]="['/convert', convert.id, 'edit']" class="btn btn-primary btn-sm compact-btn"
+                data-cy="entityEditButton" style="border-radius: 8px">
+                <fa-icon icon="pencil-alt"></fa-icon>
+              </a>
+
+              <button type="submit" (click)="delete(convert)" class="btn btn-danger btn-sm compact-btn"
+                data-cy="entityDeleteButton" style="border-radius: 8px">
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-between p-2">
+      <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="totalItems" [maxSize]="5" [rotate]="true"
+        [boundaryLinks]="true" (pageChange)="onPageChange($event)">
+      </ngb-pagination>
+
+      <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (change)="onPageSizeChange($event)">
+        @for(size of pageSizes; track size) {
+        <option [value]="size">{{ size }}</option>
+        }
+      </select>
     </div>
-    <!-- <div class="d-flex justify-content-between p-2">
-    <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="totalItems" [maxSize]="5" [rotate]="true"
-      [boundaryLinks]="true" (pageChange)="onPageChange($event)" class="mb-0">
-    </ngb-pagination>
-
-    <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (change)="onPageSizeChange($event)">
-      <option value="10">10</option>
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="30">30</option>
-      <option [ngValue]="40">40</option>
-    </select>
-  </div> -->
-  }
+  </div>
+  } -->
 
   <p-table
     [value]="convertResult"
     [paginator]="true"
-    [rows]="rows"
+    [rows]="20"
+    [rowsPerPageOptions]="pageSizeOptions"
+    (onPage)="onPageSizeChange($event)"
     [showCurrentPageReport]="true"
-    [totalRecords]="totalRecords"
     [lazy]="true"
-    (onPage)="onPageChange($event)"
-    [rowsPerPageOptions]="[5, 10, 20]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [responsive]="true"
+    [rowHover]="true"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -253,18 +179,45 @@
     </ng-template>
     <ng-template pTemplate="body" let-convert let-index="rowIndex">
       <tr>
-        <td></td>
+        <td>{{ index + 1 }}</td>
         <td>{{ convert.name }}</td>
         <td>{{ convert.type }}</td>
         <td>{{ convert.mark }}</td>
         <td>{{ convert.createdAt | formatMediumDatetime }}</td>
         <td>{{ convert.updatedAt | formatMediumDatetime }}</td>
         <td>{{ convert.updateBy }}</td>
-        <td></td>
+        <td>
+          <div class="btn-group action-buttons">
+            <a
+              [routerLink]="['/convert', convert.id, 'view']"
+              class="btn btn-info btn-sm compact-btn"
+              data-cy="entityDetailsButton"
+              style="border-radius: 8px"
+            >
+              <fa-icon icon="eye"></fa-icon>
+            </a>
+
+            <a
+              [routerLink]="['/convert', convert.id, 'edit']"
+              class="btn btn-primary btn-sm compact-btn"
+              data-cy="entityEditButton"
+              style="border-radius: 8px"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+            </a>
+
+            <button
+              type="submit"
+              (click)="delete(convert)"
+              class="btn btn-danger btn-sm compact-btn"
+              data-cy="entityDeleteButton"
+              style="border-radius: 8px"
+            >
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>
-  <!-- <p-paginator [rows]="rows" [totalRecords]="totalRecords" [rowsPerPageOptions]="[5,10,20,30]"
-    (onPageChange)="onPageChange($event)" [showCurrentPageReport]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"></p-paginator> -->
 </div>

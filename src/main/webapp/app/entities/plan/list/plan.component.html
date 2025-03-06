@@ -37,15 +37,17 @@
     [globalFilterFields]="['code', 'name', 'subjectOfAssetmentPlan', 'frequency', 'timeStart', 'timeEnd', 'statusPlan']"
     stripedRows
     [tableStyle]="columnWidths"
-    [tableStyle]="{ 'min-width': '100rem', width: '100%' }"
     showGridlines
     [paginator]="true"
-    [rows]="10"
+    [rows]="selectedPageSize"
+    [rowsPerPageOptions]="pageSizeOptions"
+    (onPage)="onPageSizeChange($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [responsive]="true"
-    stripedRows
     [rowHover]="true"
-    [rowsPerPageOptions]="[10, 20, 30]"
   >
+    >
     <ng-template pTemplate="header">
       <tr>
         <th></th>

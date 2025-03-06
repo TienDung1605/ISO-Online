@@ -18,11 +18,29 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { DropdownModule } from 'primeng/dropdown';
 @Component({
   standalone: true,
   selector: 'jhi-plan',
   templateUrl: './plan.component.html',
   styleUrls: ['../../shared.component.css'],
+  // animations: [
+  //   trigger('overlayContentAnimation', [
+  //     state('void', style({
+  //       transform: 'translateY(5%)',
+  //       opacity: 0
+  //     })),
+  //     state('visible', style({
+  //       transform: 'translateY(0)',
+  //       opacity: 1
+  //     })),
+  //     transition('void => visible', animate('225ms ease-out')),
+  //     transition('visible => void', animate('195ms ease-in'))
+  //   ])
+  // ],
   imports: [
     RouterModule,
     FormsModule,
@@ -37,6 +55,9 @@ import { InputIconModule } from 'primeng/inputicon';
     IconFieldModule,
     InputIconModule,
     NgbModule,
+
+    // BrowserAnimationsModule,
+    // CommonModule
   ],
 })
 export class PlanComponent implements OnInit {
@@ -153,6 +174,18 @@ export class PlanComponent implements OnInit {
     width: '100%',
   };
 
+  options = [
+    { label: 5, value: 5 },
+    { label: 10, value: 10 },
+    { label: 20, value: 20 },
+    { label: 120, value: 120 },
+  ];
+
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  selectedPageSize: number = 10;
+  first: number = 0;
+  totalRecords: number = 0;
+
   public router = inject(Router);
   protected planService = inject(PlanService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -204,6 +237,12 @@ export class PlanComponent implements OnInit {
   //   this.expandedRows = {};
   // }
 
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
+    this.load();
+  }
+
   delete(plan: IPlan): void {
     const modalRef = this.modalService.open(PlanDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.plan = plan;
@@ -227,6 +266,7 @@ export class PlanComponent implements OnInit {
       next: (res: EntityArrayResponseType) => {
         this.onResponseSuccess(res);
         this.loadTreeNodes();
+        this.totalRecords = this.planDetailResults.length;
         console.log('res ', res);
         console.log('tree node', this.loadTreeNodes);
       },
