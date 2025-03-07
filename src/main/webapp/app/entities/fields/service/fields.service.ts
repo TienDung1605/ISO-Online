@@ -31,7 +31,10 @@ export class FieldsService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/fields');
-
+  protected resourceUrl2 = this.applicationConfigService.getEndpointFor('api/fields/all');
+  getAllFields(): Observable<any> {
+    return this.http.get<any[]>(this.resourceUrl2, { observe: 'response' });
+  }
   create(fields: NewFields): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(fields);
     return this.http

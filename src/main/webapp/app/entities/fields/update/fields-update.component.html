@@ -24,8 +24,19 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="field_sourceId">Nguồn Id</label>
-          <input type="number" class="form-control" name="sourceId" id="field_sourceId" data-cy="sourceId" formControlName="sourceId" />
+          <label class="form-label" for="field_source">Nguồn </label>
+          <!-- <input type="text" class="form-control" name="source" id="field_source" data-cy="source"
+            formControlName="source" /> -->
+          <select
+            class="form-control form-select"
+            name="source"
+            id="field_source"
+            [(ngModel)]="name"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="updateSourceId()"
+          >
+            <option *ngFor="let item of sources" [value]="item.name">{{ item.name }}</option>
+          </select>
         </div>
 
         <!-- <div class="mb-3">

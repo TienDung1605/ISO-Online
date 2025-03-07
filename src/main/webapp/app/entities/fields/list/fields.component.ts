@@ -40,7 +40,7 @@ import { InputIconModule } from 'primeng/inputicon';
 })
 export class FieldsComponent implements OnInit {
   subscription: Subscription | null = null;
-  fields?: IFields[];
+  fields?: any[];
   fieldResult: any[] = [];
   isLoading = false;
 
@@ -57,11 +57,11 @@ export class FieldsComponent implements OnInit {
 
   filters = {
     name: '',
-    fieldName: '',
-    sourceId: '',
-    createdAt: '',
-    updatedAt: '',
-    createBy: '',
+    field_name: '',
+    source: '',
+    created_at: '',
+    updated_at: '',
+    create_by: '',
   };
 
   public router = inject(Router);
@@ -101,18 +101,27 @@ export class FieldsComponent implements OnInit {
     //     console.log('res', res)
     //   },
     // });
-    this.isLoading = true;
-    this.queryBackend().subscribe({
+    this.fieldsService.getAllFields().subscribe({
       next: res => {
         if (res.body) {
           this.fields = res.body;
-          this.fieldResult = [...this.fields];
-          this.totalRecords = this.fields.length;
-          this.isLoading = false;
-          console.log('body', res.body);
+          this.fieldResult = [...this.fields!];
+          this.totalRecords = this.fields!.length;
         }
       },
     });
+    this.isLoading = true;
+    // this.queryBackend().subscribe({
+    //   next: res => {
+    //     if (res.body) {
+    //       this.fields = res.body;
+    //       this.fieldResult = [...this.fields];
+    //       this.totalRecords = this.fields.length;
+    //       this.isLoading = false;
+    //       console.log('body', res.body);
+    //     }
+    //   },
+    // });
   }
 
   searchTable(): void {
@@ -123,11 +132,11 @@ export class FieldsComponent implements OnInit {
     this.fieldResult = this.fields.filter(
       item =>
         (!this.filters.name || item.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-        (!this.filters.fieldName || item.fieldName?.toLowerCase().includes(this.filters.fieldName.toLowerCase())) &&
-        (!this.filters.sourceId || item.sourceId?.toString().includes(this.filters.sourceId)) &&
-        (!this.filters.createdAt || item.createdAt?.toString().includes(this.filters.createdAt)) &&
-        (!this.filters.updatedAt || item.updatedAt?.toString().includes(this.filters.updatedAt)) &&
-        (!this.filters.createBy || item.createBy?.toLowerCase().includes(this.filters.createBy.toLowerCase())),
+        (!this.filters.field_name || item.field_name?.toLowerCase().includes(this.filters.field_name.toLowerCase())) &&
+        (!this.filters.source || item.source?.toString().includes(this.filters.source)) &&
+        (!this.filters.created_at || item.created_at?.toString().includes(this.filters.created_at)) &&
+        (!this.filters.updated_at || item.updated_at?.toString().includes(this.filters.updated_at)) &&
+        (!this.filters.create_by || item.create_by?.toLowerCase().includes(this.filters.create_by.toLowerCase())),
     );
     this.totalRecords = this.fieldResult.length;
   }
