@@ -146,47 +146,89 @@
   <p-table
     [value]="convertResult"
     [paginator]="true"
-    [rows]="20"
+    [rows]="selectedPageSize"
     [rowsPerPageOptions]="pageSizeOptions"
     (onPage)="onPageSizeChange($event)"
     [showCurrentPageReport]="true"
-    [lazy]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [responsive]="true"
     [rowHover]="true"
+    [globalFilterFields]="['name', 'type', 'mark', 'createdAt', 'updatedAt', 'updateBy']"
   >
     <ng-template pTemplate="header">
       <tr>
-        <th>STT</th>
-        <th>Tên</th>
-        <th>Kiểu</th>
-        <th>Thang điểm</th>
-        <th>Ngày tạo</th>
-        <th>Ngày cập nhật</th>
-        <th>Người cập nhật</th>
-        <th>Tuỳ chọn</th>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Tên</th>
+        <th class="text-center border">Kiểu</th>
+        <th class="text-center border">Thang điểm</th>
+        <th class="text-center border">Ngày tạo</th>
+        <th class="text-center border">Ngày cập nhật</th>
+        <th class="text-center border">Người cập nhật</th>
+        <th class="text-center border">Tuỳ chọn</th>
       </tr>
       <tr>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"></th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+          </p-iconField>
+        </th>
+        <th class="text-center border"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-convert let-index="rowIndex">
       <tr>
-        <td>{{ index + 1 }}</td>
-        <td>{{ convert.name }}</td>
-        <td>{{ convert.type }}</td>
-        <td>{{ convert.mark }}</td>
-        <td>{{ convert.createdAt | formatMediumDatetime }}</td>
-        <td>{{ convert.updatedAt | formatMediumDatetime }}</td>
-        <td>{{ convert.updateBy }}</td>
-        <td>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ convert.name }}</td>
+        <td class="text-center border">{{ convert.type }}</td>
+        <td class="text-center border">{{ convert.mark }}</td>
+        <td class="text-center border">{{ convert.createdAt | formatMediumDatetime }}</td>
+        <td class="text-center border">{{ convert.updatedAt | formatMediumDatetime }}</td>
+        <td class="text-center border">{{ convert.updateBy }}</td>
+        <td class="text-center border">
           <div class="btn-group action-buttons">
             <a
               [routerLink]="['/convert', convert.id, 'view']"

@@ -18,6 +18,8 @@ import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/co
 import { HttpHeaders } from '@angular/common/http';
 import { PaginatorModule } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 // import { Account } from 'app/core/auth/account.model';
 // import { AccountService } from 'app/core/auth/account.service';
@@ -40,6 +42,8 @@ import { TableModule } from 'primeng/table';
     ItemCountComponent,
     PaginatorModule,
     TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class ConvertComponent implements OnInit {
@@ -125,9 +129,10 @@ export class ConvertComponent implements OnInit {
           if (response.body) {
             this.converts = response.body;
             this.convertResult = [...this.converts];
-            this.totalRecords = Number(response.headers.get('X-Total-Count'));
+            this.totalRecords = this.converts.length;
             this.isLoading = false;
             console.log('convert Result', this.convertResult);
+            console.log('total', this.totalRecords);
           }
         },
       });
@@ -152,9 +157,9 @@ export class ConvertComponent implements OnInit {
   onPageSizeChange(event: any): void {
     this.selectedPageSize = event.rows;
     this.first = event.first;
-    setTimeout(() => {
-      this.load();
-    }, 200);
+    // this.load();
+    console.log('page size', event.rows);
+    console.log('first', event.first);
   }
 
   searchTable(): void {

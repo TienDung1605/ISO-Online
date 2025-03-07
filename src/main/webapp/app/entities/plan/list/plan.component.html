@@ -184,7 +184,33 @@
         <td colspan="17">
           <div>
             <!-- <h5>Table con</h5> -->
-            <p-table [value]="rowNode.planDetail" dataKey="id" [scrollable]="true" scrollHeight="400px">
+            <p-table
+              [value]="rowNode.planDetail"
+              dataKey="id"
+              [scrollable]="true"
+              scrollHeight="400px"
+              [paginator]="true"
+              [rows]="selectedPageSize"
+              [rowsPerPageOptions]="pageSizeOptions"
+              (onPage)="onPageSizeChange($event)"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [responsive]="true"
+              [rowHover]="true"
+              [globalFilterFields]="[
+                'code',
+                'name',
+                'testOfObject',
+                'reportType',
+                'numberOfCheck',
+                'implementer',
+                'paticipant',
+                'checkerGroup',
+                'checker',
+                'frequency',
+                'status'
+              ]"
+            >
               <ng-template pTemplate="header">
                 <tr>
                   <th style="min-width: 1rem; width: 10rem">STT</th>

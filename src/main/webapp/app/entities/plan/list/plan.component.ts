@@ -238,9 +238,10 @@ export class PlanComponent implements OnInit {
   // }
 
   onPageSizeChange(event: any): void {
+    console.log('event', event);
     this.selectedPageSize = event.rows;
     this.first = event.first;
-    this.load();
+    // this.load();
   }
 
   delete(plan: IPlan): void {
