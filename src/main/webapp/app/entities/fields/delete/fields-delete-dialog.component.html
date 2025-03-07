@@ -1,7 +1,7 @@
 @if (fields) {
-  <form name="deleteForm" (ngSubmit)="confirmDelete(fields.id!)">
+  <form name="deleteForm" (ngSubmit)="confirmDelete(fields.id!)" style="height: 30vh">
     <div class="modal-header">
-      <h4 class="modal-title" data-cy="fieldsDeleteDialogHeading" jhiTranslate="entity.delete.title">Xác nhận hành động xóa</h4>
+      <h4 class="modal-title" data-cy="fieldsDeleteDialogHeading">Xác nhận hành động xóa</h4>
 
       <span class="btn btn-close" data-dismiss="modal" aria-hidden="true" (click)="cancel()"></span>
     </div>

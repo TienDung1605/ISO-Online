@@ -1,145 +1,235 @@
 <div>
   <h2 id="page-heading" data-cy="FieldsHeading">
-    <span jhiTranslate="isoApp.fields.home.title">Fields</span>
+    <span>Fields</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="isoApp.fields.home.refreshListLabel">Refresh list</span>
-      </button>
-
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-fields"
-        [routerLink]="['/fields/new']"
+        [routerLink]="['/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="isoApp.fields.home.createLabel">Thêm mới một Fields</span>
+        <span>Thêm mới</span>
       </button>
     </div>
   </h2>
 
-  <jhi-alert-error></jhi-alert-error>
+  <p-table
+    [value]="fieldResult"
+    [paginator]="true"
+    [rows]="selectedPageSize"
+    [rowsPerPageOptions]="pageSizeOptions"
+    (onPage)="onPageSizeChange($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [responsive]="true"
+    [rowHover]="true"
+    [globalFilterFields]="['name', 'fieldName', 'sourceId', 'createdAt', 'updatedAt', 'updateBy']"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Tên</th>
+        <th class="text-center border">Tên Field</th>
+        <th class="text-center border">Nguồn (id)</th>
+        <th class="text-center border">Thời gian tạo</th>
+        <th class="text-center border">Thời gian cập nhật</th>
+        <th class="text-center border">Người cập nhật</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('fieldName', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('sourceId', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('createdAt', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updatedAt', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('createBy', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-fields let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ fields.name }}</td>
+        <td class="text-center border">{{ fields.fieldName }}</td>
+        <td class="text-center border">{{ fields.sourceId }}</td>
+        <td class="text-center border">{{ fields.createdAt }}</td>
+        <td class="text-center border">{{ fields.updatedAt }}</td>
+        <td class="text-center border">{{ fields.createBy }}</td>
+        <td class="text-center border">
+          <div class="btn-group action-buttons">
+            <a [routerLink]="[fields.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton" style="border-radius: 8px">
+              <fa-icon icon="eye"></fa-icon>
+            </a>
 
-  <jhi-alert></jhi-alert>
+            <a [routerLink]="[fields.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton" style="border-radius: 8px">
+              <fa-icon icon="pencil-alt"></fa-icon>
+            </a>
 
-  @if (fields?.length === 0) {
-    <div class="alert alert-warning" id="no-result">
-      <span jhiTranslate="isoApp.fields.home.notFound">No Fields found</span>
-    </div>
+            <button
+              type="submit"
+              (click)="delete(fields)"
+              class="btn btn-danger btn-sm"
+              data-cy="entityDeleteButton"
+              style="border-radius: 8px"
+            >
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- @if (fields && fields.length > 0) {
+  <div class="table-responsive table-entities" id="entities">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="name">
+            <div class="d-flex">
+              <span jhiTranslate="isoApp.fields.name">Name</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="fieldName">
+            <div class="d-flex">
+              <span jhiTranslate="isoApp.fields.fieldName">Field Name</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="sourceId">
+            <div class="d-flex">
+              <span jhiTranslate="isoApp.fields.sourceId">Source Id</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createdAt">
+            <div class="d-flex">
+              <span jhiTranslate="isoApp.fields.createdAt">Created At</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updatedAt">
+            <div class="d-flex">
+              <span jhiTranslate="isoApp.fields.updatedAt">Updated At</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createBy">
+            <div class="d-flex">
+              <span jhiTranslate="isoApp.fields.createBy">Create By</span>
+
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (fields of fields; track trackId) {
+        <tr data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/fields', fields.id, 'view']">{{ fields.id }}</a>
+          </td>
+          <td>{{ fields.name }}</td>
+          <td>{{ fields.fieldName }}</td>
+          <td>{{ fields.sourceId }}</td>
+          <td>{{ fields.createdAt | formatMediumDatetime }}</td>
+          <td>{{ fields.updatedAt | formatMediumDatetime }}</td>
+          <td>{{ fields.createBy }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <a [routerLink]="['/fields', fields.id, 'view']" class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+              </a>
+
+              <a [routerLink]="['/fields', fields.id, 'edit']" class="btn btn-primary btn-sm"
+                data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+              </a>
+
+              <button type="submit" (click)="delete(fields)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
   }
-
   @if (fields && fields.length > 0) {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped" aria-describedby="page-heading">
-        <thead>
-          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="name">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.fields.name">Name</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="fieldName">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.fields.fieldName">Field Name</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="sourceId">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.fields.sourceId">Source Id</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="createdAt">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.fields.createdAt">Created At</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="updatedAt">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.fields.updatedAt">Updated At</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="createBy">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.fields.createBy">Create By</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (fields of fields; track trackId) {
-            <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/fields', fields.id, 'view']">{{ fields.id }}</a>
-              </td>
-              <td>{{ fields.name }}</td>
-              <td>{{ fields.fieldName }}</td>
-              <td>{{ fields.sourceId }}</td>
-              <td>{{ fields.createdAt | formatMediumDatetime }}</td>
-              <td>{{ fields.updatedAt | formatMediumDatetime }}</td>
-              <td>{{ fields.createBy }}</td>
-              <td class="text-end">
-                <div class="btn-group">
-                  <a [routerLink]="['/fields', fields.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-                    <fa-icon icon="eye"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
-                  </a>
-
-                  <a [routerLink]="['/fields', fields.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
-                    <fa-icon icon="pencil-alt"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
-                  </a>
-
-                  <button type="submit" (click)="delete(fields)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                    <fa-icon icon="times"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+  <div>
+    <div class="d-flex justify-content-center">
+      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
     </div>
-  }
-  @if (fields && fields.length > 0) {
-    <div>
-      <div class="d-flex justify-content-center">
-        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-      </div>
 
-      <div class="d-flex justify-content-center">
-        <ngb-pagination
-          [collectionSize]="totalItems"
-          [page]="page"
-          [pageSize]="itemsPerPage"
-          [maxSize]="5"
-          [rotate]="true"
-          [boundaryLinks]="true"
-          (pageChange)="navigateToPage($event)"
-        ></ngb-pagination>
-      </div>
+    <div class="d-flex justify-content-center">
+      <ngb-pagination [collectionSize]="totalItems" [page]="page" [pageSize]="itemsPerPage" [maxSize]="10"
+        [rotate]="true" [boundaryLinks]="true" (pageChange)="navigateToPage($event)"></ngb-pagination>
     </div>
-  }
+  </div>
+  } -->
 </div>

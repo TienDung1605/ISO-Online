@@ -6,8 +6,6 @@
       </h2>
 
       <div>
-        <jhi-alert-error></jhi-alert-error>
-
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
@@ -16,22 +14,22 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.fields.name" for="field_name">Name</label>
+          <label class="form-label" for="field_name">Tên</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.fields.fieldName" for="field_fieldName">Field Name</label>
+          <label class="form-label" for="field_fieldName">Tên Field</label>
           <input type="text" class="form-control" name="fieldName" id="field_fieldName" data-cy="fieldName" formControlName="fieldName" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.fields.sourceId" for="field_sourceId">Source Id</label>
+          <label class="form-label" for="field_sourceId">Nguồn Id</label>
           <input type="number" class="form-control" name="sourceId" id="field_sourceId" data-cy="sourceId" formControlName="sourceId" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.fields.createdAt" for="field_createdAt">Created At</label>
+        <!-- <div class="mb-3">
+          <label class="form-label" for="field_createdAt">Created At</label>
           <div class="d-flex">
             <input
               id="field_createdAt"
@@ -46,7 +44,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.fields.updatedAt" for="field_updatedAt">Updated At</label>
+          <label class="form-label" for="field_updatedAt">Updated At</label>
           <div class="d-flex">
             <input
               id="field_updatedAt"
@@ -61,9 +59,9 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.fields.createBy" for="field_createBy">Create By</label>
+          <label class="form-label" for="field_createBy">Create By</label>
           <input type="text" class="form-control" name="createBy" id="field_createBy" data-cy="createBy" formControlName="createBy" />
-        </div>
+        </div> -->
       </div>
 
       <div>

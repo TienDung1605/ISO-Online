@@ -15,6 +15,9 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { IFields } from '../fields.model';
 import { EntityArrayResponseType, FieldsService } from '../service/fields.service';
 import { FieldsDeleteDialogComponent } from '../delete/fields-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   standalone: true,
@@ -30,11 +33,15 @@ import { FieldsDeleteDialogComponent } from '../delete/fields-delete-dialog.comp
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     ItemCountComponent,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class FieldsComponent implements OnInit {
   subscription: Subscription | null = null;
   fields?: IFields[];
+  fieldResult: any[] = [];
   isLoading = false;
 
   sortState = sortStateSignal({});
@@ -42,6 +49,20 @@ export class FieldsComponent implements OnInit {
   itemsPerPage = ITEMS_PER_PAGE;
   totalItems = 0;
   page = 1;
+
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+
+  filters = {
+    name: '',
+    fieldName: '',
+    sourceId: '',
+    createdAt: '',
+    updatedAt: '',
+    createBy: '',
+  };
 
   public router = inject(Router);
   protected fieldsService = inject(FieldsService);
@@ -74,11 +95,52 @@ export class FieldsComponent implements OnInit {
   }
 
   load(): void {
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //     console.log('res', res)
+    //   },
+    // });
+    this.isLoading = true;
     this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
+      next: res => {
+        if (res.body) {
+          this.fields = res.body;
+          this.fieldResult = [...this.fields];
+          this.totalRecords = this.fields.length;
+          this.isLoading = false;
+          console.log('body', res.body);
+        }
       },
     });
+  }
+
+  searchTable(): void {
+    if (!this.fields) {
+      return;
+    }
+
+    this.fieldResult = this.fields.filter(
+      item =>
+        (!this.filters.name || item.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.fieldName || item.fieldName?.toLowerCase().includes(this.filters.fieldName.toLowerCase())) &&
+        (!this.filters.sourceId || item.sourceId?.toString().includes(this.filters.sourceId)) &&
+        (!this.filters.createdAt || item.createdAt?.toString().includes(this.filters.createdAt)) &&
+        (!this.filters.updatedAt || item.updatedAt?.toString().includes(this.filters.updatedAt)) &&
+        (!this.filters.createBy || item.createBy?.toLowerCase().includes(this.filters.createBy.toLowerCase())),
+    );
+    this.totalRecords = this.fieldResult.length;
+  }
+
+  onSearch(field: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[field] = value;
+    this.searchTable();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   navigateToWithComponentValues(event: SortState): void {

@@ -446,10 +446,10 @@
   padding-left: 1px;
 }
 
-.modal-content {
+/* .modal-content {
   height: 80vh;
-  /* width: 90vw; */
-}
+
+} */
 
 .editable-field {
   background-color: rgba(227, 240, 251, 0.569) !important;
