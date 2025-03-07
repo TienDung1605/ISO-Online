@@ -31,7 +31,10 @@ export class SourceService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/sources');
-
+  protected getAllTablesUrl = this.applicationConfigService.getEndpointFor('api/sources/tables');
+  getAllTables(): Observable<string[]> {
+    return this.http.get<string[]>(this.getAllTablesUrl);
+  }
   create(source: NewSource): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(source);
     return this.http

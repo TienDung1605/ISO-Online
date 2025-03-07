@@ -174,4 +174,10 @@ public class SourceResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @GetMapping("tables")
+    public List<String> getAllTable() {
+        List<String> list = this.sourceRepository.getAllTables();
+        return list;
+    }
 }

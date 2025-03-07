@@ -3,6 +3,7 @@ package com.mycompany.myapp.web.rest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;

@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IFrequency } from '../frequency.model';
 import { FrequencyService } from '../service/frequency.service';
 import { FrequencyFormService, FrequencyFormGroup } from './frequency-form.service';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -20,15 +23,18 @@ import { FrequencyFormService, FrequencyFormGroup } from './frequency-form.servi
 export class FrequencyUpdateComponent implements OnInit {
   isSaving = false;
   frequency: IFrequency | null = null;
-
+  account: Account | null = null;
   protected frequencyService = inject(FrequencyService);
   protected frequencyFormService = inject(FrequencyFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: FrequencyFormGroup = this.frequencyFormService.createFrequencyFormGroup();
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+    });
     this.activatedRoute.data.subscribe(({ frequency }) => {
       this.frequency = frequency;
       if (frequency) {
@@ -45,8 +51,13 @@ export class FrequencyUpdateComponent implements OnInit {
     this.isSaving = true;
     const frequency = this.frequencyFormService.getFrequency(this.editForm);
     if (frequency.id !== null) {
+      frequency.updatedAt = dayjs(new Date());
+      frequency.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.frequencyService.update(frequency));
     } else {
+      frequency.createdAt = dayjs(new Date());
+      frequency.updatedAt = dayjs(new Date());
+      frequency.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.frequencyService.create(frequency));
     }
   }

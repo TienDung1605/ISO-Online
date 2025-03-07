@@ -110,7 +110,7 @@ spring:
   jpa:
     open-in-view: false
     properties:
-      hibernate.jdbc.time_zone: UTC
+      #      hibernate.jdbc.time_zone: UTC
       hibernate.timezone.default_storage: NORMALIZE
       hibernate.type.preferred_instant_jdbc_type: TIMESTAMP
       hibernate.id.new_generator_mappings: true
@@ -157,7 +157,7 @@ spring:
       client:
         provider:
           oidc:
-            issuer-uri: http://localhost:8080/auth/realms/jhipster
+            issuer-uri: http://localhost:8180/auth/realms/jhipster
         registration:
           oidc:
             client-id: web_app

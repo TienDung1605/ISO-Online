@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ISource } from '../source.model';
 import { SourceService } from '../service/source.service';
 import { SourceFormService, SourceFormGroup } from './source-form.service';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -20,15 +23,23 @@ import { SourceFormService, SourceFormGroup } from './source-form.service';
 export class SourceUpdateComponent implements OnInit {
   isSaving = false;
   source: ISource | null = null;
-
+  list: string[] = [];
+  account: Account | null = null;
   protected sourceService = inject(SourceService);
   protected sourceFormService = inject(SourceFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: SourceFormGroup = this.sourceFormService.createSourceFormGroup();
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+    });
+    this.sourceService.getAllTables().subscribe(list => {
+      this.list = list;
+      console.log('Danh sacsh table', this.list);
+    });
     this.activatedRoute.data.subscribe(({ source }) => {
       this.source = source;
       if (source) {
@@ -45,8 +56,13 @@ export class SourceUpdateComponent implements OnInit {
     this.isSaving = true;
     const source = this.sourceFormService.getSource(this.editForm);
     if (source.id !== null) {
+      source.updatedAt = dayjs(new Date());
+      source.createBy = this.account?.login;
       this.subscribeToSaveResponse(this.sourceService.update(source));
     } else {
+      source.createdAt = dayjs(new Date());
+      source.updatedAt = dayjs(new Date());
+      source.createBy = this.account?.login;
       this.subscribeToSaveResponse(this.sourceService.create(source));
     }
   }

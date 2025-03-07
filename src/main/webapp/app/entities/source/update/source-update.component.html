@@ -22,42 +22,9 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="isoApp.source.source" for="field_source">Source</label>
-          <input type="text" class="form-control" name="source" id="field_source" data-cy="source" formControlName="source" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.source.createdAt" for="field_createdAt">Created At</label>
-          <div class="d-flex">
-            <input
-              id="field_createdAt"
-              data-cy="createdAt"
-              type="datetime-local"
-              class="form-control"
-              name="createdAt"
-              formControlName="createdAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.source.updatedAt" for="field_updatedAt">Updated At</label>
-          <div class="d-flex">
-            <input
-              id="field_updatedAt"
-              data-cy="updatedAt"
-              type="datetime-local"
-              class="form-control"
-              name="updatedAt"
-              formControlName="updatedAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.source.createBy" for="field_createBy">Create By</label>
-          <input type="text" class="form-control" name="createBy" id="field_createBy" data-cy="createBy" formControlName="createBy" />
+          <select class="form-control form-select" name="source" id="field_source" data-cy="source" formControlName="source">
+            <option *ngFor="let item of list" [value]="item">{{ item }}</option>
+          </select>
         </div>
       </div>
 
