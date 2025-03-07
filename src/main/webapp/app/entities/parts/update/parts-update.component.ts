@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IParts } from '../parts.model';
 import { PartsService } from '../service/parts.service';
 import { PartsFormService, PartsFormGroup } from './parts-form.service';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -20,15 +23,18 @@ import { PartsFormService, PartsFormGroup } from './parts-form.service';
 export class PartsUpdateComponent implements OnInit {
   isSaving = false;
   parts: IParts | null = null;
-
+  account: Account | null = null;
   protected partsService = inject(PartsService);
   protected partsFormService = inject(PartsFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: PartsFormGroup = this.partsFormService.createPartsFormGroup();
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+    });
     this.activatedRoute.data.subscribe(({ parts }) => {
       this.parts = parts;
       if (parts) {
@@ -45,8 +51,13 @@ export class PartsUpdateComponent implements OnInit {
     this.isSaving = true;
     const parts = this.partsFormService.getParts(this.editForm);
     if (parts.id !== null) {
+      parts.updatedAt = dayjs(new Date());
+      parts.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.partsService.update(parts));
     } else {
+      parts.createdAt = dayjs(new Date());
+      parts.updatedAt = dayjs(new Date());
+      parts.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.partsService.create(parts));
     }
   }

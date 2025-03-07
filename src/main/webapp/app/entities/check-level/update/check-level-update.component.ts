@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ICheckLevel } from '../check-level.model';
 import { CheckLevelService } from '../service/check-level.service';
 import { CheckLevelFormService, CheckLevelFormGroup } from './check-level-form.service';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -20,15 +23,18 @@ import { CheckLevelFormService, CheckLevelFormGroup } from './check-level-form.s
 export class CheckLevelUpdateComponent implements OnInit {
   isSaving = false;
   checkLevel: ICheckLevel | null = null;
-
+  account: Account | null = null;
   protected checkLevelService = inject(CheckLevelService);
   protected checkLevelFormService = inject(CheckLevelFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: CheckLevelFormGroup = this.checkLevelFormService.createCheckLevelFormGroup();
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+    });
     this.activatedRoute.data.subscribe(({ checkLevel }) => {
       this.checkLevel = checkLevel;
       if (checkLevel) {
@@ -45,8 +51,13 @@ export class CheckLevelUpdateComponent implements OnInit {
     this.isSaving = true;
     const checkLevel = this.checkLevelFormService.getCheckLevel(this.editForm);
     if (checkLevel.id !== null) {
+      checkLevel.updatedAt = dayjs(new Date());
+      checkLevel.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.checkLevelService.update(checkLevel));
     } else {
+      checkLevel.createdAt = dayjs(new Date());
+      checkLevel.updatedAt = dayjs(new Date());
+      checkLevel.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.checkLevelService.create(checkLevel));
     }
   }

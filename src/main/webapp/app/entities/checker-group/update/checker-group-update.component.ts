@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ICheckerGroup } from '../checker-group.model';
 import { CheckerGroupService } from '../service/checker-group.service';
 import { CheckerGroupFormService, CheckerGroupFormGroup } from './checker-group-form.service';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -20,15 +23,18 @@ import { CheckerGroupFormService, CheckerGroupFormGroup } from './checker-group-
 export class CheckerGroupUpdateComponent implements OnInit {
   isSaving = false;
   checkerGroup: ICheckerGroup | null = null;
-
+  account: Account | null = null;
   protected checkerGroupService = inject(CheckerGroupService);
   protected checkerGroupFormService = inject(CheckerGroupFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: CheckerGroupFormGroup = this.checkerGroupFormService.createCheckerGroupFormGroup();
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+    });
     this.activatedRoute.data.subscribe(({ checkerGroup }) => {
       this.checkerGroup = checkerGroup;
       if (checkerGroup) {
@@ -45,8 +51,13 @@ export class CheckerGroupUpdateComponent implements OnInit {
     this.isSaving = true;
     const checkerGroup = this.checkerGroupFormService.getCheckerGroup(this.editForm);
     if (checkerGroup.id !== null) {
+      checkerGroup.updatedAt = dayjs(new Date());
+      checkerGroup.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.checkerGroupService.update(checkerGroup));
     } else {
+      checkerGroup.createdAt = dayjs(new Date());
+      checkerGroup.updatedAt = dayjs(new Date());
+      checkerGroup.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.checkerGroupService.create(checkerGroup));
     }
   }

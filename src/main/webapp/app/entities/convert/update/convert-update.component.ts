@@ -63,14 +63,14 @@ export class ConvertUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const convert = this.convertFormService.getConvert(this.editForm);
-    if (this.account) {
-      convert.updateBy = this.account.login;
-      convert.createdAt = dayjs();
-      convert.updatedAt = dayjs();
-    }
     if (convert.id !== null) {
+      convert.updatedAt = dayjs(new Date());
+      convert.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.convertService.update(convert));
     } else {
+      convert.createdAt = dayjs(new Date());
+      convert.updatedAt = dayjs(new Date());
+      convert.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.convertService.create(convert));
     }
   }
