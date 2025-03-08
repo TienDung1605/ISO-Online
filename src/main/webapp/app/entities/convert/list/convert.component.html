@@ -173,7 +173,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -181,7 +181,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('type', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -189,7 +189,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('mark', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -197,7 +197,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+            <input pInputText type="date" placeholder="Search" style="padding-left: 30px" (input)="onSearch('createdAt', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -205,7 +205,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+            <input pInputText type="date" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updatedAt', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -213,7 +213,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updateBy', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border"></th>

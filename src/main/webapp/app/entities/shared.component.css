@@ -1669,7 +1669,7 @@ input[type="range"] {
 
 .form-header-container > select,
 input[type='text'],
-input[type='datetime-local'] {
+input[type='date'] {
   width: 98%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -1679,7 +1679,7 @@ input[type='datetime-local'] {
 
 .form-header-container > select,
 input[type='text'],
-input[type='datetime-local']:focus {
+input[type='date']:focus {
   border-color: #66afe9;
   outline: none;
   box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
@@ -1863,7 +1863,7 @@ input.ng-invalid.ng-touched {
 
   input[type='number'],
   input[type='text'],
-  input[type='datetime-local'] {
+  input[type='date'] {
     width: 100%;
     font-size: 10px;
   }
@@ -2040,19 +2040,16 @@ label {
 }
 
 .form-control {
-  border: 1px solid #ced4da;
+  border: 1px solid #e0e0e0;
   border-radius: 4px;
-  padding: 0.5rem;
-  transition:
-    border-color 0.15s ease-in-out,
-    box-shadow 0.15s ease-in-out;
-  width: 100%;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
 }
 
 .form-control:focus {
-  border-color: #0073e6;
-  box-shadow: 0 0 0 0.2rem rgba(0, 115, 230, 0.25);
-  outline: 0;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
 }
 
 @media (max-width: 768px) {
@@ -2355,6 +2352,115 @@ select::-webkit-scrollbar-thumb:hover {
   }
 }
 
-/* .gross-modal {
-  width: 400px;
-} */
+.col-8 {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+h2 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+}
+
+.form-label {
+  color: #34495e;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.form-select {
+  height: 45px;
+  background-color: #fff;
+}
+
+.btn-secondary {
+  background-color: #95a5a6;
+  border: none;
+  margin-right: 1rem;
+}
+
+.btn-secondary:hover {
+  background-color: #7f8c8d;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+}
+
+.btn-primary:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.mb-3 {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.form-label {
+  color: #34495e;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.form-select {
+  width: 100%;
+  height: 45px;
+}
+
+fa-icon {
+  margin-right: 0.5rem;
+}
+
+.ng-invalid:not(form) {
+  border-left: 3px solid #e74c3c;
+}
+
+.ng-valid[required] {
+  border-left: 3px solid #2ecc71;
+}
+
+@media (max-width: 768px) {
+  .col-8 {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .mb-3 {
+    padding: 0 1rem;
+  }
+}

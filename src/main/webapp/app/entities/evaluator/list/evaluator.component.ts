@@ -11,7 +11,9 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { IEvaluator } from '../evaluator.model';
 import { EntityArrayResponseType, EvaluatorService } from '../service/evaluator.service';
 import { EvaluatorDeleteDialogComponent } from '../delete/evaluator-delete-dialog.component';
-
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 @Component({
   standalone: true,
   selector: 'jhi-evaluator',
@@ -26,6 +28,9 @@ import { EvaluatorDeleteDialogComponent } from '../delete/evaluator-delete-dialo
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class EvaluatorComponent implements OnInit {
@@ -34,20 +39,20 @@ export class EvaluatorComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-  evaluator: IEvaluator[] = [];
-  filteredEvaluators: IEvaluator[] = [];
-  searchTerms: { [key: string]: string } = {
-    id: '',
+  evaluatorResult: any[] = [];
+
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
+    name: '',
     userGroupId: '',
     createdAt: '',
     updatedAt: '',
-    status: '',
     updateBy: '',
+    status: '',
   };
-
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
 
   public router = inject(Router);
   protected evaluatorService = inject(EvaluatorService);
@@ -89,53 +94,49 @@ export class EvaluatorComponent implements OnInit {
     //     this.onResponseSuccess(res);
     //   },
     // });
-    this.evaluatorService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(response => {
-        this.filteredEvaluators = response.body ?? [];
-        this.evaluators = [...this.filteredEvaluators];
-        this.totalItems = Number(response.headers.get('X-Total-Count'));
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.evaluators = res.body;
+          this.evaluatorResult = [...this.evaluators];
+          this.totalRecords = this.evaluators.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
-  onPageChange(page: number): void {
-    this.page = page;
-    this.load();
-  }
-
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   searchTable(): void {
-    this.evaluators = this.filteredEvaluators.filter(convert => {
-      const nameMatch =
-        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+    if (!this.evaluators) {
+      return;
+    }
+    this.evaluatorResult = this.evaluators.filter(evaluator => {
+      const createdDate = evaluator.createdAt ? new Date(evaluator.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = evaluator.updatedAt ? new Date(evaluator.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
 
-      const userGroupIdMatch =
-        !this.searchTerms.userGroupId || convert.userGroupId?.toString().toLowerCase().includes(this.searchTerms.userGroupId.toLowerCase());
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      const statusMatch = !this.searchTerms.status || (convert.status && convert.status.toString().includes(this.searchTerms.status));
-
-      return nameMatch && userGroupIdMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
+      return (
+        (!this.filters.name || evaluator.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.userGroupId || evaluator.userGroupId?.toString().toLowerCase().includes(this.filters.userGroupId.toLowerCase())) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.status || evaluator.status?.toLowerCase().includes(this.filters.status.toLowerCase())) &&
+        (!this.filters.updateBy || evaluator.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
     });
+  }
+
+  onSearch(evaluator: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[evaluator] = value;
+    this.searchTable();
   }
 
   navigateToWithComponentValues(event: SortState): void {

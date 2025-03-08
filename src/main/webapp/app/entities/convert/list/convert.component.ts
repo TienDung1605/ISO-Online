@@ -51,15 +51,11 @@ export class ConvertComponent implements OnInit {
   converts?: IConvert[];
   isLoading = false;
   sortState = sortStateSignal({});
-  convert: IConvert[] = [];
-  filteredConverts: IConvert[] = [];
   convertResult: any[] = [];
   page = 1;
   totalItems = 0;
   itemsPerPage = 10;
 
-  pageSize = 10;
-  pageSizes: number[] = [5, 10, 20, 50];
   selectedPageSize: number = 10;
   rows = 10;
 
@@ -67,7 +63,7 @@ export class ConvertComponent implements OnInit {
   first: number = 0;
   totalRecords: number = 0;
 
-  searchTerms: { [key: string]: string } = {
+  filters = {
     id: '',
     name: '',
     type: '',
@@ -75,8 +71,6 @@ export class ConvertComponent implements OnInit {
     createdAt: '',
     updatedAt: '',
     updateBy: '',
-    score: '',
-    count: '',
   };
 
   // account: Account | null = null;
@@ -138,22 +132,6 @@ export class ConvertComponent implements OnInit {
       });
   }
 
-  // onPageChange(event: any): void {
-  //   this.first = event.first;
-  //   this.itemsPerPage = event.rows;
-  //   this.load();
-  // }
-
-  // onPageSizeChange(event: Event): void {
-  //   const target = event.target as HTMLSelectElement;
-  //   this.itemsPerPage = Number(target.value);
-  //   this.page = 1;
-  //   setTimeout(() => {
-  //     this.load();
-  //   }, 100);
-  //   console.log('page size', this.itemsPerPage);
-  // }
-
   onPageSizeChange(event: any): void {
     this.selectedPageSize = event.rows;
     this.first = event.first;
@@ -163,31 +141,31 @@ export class ConvertComponent implements OnInit {
   }
 
   searchTable(): void {
-    this.converts = this.filteredConverts.filter(convert => {
-      const nameMatch =
-        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+    if (!this.converts) {
+      return;
+    }
+    this.convertResult = this.converts.filter(convert => {
+      const createdDate = convert.createdAt ? new Date(convert.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = convert.updatedAt ? new Date(convert.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
 
-      const typeMatch =
-        !this.searchTerms.type || (convert.type && convert.type.toLowerCase().includes(this.searchTerms.type.toLowerCase()));
-
-      const markMatch = !this.searchTerms.mark || (convert.mark && convert.mark.toString().includes(this.searchTerms.mark));
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      const scoreMatch = !this.searchTerms.score || (convert.score && convert.score.toString().includes(this.searchTerms.score));
-
-      const countMatch = !this.searchTerms.count || (convert.count && convert.count.toString().includes(this.searchTerms.count));
-
-      return nameMatch && typeMatch && markMatch && createdAtMatch && updatedAtMatch && updateByMatch && scoreMatch && countMatch;
+      return (
+        (!this.filters.name || convert.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.type || convert.type?.toLowerCase().includes(this.filters.type.toLowerCase())) &&
+        (!this.filters.mark || convert.mark?.toLowerCase().includes(this.filters.mark.toLowerCase())) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.updateBy || convert.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
     });
+    this.totalRecords = this.convertResult.length;
+  }
+
+  onSearch(convert: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[convert] = value;
+    this.searchTable();
   }
 
   navigateToWithComponentValues(event: SortState): void {
