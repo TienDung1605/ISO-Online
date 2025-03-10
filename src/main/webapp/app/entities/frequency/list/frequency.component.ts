@@ -122,7 +122,7 @@ export class FrequencyComponent implements OnInit {
         (!this.filters.name || frequency.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
         (!this.filters.createdAt || createdDate === searchCreatedDate) &&
         (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
-        (!this.filters.status || frequency.updatedAt?.toString().includes(this.filters.updatedAt)) &&
+        (!this.filters.status || frequency.status?.toString().includes(this.filters.status)) &&
         (!this.filters.updateBy || frequency.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
       );
     });

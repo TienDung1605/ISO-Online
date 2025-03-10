@@ -11,6 +11,9 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ICriteria } from '../criteria.model';
 import { EntityArrayResponseType, CriteriaService } from '../service/criteria.service';
 import { CriteriaDeleteDialogComponent } from '../delete/criteria-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   standalone: true,
@@ -26,6 +29,9 @@ import { CriteriaDeleteDialogComponent } from '../delete/criteria-delete-dialog.
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class CriteriaComponent implements OnInit {
@@ -34,21 +40,21 @@ export class CriteriaComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-  criterias: ICriteria[] = [];
-  filteredCriteria: ICriteria[] = [];
-
-  searchTerms: { [key: string]: string } = {
+  criteriaResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
     criterialGroupId: '',
-    status: '',
     createdAt: '',
     updatedAt: '',
+    status: '',
     updateBy: '',
   };
-
-  page: number = 1;
-  pageSize: number = 10;
-  totalItems: number = 0;
 
   public router = inject(Router);
   protected criteriaService = inject(CriteriaService);
@@ -88,95 +94,56 @@ export class CriteriaComponent implements OnInit {
     //     this.onResponseSuccess(res);
     //   },
     // });
-    this.criteriaService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe({
-        next: response => {
-          this.filteredCriteria = response.body ?? [];
-          this.criteria = [...this.filteredCriteria];
-          this.totalItems = Number(response.headers.get('X-Total-Count'));
-        },
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.criteria = res.body;
+          this.criteriaResult = [...this.criteria];
+          this.totalRecords = this.criteria.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
   onPageChange(page: number): void {
-    if (!Number.isNaN(page) && page > 0) {
-      this.page = page;
-      console.log('Valid page number:', this.page);
-      this.load();
-    } else {
-      console.error('Invalid page number:', page);
-      this.page = 1;
-      this.load();
-    }
-  }
-
-  // onPageSizeChange(event: Event): void {
-  //   const target = event.target as HTMLSelectElement;
-  //   this.pageSize = Number(target.value);
-  //   this.page = 1;
-  //   this.load();
-  //   console.log('Page size changed to:', this.pageSize);
-  // }
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    if (!target) {
-      console.error('Invalid event target');
-      return;
-    }
-
-    const newSize = parseInt(target.value, 10);
-    if (isNaN(newSize) || newSize <= 0) {
-      console.error('Invalid page size:', target.value);
-      this.pageSize = 10;
-    } else {
-      this.pageSize = newSize;
-    }
-
-    console.log('Page size changed to:', this.pageSize);
-    this.page = 1;
+    this.page = page;
     this.load();
   }
 
-  // searchTable(): void {
-  //   this.criteria = this.filteredCriteria.filter(convert => {
-  //     const nameMatch = !this.searchTerms.name ||
-  //       (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
-
-  //     const criterialGroupIdMatch = !this.searchTerms.criterialGroupId ||
-  //       (convert.criterialGroupId && convert.criterialGroupId.toLowerCase().includes(this.searchTerms.criterialGroupId.toLowerCase()));
-
-  //     const statusMatch = !this.searchTerms.status ||
-  //       (convert.status && convert.status.toString().includes(this.searchTerms.status));
-
-  //     const createdAtMatch = !this.searchTerms.createdAt ||
-  //       (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
-
-  //     const updatedAtMatch = !this.searchTerms.updatedAt ||
-  //       (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-  //     const updateByMatch = !this.searchTerms.updateBy ||
-  //       (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-  //     return nameMatch && criterialGroupIdMatch && statusMatch && createdAtMatch &&
-  //       updatedAtMatch && updateByMatch;
-  //   });
-  // }
-
   searchTable(): void {
-    this.criteria = this.filteredCriteria.filter(
-      criteria =>
-        (!this.searchTerms.name || criteria.name?.toLowerCase().includes(this.searchTerms.name.toLowerCase())) &&
-        (!this.searchTerms.criterialGroupId || criteria.criterialGroupId?.toString().includes(this.searchTerms.criterialGroupId)) &&
-        (!this.searchTerms.status || criteria.status?.toString().includes(this.searchTerms.status)) &&
-        (!this.searchTerms.createdAt || criteria.createdAt?.toString().includes(this.searchTerms.createdAt)) &&
-        (!this.searchTerms.updatedAt || criteria.updatedAt?.toString().includes(this.searchTerms.updatedAt)) &&
-        (!this.searchTerms.updateBy || criteria.updateBy?.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase())),
-    );
+    if (!this.criteria) {
+      return;
+    }
+
+    this.criteriaResult = this.criteria.filter(criterias => {
+      const createdDate = criterias.createdAt ? new Date(criterias.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = criterias.updatedAt ? new Date(criterias.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || criterias.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.criterialGroupId || criterias.criterialGroupId?.toString().includes(this.filters.criterialGroupId)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.status || criterias.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.updateBy || criterias.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
+    });
+    this.totalRecords = this.criteria.length;
+  }
+
+  onSearch(title: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[title] = value;
+    this.searchTable();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   navigateToWithComponentValues(event: SortState): void {

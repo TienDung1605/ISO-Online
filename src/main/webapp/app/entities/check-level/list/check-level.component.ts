@@ -11,6 +11,9 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ICheckLevel } from '../check-level.model';
 import { EntityArrayResponseType, CheckLevelService } from '../service/check-level.service';
 import { CheckLevelDeleteDialogComponent } from '../delete/check-level-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   standalone: true,
@@ -26,6 +29,9 @@ import { CheckLevelDeleteDialogComponent } from '../delete/check-level-delete-di
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class CheckLevelComponent implements OnInit {
@@ -35,19 +41,20 @@ export class CheckLevelComponent implements OnInit {
 
   sortState = sortStateSignal({});
 
-  filteredCheckLevels: ICheckLevel[] = [];
-  searchTerms: { [key: string]: string } = {
-    id: '',
+  checkLevelResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
     status: '',
     createdAt: '',
     updatedAt: '',
     updateBy: '',
   };
-
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
 
   public router = inject(Router);
   protected checkLevelService = inject(CheckLevelService);
@@ -71,23 +78,61 @@ export class CheckLevelComponent implements OnInit {
       .subscribe();
   }
 
-  searchTable(): void {
-    this.checkLevels = this.filteredCheckLevels.filter(convert => {
-      const nameMatch =
-        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      return nameMatch && createdAtMatch && updatedAtMatch && updateByMatch;
+  load(): void {
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.checkLevels = res.body;
+          this.checkLevelResult = [...this.checkLevels];
+          this.totalRecords = this.checkLevels.length;
+          this.isLoading = false;
+        }
+      },
     });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  searchTable(): void {
+    if (!this.checkLevels) {
+      return;
+    }
+
+    this.checkLevelResult = this.checkLevels.filter(checkLevel => {
+      const createdDate = checkLevel.createdAt ? new Date(checkLevel.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = checkLevel.updatedAt ? new Date(checkLevel.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || checkLevel.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.status || checkLevel.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.updateBy || checkLevel.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
+    });
+    this.totalRecords = this.checkLevelResult.length;
+  }
+
+  onSearch(title: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[title] = value;
+    this.searchTable();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   delete(checkLevel: ICheckLevel): void {
@@ -100,36 +145,6 @@ export class CheckLevelComponent implements OnInit {
         tap(() => this.load()),
       )
       .subscribe();
-  }
-
-  load(): void {
-    // this.queryBackend().subscribe({
-    //   next: (res: EntityArrayResponseType) => {
-    //     this.onResponseSuccess(res);
-    //   },
-    // });
-    this.checkLevelService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(response => {
-        this.filteredCheckLevels = response.body ?? [];
-        this.checkLevels = [...this.filteredCheckLevels];
-      });
-  }
-
-  onPageChange(page: number): void {
-    this.page = page;
-    this.load();
-  }
-
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
   }
 
   navigateToWithComponentValues(event: SortState): void {

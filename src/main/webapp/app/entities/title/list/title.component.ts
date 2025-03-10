@@ -11,6 +11,9 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ITitle } from '../title.model';
 import { EntityArrayResponseType, TitleService } from '../service/title.service';
 import { TitleDeleteDialogComponent } from '../delete/title-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   standalone: true,
@@ -26,6 +29,9 @@ import { TitleDeleteDialogComponent } from '../delete/title-delete-dialog.compon
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class TitleComponent implements OnInit {
@@ -34,22 +40,22 @@ export class TitleComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-  title: ITitle[] = [];
-  filteredTitles: ITitle[] = [];
-  searchTerms: { [key: string]: string } = {
-    id: '',
+  titleResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
     source: '',
     createdAt: '',
     updatedAt: '',
     dataType: '',
-    updateBy: '',
     field: '',
+    updateBy: '',
   };
-
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
 
   public router = inject(Router);
   protected titleService = inject(TitleService);
@@ -91,16 +97,17 @@ export class TitleComponent implements OnInit {
     //     this.onResponseSuccess(res);
     //   },
     // });
-    this.titleService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(respone => {
-        this.filteredTitles = respone.body ?? [];
-        this.titles = [...this.filteredTitles];
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.titles = res.body;
+          this.titleResult = [...this.titles];
+          this.totalRecords = this.titles.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
   onPageChange(page: number): void {
@@ -108,35 +115,39 @@ export class TitleComponent implements OnInit {
     this.load();
   }
 
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
+  searchTable(): void {
+    if (!this.titles) {
+      return;
+    }
+
+    this.titleResult = this.titles.filter(title => {
+      const createdDate = title.createdAt ? new Date(title.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = title.updatedAt ? new Date(title.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || title.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.source || title.source?.toString().includes(this.filters.source)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.dataType || title.dataType?.toString().includes(this.filters.dataType)) &&
+        (!this.filters.field || title.field?.toString().includes(this.filters.field)) &&
+        (!this.filters.updateBy || title.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
+    });
+    this.totalRecords = this.titleResult.length;
   }
 
-  searchTable(): void {
-    this.titles = this.filteredTitles.filter(title => {
-      const nameMatch = !this.searchTerms.name || (title.name && title.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+  onSearch(title: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[title] = value;
+    this.searchTable();
+  }
 
-      const sourceMatch =
-        !this.searchTerms.source || (title.source && title.source.toLowerCase().includes(this.searchTerms.source.toLowerCase()));
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (title.createdAt && title.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (title.updatedAt && title.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy || (title.updateBy && title.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      const fieldMatch = !this.searchTerms.field || (title.field && title.field.toString().includes(this.searchTerms.field));
-
-      const dataTypeMatch = !this.searchTerms.dataType || (title.dataType && title.dataType.toString().includes(this.searchTerms.dataType));
-
-      return nameMatch && sourceMatch && fieldMatch && createdAtMatch && updatedAtMatch && updateByMatch && dataTypeMatch;
-    });
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   navigateToWithComponentValues(event: SortState): void {

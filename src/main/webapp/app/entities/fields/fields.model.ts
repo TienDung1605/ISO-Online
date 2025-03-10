@@ -5,9 +5,10 @@ export interface IFields {
   name?: string | null;
   fieldName?: string | null;
   sourceId?: number | null;
-  createdAt?: dayjs.Dayjs | null;
-  updatedAt?: dayjs.Dayjs | null;
+  createdAt?: any | null;
+  updatedAt?: any | null;
   createBy?: string | null;
+  source?: string | null;
 }
 
 export type NewFields = Omit<IFields, 'id'> & { id: null };

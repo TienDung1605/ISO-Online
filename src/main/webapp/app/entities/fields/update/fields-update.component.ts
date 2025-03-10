@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IFields } from '../fields.model';
 import { FieldsService } from '../service/fields.service';
 import { FieldsFormService, FieldsFormGroup } from './fields-form.service';
+import { SourceService } from 'app/entities/source/service/source.service';
+import { ISource } from 'app/entities/source/source.model';
 
 @Component({
   standalone: true,
@@ -20,10 +22,12 @@ import { FieldsFormService, FieldsFormGroup } from './fields-form.service';
 export class FieldsUpdateComponent implements OnInit {
   isSaving = false;
   fields: IFields | null = null;
-
+  sources: ISource[] = [];
+  name = '';
   protected fieldsService = inject(FieldsService);
   protected fieldsFormService = inject(FieldsFormService);
   protected activatedRoute = inject(ActivatedRoute);
+  protected sourceService = inject(SourceService);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: FieldsFormGroup = this.fieldsFormService.createFieldsFormGroup();
@@ -69,9 +73,25 @@ export class FieldsUpdateComponent implements OnInit {
   protected onSaveFinalize(): void {
     this.isSaving = false;
   }
-
+  protected updateSourceId() {
+    const source = this.sources.find((s: ISource) => s.name === this.name);
+    if (source) {
+      this.editForm.patchValue({ sourceId: source.id });
+    }
+    console.log('check name', source);
+  }
   protected updateForm(fields: IFields): void {
     this.fields = fields;
     this.fieldsFormService.resetForm(this.editForm, fields);
+    this.sourceService.query().subscribe((res: any) => {
+      if (res.body) {
+        this.sources = res.body;
+        const source = res.body.find((s: ISource) => s.id === this.fields?.sourceId);
+        if (source) {
+          this.name = source.name;
+          console.log('check form', this.editForm);
+        }
+      }
+    });
   }
 }

@@ -3,6 +3,7 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.repository.FieldsRepository;
 import com.mycompany.myapp.service.FieldsService;
 import com.mycompany.myapp.service.dto.FieldsDTO;
+import com.mycompany.myapp.service.dto.FieldsRespone;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -145,6 +146,12 @@ public class FieldsResource {
         Page<FieldsDTO> page = fieldsService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/all")
+    public List<FieldsRespone> getAllFieldsCusTom() {
+        List<FieldsRespone> fieldsRespones = this.fieldsRepository.getAllListFields();
+        return fieldsRespones;
     }
 
     /**

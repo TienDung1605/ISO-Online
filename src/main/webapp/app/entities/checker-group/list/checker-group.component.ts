@@ -11,6 +11,9 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ICheckerGroup } from '../checker-group.model';
 import { EntityArrayResponseType, CheckerGroupService } from '../service/checker-group.service';
 import { CheckerGroupDeleteDialogComponent } from '../delete/checker-group-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   standalone: true,
@@ -26,25 +29,30 @@ import { CheckerGroupDeleteDialogComponent } from '../delete/checker-group-delet
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class CheckerGroupComponent implements OnInit {
   subscription: Subscription | null = null;
   checkerGroups?: ICheckerGroup[];
   isLoading = false;
-  filteredCheckerGroups: ICheckerGroup[] = [];
   sortState = sortStateSignal({});
-  searchTerms: { [key: string]: string } = {
+  checkerGroupResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
     status: '',
     createdAt: '',
     updatedAt: '',
     updateBy: '',
   };
-
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
 
   public router = inject(Router);
   protected checkerGroupService = inject(CheckerGroupService);
@@ -86,16 +94,17 @@ export class CheckerGroupComponent implements OnInit {
     //     this.onResponseSuccess(res);
     //   },
     // });
-    this.checkerGroupService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(response => {
-        this.filteredCheckerGroups = response.body ?? [];
-        this.checkerGroups = [...this.filteredCheckerGroups];
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.checkerGroups = res.body;
+          this.checkerGroupResult = [...this.checkerGroups];
+          this.totalRecords = this.checkerGroups.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
   onPageChange(page: number): void {
@@ -103,33 +112,37 @@ export class CheckerGroupComponent implements OnInit {
     this.load();
   }
 
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
+  searchTable(): void {
+    if (!this.checkerGroups) {
+      return;
+    }
+
+    this.checkerGroupResult = this.checkerGroups.filter(checkerGroup => {
+      const createdDate = checkerGroup.createdAt ? new Date(checkerGroup.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = checkerGroup.updatedAt ? new Date(checkerGroup.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || checkerGroup.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.status || checkerGroup.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.updateBy || checkerGroup.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
+    });
+    this.totalRecords = this.checkerGroupResult.length;
   }
 
-  searchTable(): void {
-    this.checkerGroups = this.filteredCheckerGroups.filter(convert => {
-      const nameMatch =
-        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+  onSearch(title: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[title] = value;
+    this.searchTable();
+  }
 
-      const statusMatch =
-        !this.searchTerms.status || (convert.status && convert.status.toLowerCase().includes(this.searchTerms.status.toLowerCase()));
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      return nameMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
-    });
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   navigateToWithComponentValues(event: SortState): void {

@@ -38,6 +38,7 @@ type FieldsFormGroupContent = {
   createdAt: FormControl<FieldsFormRawValue['createdAt']>;
   updatedAt: FormControl<FieldsFormRawValue['updatedAt']>;
   createBy: FormControl<FieldsFormRawValue['createBy']>;
+  source: FormControl<FieldsFormRawValue['source']>;
 };
 
 export type FieldsFormGroup = FormGroup<FieldsFormGroupContent>;
@@ -63,6 +64,7 @@ export class FieldsFormService {
       createdAt: new FormControl(fieldsRawValue.createdAt),
       updatedAt: new FormControl(fieldsRawValue.updatedAt),
       createBy: new FormControl(fieldsRawValue.createBy),
+      source: new FormControl(fieldsRawValue.source),
     });
   }
 
