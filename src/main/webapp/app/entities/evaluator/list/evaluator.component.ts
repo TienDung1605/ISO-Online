@@ -11,6 +11,7 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { IEvaluator } from '../evaluator.model';
 import { EntityArrayResponseType, EvaluatorService } from '../service/evaluator.service';
 import { EvaluatorDeleteDialogComponent } from '../delete/evaluator-delete-dialog.component';
+import { CheckerGroupService } from 'app/entities/checker-group/service/checker-group.service';
 
 @Component({
   standalone: true,
@@ -32,7 +33,8 @@ export class EvaluatorComponent implements OnInit {
   subscription: Subscription | null = null;
   evaluators?: IEvaluator[];
   isLoading = false;
-
+  //get list checker group
+  checkerGroups: any[] | null = [];
   sortState = sortStateSignal({});
   evaluator: IEvaluator[] = [];
   filteredEvaluators: IEvaluator[] = [];
@@ -55,7 +57,7 @@ export class EvaluatorComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
-
+  protected checkerGroup = inject(CheckerGroupService);
   trackId = (_index: number, item: IEvaluator): number => this.evaluatorService.getEvaluatorIdentifier(item);
 
   ngOnInit(): void {
@@ -99,6 +101,16 @@ export class EvaluatorComponent implements OnInit {
         this.filteredEvaluators = response.body ?? [];
         this.evaluators = [...this.filteredEvaluators];
         this.totalItems = Number(response.headers.get('X-Total-Count'));
+        this.checkerGroup.query().subscribe(res => {
+          if (res.body) {
+            this.evaluators?.forEach(evaluator => {
+              const result = res.body!.find((item: any) => item.id === evaluator.userGroupId);
+              if (result) {
+                evaluator.checkerGroup = result.name;
+              }
+            });
+          }
+        });
       });
   }
 

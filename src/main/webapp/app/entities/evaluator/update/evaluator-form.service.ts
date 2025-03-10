@@ -38,6 +38,7 @@ type EvaluatorFormGroupContent = {
   updatedAt: FormControl<EvaluatorFormRawValue['updatedAt']>;
   status: FormControl<EvaluatorFormRawValue['status']>;
   updateBy: FormControl<EvaluatorFormRawValue['updateBy']>;
+  checkerGroup: FormControl<EvaluatorFormRawValue['checkerGroup']>;
 };
 
 export type EvaluatorFormGroup = FormGroup<EvaluatorFormGroupContent>;
@@ -63,6 +64,7 @@ export class EvaluatorFormService {
       updatedAt: new FormControl(evaluatorRawValue.updatedAt),
       status: new FormControl(evaluatorRawValue.status),
       updateBy: new FormControl(evaluatorRawValue.updateBy),
+      checkerGroup: new FormControl(evaluatorRawValue.checkerGroup),
     });
   }
 

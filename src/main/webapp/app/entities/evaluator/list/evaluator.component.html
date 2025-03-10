@@ -97,7 +97,7 @@
               <input
                 type="text"
                 placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.userGroupId"
+                [(ngModel)]="searchTerms.checkerGroup"
                 (input)="searchTable()"
                 class="form-control d-inline-block w-auto mr-2"
               />
@@ -148,7 +148,7 @@
                 <a [routerLink]="['/evaluator', evaluator.id, 'view']">{{ evaluator.id }}</a>
               </td>
               <td>{{ evaluator.name }}</td>
-              <td>{{ evaluator.userGroupId }}</td>
+              <td>{{ evaluator.checkerGroup }}</td>
               <td>{{ evaluator.createdAt | formatMediumDatetime }}</td>
               <td>{{ evaluator.updatedAt | formatMediumDatetime }}</td>
               <td>{{ evaluator.status }}</td>

@@ -12,6 +12,9 @@ import { FieldsService } from '../service/fields.service';
 import { FieldsFormService, FieldsFormGroup } from './fields-form.service';
 import { SourceService } from 'app/entities/source/service/source.service';
 import { ISource } from 'app/entities/source/source.model';
+import { Account } from 'app/core/auth/account.model';
+import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -24,15 +27,19 @@ export class FieldsUpdateComponent implements OnInit {
   fields: IFields | null = null;
   sources: ISource[] = [];
   name = '';
+  account: Account | null = null;
   protected fieldsService = inject(FieldsService);
   protected fieldsFormService = inject(FieldsFormService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sourceService = inject(SourceService);
-
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: FieldsFormGroup = this.fieldsFormService.createFieldsFormGroup();
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+    });
     this.activatedRoute.data.subscribe(({ fields }) => {
       this.fields = fields;
       if (fields) {
@@ -49,8 +56,13 @@ export class FieldsUpdateComponent implements OnInit {
     this.isSaving = true;
     const fields = this.fieldsFormService.getFields(this.editForm);
     if (fields.id !== null) {
+      fields.updatedAt = dayjs(new Date());
+      fields.createBy = this.account?.login;
       this.subscribeToSaveResponse(this.fieldsService.update(fields));
     } else {
+      fields.createdAt = dayjs(new Date());
+      fields.updatedAt = dayjs(new Date());
+      fields.createBy = this.account?.login;
       this.subscribeToSaveResponse(this.fieldsService.create(fields));
     }
   }

@@ -8,6 +8,7 @@ export interface IEvaluator {
   updatedAt?: dayjs.Dayjs | null;
   status?: string | null;
   updateBy?: string | null;
+  checkerGroup?: string | null;
 }
 
 export type NewEvaluator = Omit<IEvaluator, 'id'> & { id: null };
