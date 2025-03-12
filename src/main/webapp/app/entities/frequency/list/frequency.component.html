@@ -255,7 +255,9 @@
         <td class="text-center border">{{ frequency.name }}</td>
         <td class="text-center border">{{ frequency.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ frequency.updatedAt | formatMediumDatetime }}</td>
-        <td class="text-center border">{{ frequency.status }}</td>
+        <td class="text-center border">
+          <p-tag [value]="frequency.status" [severity]="getSeverity(frequency.status)" />
+        </td>
         <td class="text-center border">{{ frequency.updateBy }}</td>
         <td class="text-center border">
           <div class="btn-group action-buttons">

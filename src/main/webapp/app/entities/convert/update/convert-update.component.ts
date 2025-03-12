@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
 import { IConvert } from '../convert.model';
 import { ConvertService } from '../service/convert.service';
@@ -13,6 +13,7 @@ import { ConvertFormService, ConvertFormGroup } from './convert-form.service';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import dayjs from 'dayjs/esm';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -28,6 +29,7 @@ export class ConvertUpdateComponent implements OnInit {
   protected convertFormService = inject(ConvertFormService);
   protected activatedRoute = inject(ActivatedRoute);
   protected accountService = inject(AccountService);
+  protected formBuilder = inject(FormBuilder);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: ConvertFormGroup = this.convertFormService.createConvertFormGroup();
 
@@ -54,6 +56,17 @@ export class ConvertUpdateComponent implements OnInit {
         this.updateForm(convert);
       }
     });
+
+    this.editForm.get('type')?.valueChanges.subscribe(value => {
+      if (value === 'Bước nhảy') {
+        this.editForm.get('mark')?.disable();
+        this.editForm.patchValue({
+          mark: '',
+        });
+      } else {
+        this.editForm.get('mark')?.enable();
+      }
+    });
   }
 
   previousState(): void {
@@ -63,6 +76,9 @@ export class ConvertUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const convert = this.convertFormService.getConvert(this.editForm);
+    if (convert.type === 'Bước nhảy') {
+      convert.mark = '';
+    }
     if (convert.id !== null) {
       convert.updatedAt = dayjs(new Date());
       convert.updateBy = this.account?.login;
@@ -76,9 +92,43 @@ export class ConvertUpdateComponent implements OnInit {
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IConvert>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+    result.subscribe({
+      next: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.convert?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+        });
+        this.onSaveSuccess();
+      },
+      error: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.convert?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+        });
+        this.onSaveError();
+      },
     });
   }
 

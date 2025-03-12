@@ -14,6 +14,7 @@ import { PartsDeleteDialogComponent } from '../delete/parts-delete-dialog.compon
 import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -32,6 +33,7 @@ import { InputIconModule } from 'primeng/inputicon';
     TableModule,
     IconFieldModule,
     InputIconModule,
+    TagModule,
   ],
 })
 export class PartsComponent implements OnInit {
@@ -110,6 +112,15 @@ export class PartsComponent implements OnInit {
   onPageChange(page: number): void {
     this.page = page;
     this.load();
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   searchTable(): void {

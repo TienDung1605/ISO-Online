@@ -258,7 +258,7 @@
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
         <td class="text-center border">{{ checkLevel.name }}</td>
-        <td class="text-center border">{{ checkLevel.status }}</td>
+        <td class="text-center border"><p-tag [value]="checkLevel.status" [severity]="getSeverity(checkLevel.status)" /></td>
         <td class="text-center border">{{ checkLevel.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ checkLevel.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ checkLevel.updateBy }}</td>

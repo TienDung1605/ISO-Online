@@ -32,6 +32,10 @@ export class CheckLevelService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/check-levels');
 
+  getAllCheckLevels(): Observable<ICheckLevel[]> {
+    return this.http.get<ICheckLevel[]>(this.resourceUrl);
+  }
+
   create(checkLevel: NewCheckLevel): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(checkLevel);
     return this.http

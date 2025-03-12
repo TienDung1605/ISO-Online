@@ -32,6 +32,10 @@ export class CheckerGroupService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/checker-groups');
 
+  getAllCheckerGroups(): Observable<ICheckerGroup[]> {
+    return this.http.get<ICheckerGroup[]>(this.resourceUrl);
+  }
+
   create(checkerGroup: NewCheckerGroup): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(checkerGroup);
     return this.http

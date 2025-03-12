@@ -11,6 +11,10 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { IReportType } from '../report-type.model';
 import { EntityArrayResponseType, ReportTypeService } from '../service/report-type.service';
 import { ReportTypeDeleteDialogComponent } from '../delete/report-type-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -26,6 +30,10 @@ import { ReportTypeDeleteDialogComponent } from '../delete/report-type-delete-di
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    TagModule,
   ],
 })
 export class ReportTypeComponent implements OnInit {
@@ -34,10 +42,14 @@ export class ReportTypeComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-  reportType: IReportType[] = [];
-  filteredReportTypes: IReportType[] = [];
-  searchTerms: { [key: string]: string } = {
-    id: '',
+  reportTypeResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
     code: '',
     status: '',
@@ -45,10 +57,6 @@ export class ReportTypeComponent implements OnInit {
     updatedAt: '',
     updateBy: '',
   };
-
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
 
   public router = inject(Router);
   protected reportTypeService = inject(ReportTypeService);
@@ -90,16 +98,17 @@ export class ReportTypeComponent implements OnInit {
     //     this.onResponseSuccess(res);
     //   },
     // });
-    this.reportTypeService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(respone => {
-        this.filteredReportTypes = respone.body ?? [];
-        this.reportTypes = [...this.filteredReportTypes];
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.reportTypes = res.body;
+          this.reportTypeResult = [...this.reportTypes];
+          this.totalRecords = this.reportTypes.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
   onPageChange(page: number): void {
@@ -107,35 +116,47 @@ export class ReportTypeComponent implements OnInit {
     this.load();
   }
 
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
+  searchTable(): void {
+    if (!this.reportTypes) {
+      return;
+    }
+
+    this.reportTypeResult = this.reportTypes.filter(reportType => {
+      const createdDate = reportType.createdAt ? new Date(reportType.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = reportType.updatedAt ? new Date(reportType.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || reportType.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.code || reportType.code?.toString().includes(this.filters.code)) &&
+        (!this.filters.status || reportType.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.updateBy || reportType.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
+    });
+    this.totalRecords = this.reportTypeResult.length;
   }
 
-  searchTable(): void {
-    this.reportTypes = this.filteredReportTypes.filter(reportType => {
-      const nameMatch =
-        !this.searchTerms.name || (reportType.name && reportType.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+  onSearch(reportType: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[reportType] = value;
+    this.searchTable();
+  }
 
-      const codeMatch =
-        !this.searchTerms.code || (reportType.code && reportType.code.toLowerCase().includes(this.searchTerms.code.toLowerCase()));
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
+  }
 
-      const statusMatch = !this.searchTerms.status || (reportType.status && reportType.status.toString().includes(this.searchTerms.status));
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (reportType.createdAt && reportType.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (reportType.updatedAt && reportType.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (reportType.updateBy && reportType.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      return nameMatch && codeMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
-    });
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

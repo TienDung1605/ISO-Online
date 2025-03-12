@@ -13,6 +13,7 @@ import { PartsFormService, PartsFormGroup } from './parts-form.service';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import dayjs from 'dayjs/esm';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -39,6 +40,19 @@ export class PartsUpdateComponent implements OnInit {
       this.parts = parts;
       if (parts) {
         this.updateForm(parts);
+      } else {
+        this.editForm.patchValue({
+          status: 'ACTIVE',
+        });
+      }
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+
+      if (account) {
+        this.editForm.patchValue({
+          updateBy: account.login,
+        });
       }
     });
   }
@@ -64,8 +78,42 @@ export class PartsUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IParts>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+      next: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.parts?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+        });
+        this.onSaveSuccess();
+      },
+      error: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.parts?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+        });
+        this.onSaveError();
+      },
     });
   }
 

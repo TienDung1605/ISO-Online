@@ -23,10 +23,15 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_status">Trạng thái</label>
+          <select class="form-control form-select" name="status" data-cy="status" formControlName="status">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="DEACTIVATE">DEACTIVATE</option>
+          </select>
           <!-- <input type="text" class="form-control" name="status" id="field_status" data-cy="status"
             formControlName="status" /> -->
           <!-- <div class="card flex justify-content-center"> -->
-          <p-dropdown [options]="listStatus" formControlName="status" optionLabel="label" optionValue="label" placeholder="Select status" />
+          <!-- <p-dropdown [options]="listStatus" formControlName="status" optionLabel="label" optionValue="label"
+            placeholder="Select status" /> -->
           <!-- </div> -->
         </div>
       </div>

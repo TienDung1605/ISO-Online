@@ -11,6 +11,10 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ICriteriaGroup } from '../criteria-group.model';
 import { EntityArrayResponseType, CriteriaGroupService } from '../service/criteria-group.service';
 import { CriteriaGroupDeleteDialogComponent } from '../delete/criteria-group-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -26,6 +30,10 @@ import { CriteriaGroupDeleteDialogComponent } from '../delete/criteria-group-del
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    TagModule,
   ],
 })
 export class CriteriaGroupComponent implements OnInit {
@@ -34,19 +42,20 @@ export class CriteriaGroupComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-  criteriaGroup: ICriteriaGroup[] = [];
-  filteredCriteriaGroup: ICriteriaGroup[] = [];
-  searchTerms: { [key: string]: string } = {
+  criteriaGroupResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
     status: '',
     createdAt: '',
     updatedAt: '',
     updateBy: '',
   };
-
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
 
   public router = inject(Router);
   protected criteriaGroupService = inject(CriteriaGroupService);
@@ -88,16 +97,17 @@ export class CriteriaGroupComponent implements OnInit {
     //     this.onResponseSuccess(res);
     //   },
     // });
-    this.criteriaGroupService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(response => {
-        this.filteredCriteriaGroup = response.body ?? [];
-        this.criteriaGroups = [...this.filteredCriteriaGroup];
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.criteriaGroups = res.body;
+          this.criteriaGroupResult = [...this.criteriaGroups];
+          this.totalRecords = this.criteriaGroups.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
   onPageChange(page: number): void {
@@ -105,33 +115,46 @@ export class CriteriaGroupComponent implements OnInit {
     this.load();
   }
 
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
+  searchTable(): void {
+    if (!this.criteriaGroups) {
+      return;
+    }
+
+    this.criteriaGroupResult = this.criteriaGroups.filter(criteriaGroup => {
+      const createdDate = criteriaGroup.createdAt ? new Date(criteriaGroup.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = criteriaGroup.updatedAt ? new Date(criteriaGroup.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || criteriaGroup.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.status || criteriaGroup.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.updateBy || criteriaGroup.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
+    });
+    this.totalRecords = this.criteriaGroupResult.length;
   }
 
-  searchTable(): void {
-    this.criteriaGroups = this.filteredCriteriaGroup.filter(convert => {
-      const nameMatch =
-        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+  onSearch(criteriaGroup: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[criteriaGroup] = value;
+    this.searchTable();
+  }
 
-      const statusMatch =
-        !this.searchTerms.status || (convert.status && convert.status.toLowerCase().includes(this.searchTerms.status.toLowerCase()));
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
+  }
 
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      return nameMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch;
-    });
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

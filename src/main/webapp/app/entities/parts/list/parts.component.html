@@ -262,7 +262,7 @@
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
         <td class="text-center border">{{ parts.name }}</td>
-        <td class="text-center border">{{ parts.status }}</td>
+        <td class="text-center border"><p-tag [value]="parts.status" [severity]="getSeverity(parts.status)" /></td>
         <td class="text-center border">{{ parts.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ parts.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ parts.updateBy }}</td>

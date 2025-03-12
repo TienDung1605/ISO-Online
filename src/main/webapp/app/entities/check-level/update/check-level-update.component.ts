@@ -13,6 +13,7 @@ import { CheckLevelFormService, CheckLevelFormGroup } from './check-level-form.s
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import dayjs from 'dayjs/esm';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -64,8 +65,42 @@ export class CheckLevelUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICheckLevel>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+      next: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.checkLevel?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+        });
+        this.onSaveSuccess();
+      },
+      error: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.checkLevel?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+        });
+        this.onSaveError();
+      },
     });
   }
 

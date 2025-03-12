@@ -97,8 +97,8 @@
         <td class="text-center border">{{ fields.name }}</td>
         <td class="text-center border">{{ fields.fieldName }}</td>
         <td class="text-center border">{{ fields.sourceId }}</td>
-        <td class="text-center border">{{ fields.createdAt }}</td>
-        <td class="text-center border">{{ fields.updatedAt }}</td>
+        <td class="text-center border">{{ fields.createdAt | formatMediumDatetime }}</td>
+        <td class="text-center border">{{ fields.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ fields.createBy }}</td>
         <td class="text-center border">
           <div class="btn-group action-buttons">

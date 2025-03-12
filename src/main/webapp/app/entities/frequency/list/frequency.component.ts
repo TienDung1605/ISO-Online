@@ -14,6 +14,7 @@ import { FrequencyDeleteDialogComponent } from '../delete/frequency-delete-dialo
 import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -32,6 +33,7 @@ import { InputIconModule } from 'primeng/inputicon';
     TableModule,
     IconFieldModule,
     InputIconModule,
+    TagModule,
   ],
 })
 export class FrequencyComponent implements OnInit {
@@ -138,6 +140,15 @@ export class FrequencyComponent implements OnInit {
   onPageSizeChange(event: any): void {
     this.selectedPageSize = event.rows;
     this.first = event.first;
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

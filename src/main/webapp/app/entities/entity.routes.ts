@@ -113,7 +113,7 @@ const routes: Routes = [
   },
   {
     path: 'source',
-    data: { pageTitle: 'isoApp.field.home.title' },
+    data: { pageTitle: 'isoApp.source.home.title' },
     loadChildren: () => import('./source/source.routes'),
   },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */

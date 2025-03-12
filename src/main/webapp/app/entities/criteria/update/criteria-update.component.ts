@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ICriteria } from '../criteria.model';
 import { CriteriaService } from '../service/criteria.service';
 import { CriteriaFormService, CriteriaFormGroup } from './criteria-form.service';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -53,8 +54,42 @@ export class CriteriaUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICriteria>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+      next: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.criteria?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+        });
+        this.onSaveSuccess();
+      },
+      error: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.criteria?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+        });
+        this.onSaveError();
+      },
     });
   }
 

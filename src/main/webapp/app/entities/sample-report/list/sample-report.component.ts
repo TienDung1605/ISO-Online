@@ -11,6 +11,9 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ISampleReport } from '../sample-report.model';
 import { EntityArrayResponseType, SampleReportService } from '../service/sample-report.service';
 import { SampleReportDeleteDialogComponent } from '../delete/sample-report-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   standalone: true,
@@ -26,6 +29,9 @@ import { SampleReportDeleteDialogComponent } from '../delete/sample-report-delet
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
 })
 export class SampleReportComponent implements OnInit {
@@ -34,24 +40,25 @@ export class SampleReportComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-  sampleReport: ISampleReport[] = [];
-  filteredSampleReports: ISampleReport[] = [];
-  searchTerms: { [key: string]: string } = {
-    id: '',
+  sampleReportResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
-    status: '',
-    frequency: '',
+    code: '',
     createdAt: '',
     updatedAt: '',
-    updateBy: '',
-    code: '',
+    dataType: '',
+    status: '',
+    frequency: '',
     reportType: '',
     reportTypeId: '',
+    updateBy: '',
   };
-
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
 
   public router = inject(Router);
   protected sampleReportService = inject(SampleReportService);
@@ -94,16 +101,17 @@ export class SampleReportComponent implements OnInit {
     //   },
     // });
 
-    this.sampleReportService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(respone => {
-        this.filteredSampleReports = respone.body ?? [];
-        this.sampleReports = [...this.filteredSampleReports];
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.sampleReports = res.body;
+          this.sampleReportResult = [...this.sampleReports];
+          this.totalRecords = this.sampleReports.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
   onPageChange(page: number): void {
@@ -111,58 +119,41 @@ export class SampleReportComponent implements OnInit {
     this.load();
   }
 
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
-  }
-
   searchTable(): void {
-    this.sampleReports = this.filteredSampleReports.filter(sampleReport => {
-      const nameMatch =
-        !this.searchTerms.name || (sampleReport.name && sampleReport.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+    if (!this.sampleReports) {
+      return;
+    }
 
-      const statusMatch =
-        !this.searchTerms.status ||
-        (typeof sampleReport.status === 'string' &&
-          (sampleReport.status as string).toLowerCase().includes(this.searchTerms.status.toLowerCase()));
-
-      const frequencyMatch =
-        !this.searchTerms.frequency || (sampleReport.frequency && sampleReport.frequency.toString().includes(this.searchTerms.frequency));
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (sampleReport.createdAt && sampleReport.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (sampleReport.updatedAt && sampleReport.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (sampleReport.updateBy && sampleReport.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
-
-      const codeMatch = !this.searchTerms.code || (sampleReport.code && sampleReport.code.toString().includes(this.searchTerms.code));
-
-      const reportTypeMatch =
-        !this.searchTerms.reportType ||
-        (sampleReport.reportType && sampleReport.reportType.toString().includes(this.searchTerms.reportType));
-
-      const reportTypeIdMatch =
-        !this.searchTerms.reportTypeId ||
-        (sampleReport.reportTypeId && sampleReport.reportTypeId.toString().includes(this.searchTerms.reportTypeId));
+    this.sampleReportResult = this.sampleReports.filter(sampleReport => {
+      const createdDate = sampleReport.createdAt ? new Date(sampleReport.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = sampleReport.updatedAt ? new Date(sampleReport.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
 
       return (
-        nameMatch &&
-        statusMatch &&
-        frequencyMatch &&
-        createdAtMatch &&
-        updatedAtMatch &&
-        updateByMatch &&
-        codeMatch &&
-        reportTypeMatch &&
-        reportTypeIdMatch
+        (!this.filters.name || sampleReport.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.code || sampleReport.code?.toString().includes(this.filters.code)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.status || sampleReport.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.frequency || sampleReport.frequency?.toString().includes(this.filters.frequency)) &&
+        (!this.filters.reportType || sampleReport.reportType?.toString().includes(this.filters.reportType)) &&
+        (!this.filters.reportTypeId || sampleReport.reportTypeId?.toString().includes(this.filters.reportTypeId)) &&
+        (!this.filters.updateBy || sampleReport.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
       );
     });
+    this.totalRecords = this.sampleReportResult.length;
+  }
+
+  onSearch(sampleReport: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[sampleReport] = value;
+    this.searchTable();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   navigateToWithComponentValues(event: SortState): void {

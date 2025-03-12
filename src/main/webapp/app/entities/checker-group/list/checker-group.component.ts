@@ -14,6 +14,7 @@ import { CheckerGroupDeleteDialogComponent } from '../delete/checker-group-delet
 import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -32,6 +33,7 @@ import { InputIconModule } from 'primeng/inputicon';
     TableModule,
     IconFieldModule,
     InputIconModule,
+    TagModule,
   ],
 })
 export class CheckerGroupComponent implements OnInit {
@@ -143,6 +145,15 @@ export class CheckerGroupComponent implements OnInit {
   onPageSizeChange(event: any): void {
     this.selectedPageSize = event.rows;
     this.first = event.first;
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

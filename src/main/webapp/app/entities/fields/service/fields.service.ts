@@ -35,6 +35,11 @@ export class FieldsService {
   getAllFields(): Observable<any> {
     return this.http.get<any[]>(this.resourceUrl2, { observe: 'response' });
   }
+
+  getFieldsBySource(sourceId: number): Observable<IFields[]> {
+    return this.http.get<IFields[]>(`${this.resourceUrl}/source/${sourceId}`);
+  }
+
   create(fields: NewFields): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(fields);
     return this.http

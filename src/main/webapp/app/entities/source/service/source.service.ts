@@ -35,6 +35,10 @@ export class SourceService {
   getAllTables(): Observable<string[]> {
     return this.http.get<string[]>(this.getAllTablesUrl);
   }
+
+  getAllSources(): Observable<ISource[]> {
+    return this.http.get<ISource[]>(this.resourceUrl);
+  }
   create(source: NewSource): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(source);
     return this.http

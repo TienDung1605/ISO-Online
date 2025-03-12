@@ -10,6 +10,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ITitle } from '../title.model';
 import { TitleService } from '../service/title.service';
 import { TitleFormService, TitleFormGroup } from './title-form.service';
+import Swal from 'sweetalert2';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/auth/account.model';
+import dayjs from 'dayjs/esm';
+import { IFields } from 'app/entities/fields/fields.model';
+import { ISource } from 'app/entities/source/source.model';
+import { FieldsService } from 'app/entities/fields/service/fields.service';
+import { SourceService } from 'app/entities/source/service/source.service';
 
 @Component({
   standalone: true,
@@ -20,11 +28,20 @@ import { TitleFormService, TitleFormGroup } from './title-form.service';
 export class TitleUpdateComponent implements OnInit {
   isSaving = false;
   title: ITitle | null = null;
+  field: IFields[] = [];
+  // source: ISource | null = null;
+  source: ISource[] = [];
+  account: Account | null = null;
+  dataTypes: string[] = ['String', 'Number', 'Date', 'Boolean'];
 
+  selectedSource: string = '';
+  selectedField: string = '';
   protected titleService = inject(TitleService);
   protected titleFormService = inject(TitleFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected accountService = inject(AccountService);
+  protected fieldsService = inject(FieldsService);
+  protected sourceService = inject(SourceService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: TitleFormGroup = this.titleFormService.createTitleFormGroup();
 
@@ -33,6 +50,15 @@ export class TitleUpdateComponent implements OnInit {
       this.title = title;
       if (title) {
         this.updateForm(title);
+      }
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+
+      if (account) {
+        this.editForm.patchValue({
+          updateBy: account.login,
+        });
       }
     });
   }
@@ -45,16 +71,75 @@ export class TitleUpdateComponent implements OnInit {
     this.isSaving = true;
     const title = this.titleFormService.getTitle(this.editForm);
     if (title.id !== null) {
+      title.updatedAt = dayjs(new Date());
+      title.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.titleService.update(title));
     } else {
+      title.createdAt = dayjs(new Date());
+      title.updatedAt = dayjs(new Date());
+      title.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.titleService.create(title));
     }
   }
 
+  loadSources(): void {
+    this.sourceService.getAllSources().subscribe(data => {
+      this.source = data;
+    });
+  }
+
+  onSourceChange(): void {
+    const selectedSource = this.source.find(s => s.name === this.selectedSource);
+    if (selectedSource) {
+      this.fieldsService.getAllFields().subscribe(data => {
+        this.field = data;
+      });
+      this.editForm.patchValue({ source: this.selectedSource });
+    }
+  }
+
+  onFieldChange(): void {
+    this.editForm.patchValue({ field: this.selectedField });
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ITitle>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+      next: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.title?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+        });
+        this.onSaveSuccess();
+      },
+      error: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.title?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+        });
+        this.onSaveError();
+      },
     });
   }
 

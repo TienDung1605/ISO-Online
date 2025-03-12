@@ -245,11 +245,11 @@
         <th class="text-center border">STT</th>
         <th class="text-center border">Tên</th>
         <th class="text-center border">Nguồn</th>
+        <th class="text-center border">Field</th>
         <th class="text-center border">Thời gian tạo</th>
         <th class="text-center border">Thời gian cập nhật</th>
         <th class="text-center border">Kiểu dữ liệu</th>
         <th class="text-center border">Người cập nhật</th>
-        <th class="text-center border">Nguồn</th>
         <th class="text-center border">Tuỳ chọn</th>
       </tr>
       <tr>
@@ -268,6 +268,14 @@
               <i class="pi pi-search"></i>
             </p-inputIcon>
             <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('source', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('field', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -299,14 +307,6 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('field', $event)" />
-          </p-iconField>
-        </th>
-        <th class="text-center border">
-          <p-iconField iconPosition="left" class="ml-auto">
-            <p-inputIcon>
-              <i class="pi pi-search"></i>
-            </p-inputIcon>
             <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updateBy', $event)" />
           </p-iconField>
         </th>
@@ -318,10 +318,10 @@
         <td class="text-center border">{{ index + 1 }}</td>
         <td class="text-center border">{{ title.name }}</td>
         <td class="text-center border">{{ title.source }}</td>
+        <td class="text-center border">{{ title.field }}</td>
         <td class="text-center border">{{ title.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ title.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ title.dataType }}</td>
-        <td class="text-center border">{{ title.field }}</td>
         <td class="text-center border">{{ title.updateBy }}</td>
         <td class="text-center border">
           <div class="btn-group action-buttons">

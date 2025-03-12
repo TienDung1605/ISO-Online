@@ -248,7 +248,7 @@
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
         <td class="text-center border">{{ checkerGroup.name }}</td>
-        <td class="text-center border">{{ checkerGroup.status }}</td>
+        <td class="text-center border"><p-tag [value]="checkerGroup.status" [severity]="getSeverity(checkerGroup.status)" /></td>
         <td class="text-center border">{{ checkerGroup.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ checkerGroup.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ checkerGroup.updateBy }}</td>

@@ -14,6 +14,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import dayjs from 'dayjs/esm';
 import { DropdownModule } from 'primeng/dropdown';
+import Swal from 'sweetalert2';
 @Component({
   standalone: true,
   selector: 'jhi-report-type-update',
@@ -29,7 +30,7 @@ export class ReportTypeUpdateComponent implements OnInit {
   protected activatedRoute = inject(ActivatedRoute);
   protected accountService = inject(AccountService);
   //set list status
-  listStatus = [{ label: 'ACTIVE' }, { label: 'DEACTIVATE' }];
+  // listStatus = [{ label: 'ACTIVE' }, { label: 'DEACTIVATE' }];
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: ReportTypeFormGroup = this.reportTypeFormService.createReportTypeFormGroup();
 
@@ -52,7 +53,7 @@ export class ReportTypeUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    var reportType = this.reportTypeFormService.getReportType(this.editForm);
+    const reportType = this.reportTypeFormService.getReportType(this.editForm);
 
     if (reportType.id !== null) {
       reportType.updatedAt = dayjs(new Date());
@@ -68,8 +69,42 @@ export class ReportTypeUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReportType>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+      next: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.reportType?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+        });
+        this.onSaveSuccess();
+      },
+      error: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.reportType?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+        });
+        this.onSaveError();
+      },
     });
   }
 

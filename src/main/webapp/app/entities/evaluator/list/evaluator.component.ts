@@ -11,9 +11,14 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { IEvaluator } from '../evaluator.model';
 import { EntityArrayResponseType, EvaluatorService } from '../service/evaluator.service';
 import { EvaluatorDeleteDialogComponent } from '../delete/evaluator-delete-dialog.component';
+
 import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+
+import { CheckerGroupService } from 'app/entities/checker-group/service/checker-group.service';
+import { TagModule } from 'primeng/tag';
+
 @Component({
   standalone: true,
   selector: 'jhi-evaluator',
@@ -31,13 +36,15 @@ import { InputIconModule } from 'primeng/inputicon';
     TableModule,
     IconFieldModule,
     InputIconModule,
+    TagModule,
   ],
 })
 export class EvaluatorComponent implements OnInit {
   subscription: Subscription | null = null;
   evaluators?: IEvaluator[];
   isLoading = false;
-
+  //get list checker group
+  checkerGroups: any[] | null = [];
   sortState = sortStateSignal({});
   evaluatorResult: any[] = [];
 
@@ -60,7 +67,6 @@ export class EvaluatorComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
-
   trackId = (_index: number, item: IEvaluator): number => this.evaluatorService.getEvaluatorIdentifier(item);
 
   ngOnInit(): void {
@@ -105,6 +111,27 @@ export class EvaluatorComponent implements OnInit {
         }
       },
     });
+    // this.evaluatorService
+    //   .query({
+    //     page: this.page - 1,
+    //     size: this.pageSize,
+    //     sort: this.sortState(),
+    //   })
+    //   .subscribe(response => {
+    //     this.filteredEvaluators = response.body ?? [];
+    //     this.evaluators = [...this.filteredEvaluators];
+    //     this.totalItems = Number(response.headers.get('X-Total-Count'));
+    //     this.checkerGroup.query().subscribe(res => {
+    //       if (res.body) {
+    //         this.evaluators?.forEach(evaluator => {
+    //           const result = res.body!.find((item: any) => item.id === evaluator.userGroupId);
+    //           if (result) {
+    //             evaluator.checkerGroup = result.name;
+    //           }
+    //         });
+    //       }
+    //     });
+    //   });
   }
 
   onPageSizeChange(event: any): void {
@@ -137,6 +164,15 @@ export class EvaluatorComponent implements OnInit {
     const value = (event.target as HTMLInputElement).value;
     this.filters[evaluator] = value;
     this.searchTable();
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

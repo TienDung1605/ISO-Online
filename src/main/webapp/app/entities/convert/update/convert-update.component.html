@@ -15,18 +15,41 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_name">Tên</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="field_name"
+            data-cy="name"
+            formControlName="name"
+            [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
+            required
+          />
+          <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống</span>
+          </div>
         </div>
 
         <div class="mb-3">
           <label class="form-label" for="field_type">Kiểu</label>
-          <select class="form-control form-select" name="type" id="field_type" data-cy="type" formControlName="type">
+          <select
+            class="form-control form-select"
+            name="type"
+            id="field_type"
+            data-cy="type"
+            formControlName="type"
+            [ngClass]="{ 'is-invalid': editForm.get('type')?.invalid && editForm.get('type')?.touched }"
+            required
+          >
             <option value="Tính điểm">Tính điểm</option>
             <option value="Bước nhảy">Bước nhảy</option>
           </select>
+          <div class="error-message" *ngIf="editForm.get('type')?.invalid && editForm.get('type')?.touched">
+            <span *ngIf="editForm.get('type')?.errors?.['required']">Kiểu không được để trống</span>
+          </div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" *ngIf="editForm.get('type')?.value !== 'Bước nhảy'">
           <label class="form-label" for="field_mark">Thang điểm</label>
           <input type="text" class="form-control" name="mark" id="field_mark" data-cy="mark" formControlName="mark" />
         </div>

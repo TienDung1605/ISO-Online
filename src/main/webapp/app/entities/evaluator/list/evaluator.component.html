@@ -102,7 +102,7 @@
         <td class="text-center border">{{ evaluator.userGroupId }}</td>
         <td class="text-center border">{{ evaluator.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ evaluator.updatedAt | formatMediumDatetime }}</td>
-        <td class="text-center border">{{ evaluator.status }}</td>
+        <td class="text-center border"><p-tag [value]="evaluator.status" [severity]="getSeverity(evaluator.status)" /></td>
         <td class="text-center border">{{ evaluator.updateBy }}</td>
         <td class="text-center border">
           <div class="btn-group">
@@ -209,7 +209,7 @@
               <input
                 type="text"
                 placeholder="Tìm kiếm"
-                [(ngModel)]="searchTerms.userGroupId"
+                [(ngModel)]="searchTerms.checkerGroup"
                 (input)="searchTable()"
                 class="form-control d-inline-block w-auto mr-2"
               />
@@ -260,7 +260,7 @@
                 <a [routerLink]="['/evaluator', evaluator.id, 'view']">{{ evaluator.id }}</a>
               </td>
               <td>{{ evaluator.name }}</td>
-              <td>{{ evaluator.userGroupId }}</td>
+              <td>{{ evaluator.checkerGroup }}</td>
               <td>{{ evaluator.createdAt | formatMediumDatetime }}</td>
               <td>{{ evaluator.updatedAt | formatMediumDatetime }}</td>
               <td>{{ evaluator.status }}</td>

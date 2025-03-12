@@ -11,6 +11,10 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ICheckTarget } from '../check-target.model';
 import { EntityArrayResponseType, CheckTargetService } from '../service/check-target.service';
 import { CheckTargetDeleteDialogComponent } from '../delete/check-target-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -26,6 +30,10 @@ import { CheckTargetDeleteDialogComponent } from '../delete/check-target-delete-
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    TagModule,
   ],
 })
 export class CheckTargetComponent implements OnInit {
@@ -34,22 +42,24 @@ export class CheckTargetComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-  filteredCheckTargets: ICheckTarget[] = [];
-  public router = inject(Router);
-  searchTerms: { [key: string]: string } = {
+  checkTargetResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
     name: '',
     inspectionTarget: '',
-    evaluationLevelId: '',
-    status: '',
     createdAt: '',
     updatedAt: '',
+    evaluationLevelId: '',
+    status: '',
     updateBy: '',
   };
 
-  page = 1;
-  pageSize = 10;
-  totalItems = 0;
-
+  public router = inject(Router);
   protected checkTargetService = inject(CheckTargetService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
@@ -89,16 +99,17 @@ export class CheckTargetComponent implements OnInit {
     //     this.onResponseSuccess(res);
     //   },
     // });
-    this.checkTargetService
-      .query({
-        page: this.page - 1,
-        size: this.pageSize,
-        sort: this.sortState(),
-      })
-      .subscribe(response => {
-        this.filteredCheckTargets = response.body ?? [];
-        this.checkTargets = [...this.filteredCheckTargets];
-      });
+    this.isLoading = true;
+    this.queryBackend().subscribe({
+      next: res => {
+        if (res.body) {
+          this.checkTargets = res.body;
+          this.checkTargetResult = [...this.checkTargets];
+          this.totalRecords = this.checkTargets.length;
+          this.isLoading = false;
+        }
+      },
+    });
   }
 
   onPageChange(page: number): void {
@@ -106,42 +117,48 @@ export class CheckTargetComponent implements OnInit {
     this.load();
   }
 
-  onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
-    this.page = 1;
-    this.load();
-  }
-
   searchTable(): void {
-    this.checkTargets = this.filteredCheckTargets.filter(convert => {
-      const nameMatch =
-        !this.searchTerms.name || (convert.name && convert.name.toLowerCase().includes(this.searchTerms.name.toLowerCase()));
+    if (!this.checkTargets) {
+      return;
+    }
 
-      const inspectionTargetMatch =
-        !this.searchTerms.inspectionTarget ||
-        (convert.inspectionTarget && convert.inspectionTarget.toLowerCase().includes(this.searchTerms.inspectionTarget.toLowerCase()));
-
-      const evaluationLevelIdMatch =
-        !this.searchTerms.evaluationLevelId ||
-        (convert.evaluationLevelId && convert.evaluationLevelId.toString().includes(this.searchTerms.evaluationLevelId));
-
-      const statusMatch = !this.searchTerms.status || (convert.status && convert.status.toString().includes(this.searchTerms.status));
-
-      const createdAtMatch =
-        !this.searchTerms.createdAt || (convert.createdAt && convert.createdAt.toString().includes(this.searchTerms.createdAt));
-
-      const updatedAtMatch =
-        !this.searchTerms.updatedAt || (convert.updatedAt && convert.updatedAt.toString().includes(this.searchTerms.updatedAt));
-
-      const updateByMatch =
-        !this.searchTerms.updateBy ||
-        (convert.updateBy && convert.updateBy.toLowerCase().includes(this.searchTerms.updateBy.toLowerCase()));
+    this.checkTargetResult = this.checkTargets.filter(checkTarget => {
+      const createdDate = checkTarget.createdAt ? new Date(checkTarget.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = checkTarget.updatedAt ? new Date(checkTarget.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
 
       return (
-        nameMatch && inspectionTargetMatch && evaluationLevelIdMatch && statusMatch && createdAtMatch && updatedAtMatch && updateByMatch
+        (!this.filters.name || checkTarget.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.inspectionTarget || checkTarget.inspectionTarget?.toString().includes(this.filters.inspectionTarget)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.evaluationLevelId || checkTarget.evaluationLevelId?.toString().includes(this.filters.evaluationLevelId)) &&
+        (!this.filters.status || checkTarget.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.updateBy || checkTarget.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
       );
     });
+    this.totalRecords = this.checkTargetResult.length;
+  }
+
+  onSearch(title: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[title] = value;
+    this.searchTable();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

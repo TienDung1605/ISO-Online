@@ -17,15 +17,17 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="field_userGroupId">Nhóm người dùng (ID)</label>
-          <input
-            type="number"
-            class="form-control"
-            name="userGroupId"
-            id="field_userGroupId"
-            data-cy="userGroupId"
-            formControlName="userGroupId"
-          />
+          <label class="form-label" for="field_checkerGroup">Nhóm người dùng </label>
+          <select
+            class="form-control form-select"
+            name="source"
+            id="field_source"
+            [(ngModel)]="name"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="updateCheckerGroup()"
+          >
+            <option *ngFor="let item of checkerGroups" [value]="item.name">{{ item.name }}</option>
+          </select>
         </div>
 
         <!-- <div class="mb-3">
@@ -45,12 +47,12 @@
         </div> -->
 
         <div class="mb-3">
-          <label class="form-label" for="field_status">Status</label>
+          <label class="form-label" for="field_status">Trạng thái</label>
           <!-- <input type="text" class="form-control" name="status" id="field_status" data-cy="status"
             formControlName="status" /> -->
-          <select name="status" id="field_status" class="form-control form-select" data-cy="status" formControlname="status">
-            <option value="Active">Active</option>
-            <option value="Deactive">Deactive</option>
+          <select class="form-control form-select" name="status" data-cy="status" formControlName="status">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="DEACTIVATE">DEACTIVATE</option>
           </select>
         </div>
 
