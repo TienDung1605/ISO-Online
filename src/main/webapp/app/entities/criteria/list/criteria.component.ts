@@ -15,6 +15,7 @@ import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
+import { CriteriaGroupService } from 'app/entities/criteria-group/service/criteria-group.service';
 
 @Component({
   standalone: true,
@@ -64,7 +65,7 @@ export class CriteriaComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
-
+  protected criteriaGroupService = inject(CriteriaGroupService);
   trackId = (_index: number, item: ICriteria): number => this.criteriaService.getCriteriaIdentifier(item);
 
   ngOnInit(): void {
@@ -102,6 +103,16 @@ export class CriteriaComponent implements OnInit {
         if (res.body) {
           this.criteria = res.body;
           this.criteriaResult = [...this.criteria];
+          this.criteriaGroupService.query().subscribe(res1 => {
+            if (res1.body) {
+              this.criteria?.forEach(criteria => {
+                const result = res1.body!.find((item: any) => item.id === criteria.criterialGroupId);
+                if (result) {
+                  criteria.name = result.name;
+                }
+              });
+            }
+          });
           this.totalRecords = this.criteria.length;
           this.isLoading = false;
         }

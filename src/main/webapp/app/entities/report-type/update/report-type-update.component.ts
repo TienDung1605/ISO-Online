@@ -43,6 +43,10 @@ export class ReportTypeUpdateComponent implements OnInit {
       this.reportType = reportType;
       if (reportType) {
         this.updateForm(reportType);
+      } else {
+        this.editForm.patchValue({
+          status: 'ACTIVE',
+        });
       }
     });
   }

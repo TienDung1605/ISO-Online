@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-report-type-heading" data-cy="ReportTypeCreateUpdateHeading">Thêm mới hoặc cập nhật Loại biên bản kiểm tra</h2>
+      <h2 id="jhi-report-type-heading" data-cy="ReportTypeCreateUpdateHeading">
+        {{ editForm.controls.id.value ? 'Cập nhật Loại biên bản kiểm tra' : 'Thêm mới Loại biên bản kiểm tra' }}
+      </h2>
 
       <div>
         @if (editForm.controls.id.value !== null) {
@@ -13,12 +15,36 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_code">Mã loại BBKT</label>
-          <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
+          <input
+            type="text"
+            class="form-control"
+            name="code"
+            id="field_code"
+            data-cy="code"
+            formControlName="code"
+            [ngClass]="{ 'is-invalid': editForm.get('code')?.invalid && editForm.get('code')?.touched }"
+            required
+          />
+          <div class="error-message" *ngIf="editForm.get('code')?.invalid && editForm.get('code')?.touched">
+            <span *ngIf="editForm.get('code')?.errors?.['required']">Mã không được để trống</span>
+          </div>
         </div>
 
         <div class="mb-3">
           <label class="form-label" for="field_name">Tên</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="field_name"
+            data-cy="name"
+            formControlName="name"
+            [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
+            required
+          />
+          <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống</span>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -27,16 +53,10 @@
             <option value="ACTIVE">ACTIVE</option>
             <option value="DEACTIVATE">DEACTIVATE</option>
           </select>
-          <!-- <input type="text" class="form-control" name="status" id="field_status" data-cy="status"
-            formControlName="status" /> -->
-          <!-- <div class="card flex justify-content-center"> -->
-          <!-- <p-dropdown [options]="listStatus" formControlName="status" optionLabel="label" optionValue="label"
-            placeholder="Select status" /> -->
-          <!-- </div> -->
         </div>
       </div>
 
-      <div>
+      <div class="d-flex justify-content-end">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
         </button>

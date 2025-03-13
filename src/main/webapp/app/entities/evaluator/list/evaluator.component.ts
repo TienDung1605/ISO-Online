@@ -67,6 +67,7 @@ export class EvaluatorComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
+  protected checkerGroupService = inject(CheckerGroupService);
   trackId = (_index: number, item: IEvaluator): number => this.evaluatorService.getEvaluatorIdentifier(item);
 
   ngOnInit(): void {
@@ -106,8 +107,20 @@ export class EvaluatorComponent implements OnInit {
         if (res.body) {
           this.evaluators = res.body;
           this.evaluatorResult = [...this.evaluators];
+          this.checkerGroupService.query().subscribe(res1 => {
+            if (res1.body) {
+              this.evaluators?.forEach(evaluator => {
+                const result = res1.body!.find((item: any) => item.id === evaluator.userGroupId);
+                if (result) {
+                  evaluator.checkerGroup = result.name;
+                }
+              });
+            }
+          });
           this.totalRecords = this.evaluators.length;
           this.isLoading = false;
+
+          console.log('result', this.evaluators);
         }
       },
     });

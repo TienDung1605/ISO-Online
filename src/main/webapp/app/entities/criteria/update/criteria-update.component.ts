@@ -21,6 +21,8 @@ import Swal from 'sweetalert2';
 export class CriteriaUpdateComponent implements OnInit {
   isSaving = false;
   criteria: ICriteria | null = null;
+  criteriaGroups: any[] = [];
+  name = '';
 
   protected criteriaService = inject(CriteriaService);
   protected criteriaFormService = inject(CriteriaFormService);
@@ -34,8 +36,13 @@ export class CriteriaUpdateComponent implements OnInit {
       this.criteria = criteria;
       if (criteria) {
         this.updateForm(criteria);
+      } else {
+        this.editForm.patchValue({
+          status: 'ACTIVE',
+        });
       }
     });
+    this.loadCriateriaGroups();
   }
 
   previousState(): void {
@@ -104,9 +111,35 @@ export class CriteriaUpdateComponent implements OnInit {
   protected onSaveFinalize(): void {
     this.isSaving = false;
   }
+  protected loadCriateriaGroups(): void {
+    this.criteriaService.getAllCriteriaGroups().subscribe(data => {
+      this.criteriaGroups = data;
+    });
+  }
+
+  protected updateCritetiaGroup(): void {
+    const criteriaGroup = this.criteriaGroups.find((s: any) => s.name === this.name);
+    if (criteriaGroup) {
+      this.editForm.patchValue({ criterialGroupId: criteriaGroup.id });
+    } else {
+      this.editForm.patchValue({
+        criterialGroupId: null,
+      });
+    }
+  }
 
   protected updateForm(criteria: ICriteria): void {
     this.criteria = criteria;
     this.criteriaFormService.resetForm(this.editForm, criteria);
+    this.criteriaService.query().subscribe((res: any) => {
+      if (res.body) {
+        this.criteriaGroups = res.body;
+        const checkerGroup = res.body.find((s: any) => s.id === this.criteria?.criterialGroupId);
+        if (checkerGroup) {
+          this.name = checkerGroup.name;
+          console.log('check form', checkerGroup.name);
+        }
+      }
+    });
   }
 }

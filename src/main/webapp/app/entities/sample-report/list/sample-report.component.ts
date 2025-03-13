@@ -110,6 +110,7 @@ export class SampleReportComponent implements OnInit {
           this.totalRecords = this.sampleReports.length;
           this.isLoading = false;
         }
+        console.log('result mẫu BBKT', this.sampleReportResult);
       },
     });
   }

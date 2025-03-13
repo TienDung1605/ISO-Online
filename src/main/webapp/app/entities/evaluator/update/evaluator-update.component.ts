@@ -149,6 +149,10 @@ export class EvaluatorUpdateComponent implements OnInit {
     const checkerGroup = this.checkerGroups.find((s: any) => s.name === this.name);
     if (checkerGroup) {
       this.editForm.patchValue({ userGroupId: checkerGroup.id });
+    } else {
+      this.editForm.patchValue({
+        userGroupId: null,
+      });
     }
   }
   protected updateForm(evaluator: IEvaluator): void {

@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-parts-heading" data-cy="PartsCreateUpdateHeading">Thêm mới hoặc cập nhật Bộ phận</h2>
+      <h2 id="jhi-parts-heading" data-cy="PartsCreateUpdateHeading">
+        {{ editForm.controls.id.value ? 'Cập nhật Bộ phận' : 'Thêm mới Bộ phận' }}
+      </h2>
 
       <div>
-        <!-- <jhi-alert-error></jhi-alert-error> -->
-
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
@@ -14,8 +14,20 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" for="field_name">Name</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          <label class="form-label" for="field_name">Tên</label>
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="field_name"
+            data-cy="name"
+            formControlName="name"
+            [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
+            required
+          />
+          <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống</span>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -25,45 +37,9 @@
             <option value="DEACTIVATE">DEACTIVATE</option>
           </select>
         </div>
-
-        <!-- <div class="mb-3">
-          <label class="form-label" for="field_createdAt">Created At</label>
-          <div class="d-flex">
-            <input
-              id="field_createdAt"
-              data-cy="createdAt"
-              type="datetime-local"
-              class="form-control"
-              name="createdAt"
-              formControlName="createdAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_updatedAt">Updated At</label>
-          <div class="d-flex">
-            <input
-              id="field_updatedAt"
-              data-cy="updatedAt"
-              type="datetime-local"
-              class="form-control"
-              name="updatedAt"
-              formControlName="updatedAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div> -->
-
-        <!-- <div class="mb-3">
-          <label class="form-label" for="field_updateBy">Update By</label>
-          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy"
-            formControlName="updateBy" />
-        </div> -->
       </div>
 
-      <div>
+      <div class="d-flex justify-content-end">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
         </button>

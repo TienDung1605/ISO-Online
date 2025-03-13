@@ -32,6 +32,10 @@ export class CriteriaService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/criteria');
 
+  getAllCriteriaGroups(): Observable<ICriteria[]> {
+    return this.http.get<ICriteria[]>(this.resourceUrl);
+  }
+
   create(criteria: NewCriteria): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(criteria);
     return this.http

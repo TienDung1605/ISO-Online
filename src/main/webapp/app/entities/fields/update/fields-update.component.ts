@@ -85,7 +85,7 @@ export class FieldsUpdateComponent implements OnInit {
   protected onSaveFinalize(): void {
     this.isSaving = false;
   }
-  protected updateSourceId() {
+  protected updateSourceId(): void {
     const source = this.sources.find((s: ISource) => s.name === this.name);
     if (source) {
       this.editForm.patchValue({ sourceId: source.id });

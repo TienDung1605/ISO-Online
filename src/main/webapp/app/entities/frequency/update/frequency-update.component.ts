@@ -40,6 +40,10 @@ export class FrequencyUpdateComponent implements OnInit {
       this.frequency = frequency;
       if (frequency) {
         this.updateForm(frequency);
+      } else {
+        this.editForm.patchValue({
+          status: 'ACTIVE',
+        });
       }
     });
   }

@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-check-target-heading" data-cy="CheckTargetCreateUpdateHeading">Thêm mới hoặc cập nhật Đối tượng đánh giá</h2>
+      <h2 id="jhi-check-target-heading" data-cy="CheckTargetCreateUpdateHeading">
+        {{ editForm.controls.id.value ? 'Cập nhật Đối tượng đánh giá' : 'Thêm mới Đối tượng đánh giá' }}
+      </h2>
 
       <div>
-        <jhi-alert-error></jhi-alert-error>
-
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" for="field_id">ID</label>
@@ -15,7 +15,19 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_name">Tên</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="field_name"
+            data-cy="name"
+            formControlName="name"
+            [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
+            required
+          />
+          <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống</span>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -27,13 +39,16 @@
             id="field_inspectionTarget"
             data-cy="inspectionTarget"
             formControlName="inspectionTarget"
+            [ngClass]="{ 'is-invalid': editForm.get('inspectionTarget')?.invalid && editForm.get('inspectionTarget')?.touched }"
+            required
           />
+          <div class="error-message" *ngIf="editForm.get('inspectionTarget')?.invalid && editForm.get('inspectionTarget')?.touched">
+            <span *ngIf="editForm.get('inspectionTarget')?.errors?.['required']">Đối tượng kiểm tra không được để trống</span>
+          </div>
         </div>
 
         <div class="mb-3">
           <label class="form-label" for="field_evaluationLevelId">Cấp độ đánh giá</label>
-          <!-- <input type="number" class="form-control" name="evaluationLevelId" id="field_evaluationLevelId"
-            data-cy="evaluationLevelId" formControlName="evaluationLevelId" /> -->
           <select
             class="form-control form-select"
             name="source"
@@ -48,52 +63,14 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_status">Trạng thái</label>
-          <!-- <input type="text" class="form-control" name="status" id="field_status" data-cy="status"
-                    formControlName="status" /> -->
           <select class="form-control form-select" name="status" data-cy="status" formControlName="status">
             <option value="ACTIVE">ACTIVE</option>
             <option value="DEACTIVATE">DEACTIVATE</option>
           </select>
         </div>
-
-        <!-- <div class="mb-3">
-          <label class="form-label" for="field_createdAt">Thời gian tạo</label>
-          <div class="d-flex">
-            <input
-              id="field_createdAt"
-              data-cy="createdAt"
-              type="datetime-local"
-              class="form-control"
-              name="createdAt"
-              formControlName="createdAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_updatedAt">Thời gian cập nhật</label>
-          <div class="d-flex">
-            <input
-              id="field_updatedAt"
-              data-cy="updatedAt"
-              type="datetime-local"
-              class="form-control"
-              name="updatedAt"
-              formControlName="updatedAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div> -->
-
-        <!-- <div class="mb-3">
-          <label class="form-label" for="field_updateBy">Người cập nhật</label>
-          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy"
-            formControlName="updateBy" />
-        </div> -->
       </div>
 
-      <div>
+      <div class="d-flex justify-content-end">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
         </button>

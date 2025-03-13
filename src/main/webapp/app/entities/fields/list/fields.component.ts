@@ -107,6 +107,16 @@ export class FieldsComponent implements OnInit {
         if (res.body) {
           this.fields = res.body;
           this.fieldResult = [...this.fields];
+          this.fieldsService.query().subscribe(res1 => {
+            if (res1.body) {
+              this.fields?.forEach(field => {
+                const result = res1.body!.find((item: any) => item.id === field.sourceId);
+                if (result) {
+                  field.source = result.name;
+                }
+              });
+            }
+          });
           this.totalRecords = this.fields.length;
           this.isLoading = false;
           console.log('body', res.body);

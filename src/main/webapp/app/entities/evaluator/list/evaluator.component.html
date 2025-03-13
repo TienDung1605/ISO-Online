@@ -99,7 +99,7 @@
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
         <td class="text-center border">{{ evaluator.name }}</td>
-        <td class="text-center border">{{ evaluator.userGroupId }}</td>
+        <td class="text-center border">{{ evaluator.checkerGroup }}</td>
         <td class="text-center border">{{ evaluator.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ evaluator.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border"><p-tag [value]="evaluator.status" [severity]="getSeverity(evaluator.status)" /></td>
