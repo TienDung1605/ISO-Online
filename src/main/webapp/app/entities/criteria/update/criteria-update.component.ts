@@ -11,6 +11,7 @@ import { ICriteria } from '../criteria.model';
 import { CriteriaService } from '../service/criteria.service';
 import { CriteriaFormService, CriteriaFormGroup } from './criteria-form.service';
 import Swal from 'sweetalert2';
+import { CriteriaGroupService } from 'app/entities/criteria-group/service/criteria-group.service';
 
 @Component({
   standalone: true,
@@ -27,7 +28,7 @@ export class CriteriaUpdateComponent implements OnInit {
   protected criteriaService = inject(CriteriaService);
   protected criteriaFormService = inject(CriteriaFormService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  protected criteriaGroupService = inject(CriteriaGroupService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: CriteriaFormGroup = this.criteriaFormService.createCriteriaFormGroup();
 
@@ -131,7 +132,7 @@ export class CriteriaUpdateComponent implements OnInit {
   protected updateForm(criteria: ICriteria): void {
     this.criteria = criteria;
     this.criteriaFormService.resetForm(this.editForm, criteria);
-    this.criteriaService.query().subscribe((res: any) => {
+    this.criteriaGroupService.query().subscribe((res: any) => {
       if (res.body) {
         this.criteriaGroups = res.body;
         const checkerGroup = res.body.find((s: any) => s.id === this.criteria?.criterialGroupId);

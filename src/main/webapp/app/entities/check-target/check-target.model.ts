@@ -9,6 +9,7 @@ export interface ICheckTarget {
   createdAt?: dayjs.Dayjs | null;
   updatedAt?: dayjs.Dayjs | null;
   updateBy?: string | null;
+  evaluationLevel?: string | null;
 }
 
 export type NewCheckTarget = Omit<ICheckTarget, 'id'> & { id: null };

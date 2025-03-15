@@ -24,7 +24,7 @@ public class Criteria implements Serializable {
     private String name;
 
     @Column(name = "criterial_group_id")
-    private String criterialGroupId;
+    private Long criterialGroupId;
 
     @Column(name = "status")
     private String status;
@@ -66,16 +66,16 @@ public class Criteria implements Serializable {
         this.name = name;
     }
 
-    public String getCriterialGroupId() {
+    public Long getCriterialGroupId() {
         return this.criterialGroupId;
     }
 
-    public Criteria criterialGroupId(String criterialGroupId) {
+    public Criteria criterialGroupId(Long criterialGroupId) {
         this.setCriterialGroupId(criterialGroupId);
         return this;
     }
 
-    public void setCriterialGroupId(String criterialGroupId) {
+    public void setCriterialGroupId(Long criterialGroupId) {
         this.criterialGroupId = criterialGroupId;
     }
 
