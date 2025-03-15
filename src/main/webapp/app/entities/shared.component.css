@@ -2435,6 +2435,13 @@ h2 {
   }
 }
 
+.mb-8 {
+  display: inline-block;
+  width: calc(15% - 20px);
+  margin: 10px;
+  vertical-align: top;
+}
+
 .form-label {
   color: #34495e;
   font-weight: 700;
@@ -2540,4 +2547,40 @@ fa-icon {
 
 .form-group {
   margin-bottom: 1rem;
+}
+
+.swal2-table {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.swal2-table th,
+.swal2-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.swal2-input {
+  width: 90% !important;
+  margin: 5px !important;
+}
+
+.swal2-select {
+  width: 90% !important;
+  height: 40px;
+  padding: 8px;
+  margin: 5px !important;
+}
+
+@media (max-width: 992px) {
+  .mb-8 {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 576px) {
+  .mb-8 {
+    width: 100%;
+    margin: 10px 0;
+  }
 }

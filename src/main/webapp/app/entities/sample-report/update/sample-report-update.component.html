@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-center">
-  <div class="col-8">
+  <div class="col-15">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
       <h2 id="jhi-sample-report-heading" data-cy="SampleReportCreateUpdateHeading">
         {{ editForm.controls.id.value ? 'Cập nhật mẫu biên bản kiểm tra' : 'Thêm mới mẫu biên bản kiểm tra' }}
@@ -7,55 +7,22 @@
 
       <div>
         @if (editForm.controls.id.value !== null) {
-          <div class="mb-3">
+          <div class="mb-8">
             <label class="form-label" for="field_id">ID</label>
             <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
-        <div class="mb-3">
-          <label class="form-label" for="field_name">Tên</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_status">Trạng thái</label>
-          <input type="number" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
-        </div>
-
-        <!-- <div class="mb-3">
-          <label class="form-label" for="field_createdAt">Thời gian tạo</label>
-          <div class="d-flex">
-            <input id="field_createdAt" data-cy="createdAt" type="datetime-local" class="form-control" name="createdAt"
-              formControlName="createdAt" placeholder="YYYY-MM-DD HH:mm" />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_updatedAt">Thời gian cập nhật</label>
-          <div class="d-flex">
-            <input id="field_updatedAt" data-cy="updatedAt" type="datetime-local" class="form-control" name="updatedAt"
-              formControlName="updatedAt" placeholder="YYYY-MM-DD HH:mm" />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_updateBy">Người cập nhật</label>
-          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy"
-            formControlName="updateBy" />
-        </div> -->
-
-        <div class="mb-3">
-          <label class="form-label" for="field_frequency">Tần suất</label>
-          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
-        </div>
-
-        <div class="mb-3">
+        <div class="mb-8">
           <label class="form-label" or="field_code">Mã mẫu BBKT</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
         </div>
+        <div class="mb-8">
+          <label class="form-label" for="field_name">Tên mẫu BBKT</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+        </div>
 
-        <div class="mb-3">
+        <div class="mb-8">
           <label class="form-label" for="field_reportType">Loại BBKT</label>
           <input
             type="text"
@@ -66,21 +33,55 @@
             formControlName="reportType"
           />
         </div>
-
-        <div class="mb-3">
+        <!-- <div class="mb-8">
           <label class="form-label" for="field_reportTypeId">Loại BBKT (ID)</label>
-          <input
-            type="number"
-            class="form-control"
-            name="reportTypeId"
-            id="field_reportTypeId"
-            data-cy="reportTypeId"
-            formControlName="reportTypeId"
-          />
+          <input type="number" class="form-control" name="reportTypeId" id="field_reportTypeId" data-cy="reportTypeId"
+            formControlName="reportTypeId" />
+        </div> -->
+        <div class="mb-8">
+          <label class="form-label" for="field_status">Trạng thái</label>
+          <input type="number" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+        </div>
+
+        <div class="mb-8">
+          <label class="form-label" for="field_frequency">Tần suất</label>
+          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+        </div>
+
+        <div class="mb-8">
+          <label class="form-label" for="field_frequency">Loại đánh giá</label>
+          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+        </div>
+        <div class="mb-8">
+          <label class="form-label" for="field_frequency">Thang điểm</label>
+          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
         </div>
       </div>
 
-      <div>
+      <!-- <button type="button" class="btn btn-primary jh-create-entity create-sample-report" (click)="openColumnModal()">
+        <fa-icon icon="plus"></fa-icon>&nbsp;
+        <span>Thêm mới</span>
+      </button>
+
+      <table class="table table-bordered" *ngIf="columns.length > 0">
+        <thead>
+          <tr>
+            <th *ngFor="let col of columns" class="text-center">
+              {{ col.header }}
+              <span class="text-danger" *ngIf="col.required">*</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td *ngFor="let col of columns">
+              <input [type]="col.type" class="form-control" [required]="col.required" [(ngModel)]="col.value">
+            </td>
+          </tr>
+        </tbody>
+      </table> -->
+
+      <div class="d-flex justify-content-end">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
         </button>
