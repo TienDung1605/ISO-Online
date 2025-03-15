@@ -30,6 +30,7 @@
             [ngModelOptions]="{ standalone: true }"
             (change)="onSourceChange()"
           >
+            <option [value]="">-- Chọn nguồn --</option>
             <option *ngFor="let source of source" [value]="source.name">
               {{ source.name }}
             </option>
@@ -38,13 +39,20 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_dataType">Kiểu dữ liệu</label>
-          <!-- <input type="text" class="form-control" name="dataType" id="field_dataType" data-cy="dataType"
-            formControlName="dataType" /> -->
-          <select class="form-control form-select" name="dataType" id="field_dataType" formControlName="dataType">
+          <input
+            type="text"
+            class="form-control"
+            name="dataType"
+            id="field_dataType"
+            data-cy="dataType"
+            formControlName="dataType"
+            readonly
+          />
+          <!-- <select class="form-control form-select" name="dataType" id="field_dataType" formControlName="dataType">
             <option *ngFor="let type of dataTypes" [value]="type">
               {{ type }}
             </option>
-          </select>
+          </select> -->
         </div>
 
         <div class="mb-3">
@@ -59,6 +67,7 @@
             [ngModelOptions]="{ standalone: true }"
             (change)="onFieldChange()"
           >
+            <option [value]="">-- Chọn field --</option>
             <option *ngFor="let field of field" [value]="field.name">
               {{ field.name }}
             </option>

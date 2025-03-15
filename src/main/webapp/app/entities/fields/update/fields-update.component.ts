@@ -26,7 +26,7 @@ export class FieldsUpdateComponent implements OnInit {
   isSaving = false;
   fields: IFields | null = null;
   sources: ISource[] = [];
-  field: IFields[] = [];
+  field: string[] = [];
   name = '';
   selectedField = '';
   selectedSource = '';
@@ -50,7 +50,6 @@ export class FieldsUpdateComponent implements OnInit {
       }
     });
     this.loadSources();
-    this.loadFields();
   }
 
   previousState(): void {
@@ -80,10 +79,18 @@ export class FieldsUpdateComponent implements OnInit {
     });
   }
 
-  loadFields(): void {
-    this.fieldsService.query().subscribe(response => {
+  loadFields(name: string): void {
+    // this.fieldsService.query().subscribe(response => {
+    //   if (response.body) {
+    //     this.field = response.body;
+    //   }
+    // });
+    this.fieldsService.getAllFieldInfo(name).subscribe(response => {
       if (response.body) {
-        this.field = response.body;
+        response.body.forEach((field: any) => {
+          this.field.push(field[0]);
+        });
+        console.log('check name', response.body);
       }
     });
   }
@@ -107,22 +114,15 @@ export class FieldsUpdateComponent implements OnInit {
     this.isSaving = false;
   }
   protected updateSourceId(): void {
-    const source = this.sources.find((s: ISource) => s.name === this.name);
-    if (source) {
+    const result = this.sources.find((s: ISource) => s.name === this.name);
+    if (result) {
       this.editForm.patchValue({
-        sourceId: source.id,
-        source: source.name,
+        sourceId: result.id,
+        source: result.name,
       });
+      this.loadFields(result.source!);
     }
-    console.log('check name', source);
-  }
-
-  protected updateFieldId(): void {
-    const field = this.field.find((s: IFields) => s.name === this.name);
-    if (field) {
-      this.editForm.patchValue({ fieldName: field.name });
-    }
-    console.log('check name', field);
+    console.log('check name2', this.sources);
   }
 
   protected updateForm(fields: IFields): void {
@@ -134,7 +134,8 @@ export class FieldsUpdateComponent implements OnInit {
         const source = res.body.find((s: ISource) => s.id === this.fields?.sourceId);
         if (source) {
           this.name = source.name;
-          console.log('check form', this.editForm);
+          this.loadFields(source.source);
+          console.log('check form', res.body);
         }
       }
     });

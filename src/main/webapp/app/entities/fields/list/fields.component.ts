@@ -189,8 +189,8 @@ export class FieldsComponent implements OnInit {
     this.isLoading = true;
     const pageToLoad: number = page;
     const queryObject: any = {
-      page: pageToLoad - 1,
-      size: this.itemsPerPage,
+      // page: pageToLoad - 1,
+      // size: this.itemsPerPage,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
     return this.fieldsService.query(queryObject).pipe(tap(() => (this.isLoading = false)));

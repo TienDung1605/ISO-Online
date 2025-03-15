@@ -181,4 +181,10 @@ public class FieldsResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @GetMapping("/list/{name}")
+    public List<Object> getAllFieldsInfo(@PathVariable String name) {
+        List<Object> list = this.fieldsRepository.getAllFieldInfo(name);
+        return list;
+    }
 }

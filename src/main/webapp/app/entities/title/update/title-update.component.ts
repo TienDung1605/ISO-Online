@@ -28,11 +28,11 @@ import { SourceService } from 'app/entities/source/service/source.service';
 export class TitleUpdateComponent implements OnInit {
   isSaving = false;
   title: ITitle | null = null;
-  field: IFields[] = [];
-  // source: ISource | null = null;
-  source: ISource[] = [];
+  field: any[] = [];
+  fieldOrigin: any[] = [];
+  source: any[] = [];
+  sourceTableName: any[] = [];
   account: Account | null = null;
-  dataTypes: string[] = ['String', 'Number', 'Date', 'Boolean'];
 
   selectedSource: string = '';
   selectedField: string = '';
@@ -51,6 +51,26 @@ export class TitleUpdateComponent implements OnInit {
       if (title) {
         this.updateForm(title);
       }
+    });
+    this.sourceService.query().subscribe(data => {
+      this.sourceTableName = data.body!;
+    });
+    this.fieldsService.getAllFields().subscribe((data: any) => {
+      this.field = data;
+      this.fieldOrigin = data;
+      console.log('check data: ', data);
+      data.forEach((element: any) => {
+        if (this.source.length === 0) {
+          const res = { name: element.source };
+          this.source.push(res);
+        } else {
+          const result = this.source.find((x: any) => x.name === element.source);
+          if (!result) {
+            const res = { name: element.source };
+            this.source.push(res);
+          }
+        }
+      });
     });
     this.accountService.identity().subscribe(account => {
       this.account = account;
@@ -90,16 +110,33 @@ export class TitleUpdateComponent implements OnInit {
 
   onSourceChange(): void {
     const selectedSource = this.source.find(s => s.name === this.selectedSource);
+    const field = this.fieldOrigin.filter(f => f.source === this.selectedSource);
+    this.field = field;
     if (selectedSource) {
-      this.fieldsService.getAllFields().subscribe(data => {
-        this.field = data;
-      });
       this.editForm.patchValue({ source: this.selectedSource });
     }
   }
 
   onFieldChange(): void {
-    this.editForm.patchValue({ field: this.selectedField });
+    const field_name = this.field.find(f => f.name === this.selectedField)?.field_name;
+    this.selectedSource = this.field.find(f => f.name === this.selectedField)?.source;
+    this.fieldsService.getAllFieldInfo(this.sourceTableName.find((x: any) => x.name === this.selectedSource)?.source).subscribe(data => {
+      console.log('check log: ', data);
+      const dataType = data.body?.find((x: any) => x[0] === field_name)?.[1];
+      if (dataType) {
+        this.editForm.patchValue({
+          dataType: dataType,
+        });
+      } else {
+        this.editForm.patchValue({
+          dataType: '',
+        });
+      }
+    });
+    this.editForm.patchValue({
+      field: this.selectedField,
+      source: this.field.find(f => f.name === this.selectedField)?.source,
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ITitle>>): void {
@@ -158,5 +195,8 @@ export class TitleUpdateComponent implements OnInit {
   protected updateForm(title: ITitle): void {
     this.title = title;
     this.titleFormService.resetForm(this.editForm, title);
+    console.log('check title: ', this.editForm);
+    this.selectedField = this.editForm.get('field')!.value!;
+    this.selectedSource = this.editForm.get('source')!.value!;
   }
 }

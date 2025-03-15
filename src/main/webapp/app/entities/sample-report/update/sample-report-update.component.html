@@ -58,28 +58,71 @@
         </div>
       </div>
 
-      <!-- <button type="button" class="btn btn-primary jh-create-entity create-sample-report" (click)="openColumnModal()">
-        <fa-icon icon="plus"></fa-icon>&nbsp;
-        <span>Thêm mới</span>
-      </button>
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary" (click)="showDialog()">
+          <span>Quản lý tiêu đề</span>
+        </button>
 
-      <table class="table table-bordered" *ngIf="columns.length > 0">
-        <thead>
-          <tr>
-            <th *ngFor="let col of columns" class="text-center">
-              {{ col.header }}
-              <span class="text-danger" *ngIf="col.required">*</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td *ngFor="let col of columns">
-              <input [type]="col.type" class="form-control" [required]="col.required" [(ngModel)]="col.value">
-            </td>
-          </tr>
-        </tbody>
-      </table> -->
+        <button type="button" class="btn btn-info">
+          <span>Thêm dòng</span>
+        </button>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center border">STT</th>
+              <th class="text-center border"></th>
+              <th class="text-center border">Hình ảnh đánh giá</th>
+              <th class="text-center border">Tuỳ chọn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i = index">
+              <td class="text-center border">{{ i + 1 }}</td>
+              <td class="text-center border"></td>
+              <td class="text-center border"><input type="image" /></td>
+              <td class="text-center border">
+                <button
+                  type="button"
+                  id="cancel-save"
+                  data-cy="entityCreateCancelButton"
+                  class="btn btn-secondary"
+                  (click)="previousState()"
+                >
+                  <fa-icon icon="ban"></fa-icon>&nbsp;<span>Xoá</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p-dialog header="Quản lý tiêu đề mẫu BBKT" [modal]="true" [(visible)]="visible" [style]="{ width: '70vw' }">
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center border">STT</th>
+              <th class="text-center border">Tên Tiêu đề</th>
+              <th class="text-center border">Danh mục</th>
+              <th class="text-center border">Vị trí</th>
+              <th class="text-center border">Kiểu dữ liệu</th>
+              <th class="text-center border">Tuỳ chọn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center border"></td>
+              <td class="text-center border"></td>
+              <td class="text-center border"></td>
+              <td class="text-center border"></td>
+              <td class="text-center border"></td>
+              <td class="text-center border"></td>
+            </tr>
+          </tbody>
+        </table>
+      </p-dialog>
 
       <div class="d-flex justify-content-end">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
