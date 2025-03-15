@@ -40,8 +40,8 @@ class CriteriaResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_CRITERIAL_GROUP_ID = "AAAAAAAAAA";
-    private static final String UPDATED_CRITERIAL_GROUP_ID = "BBBBBBBBBB";
+    private static final Long DEFAULT_CRITERIAL_GROUP_ID = 1L;
+    private static final Long UPDATED_CRITERIAL_GROUP_ID = 2L;
 
     private static final String DEFAULT_STATUS = "AAAAAAAAAA";
     private static final String UPDATED_STATUS = "BBBBBBBBBB";

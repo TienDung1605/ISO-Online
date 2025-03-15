@@ -15,7 +15,7 @@ import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
-
+import { CheckLevelService } from 'app/entities/check-level/service/check-level.service';
 @Component({
   standalone: true,
   selector: 'jhi-check-target',
@@ -65,7 +65,7 @@ export class CheckTargetComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
-
+  protected checkLevelService = inject(CheckLevelService);
   trackId = (_index: number, item: ICheckTarget): number => this.checkTargetService.getCheckTargetIdentifier(item);
 
   ngOnInit(): void {
@@ -105,6 +105,13 @@ export class CheckTargetComponent implements OnInit {
         if (res.body) {
           this.checkTargets = res.body;
           this.checkTargetResult = [...this.checkTargets];
+          this.checkLevelService.query().subscribe(res1 => {
+            if (res1.body) {
+              this.checkTargetResult?.forEach(checkTarget => {
+                checkTarget.evaluationLevel = res1.body!.find(checkLevel => checkLevel.id === checkTarget.evaluationLevelId)?.name;
+              });
+            }
+          });
           this.totalRecords = this.checkTargets.length;
           this.isLoading = false;
         }

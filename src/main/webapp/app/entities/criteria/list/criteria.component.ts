@@ -108,7 +108,7 @@ export class CriteriaComponent implements OnInit {
               this.criteria?.forEach(criteria => {
                 const result = res1.body!.find((item: any) => item.id === criteria.criterialGroupId);
                 if (result) {
-                  criteria.name = result.name;
+                  criteria.criterialGroup = result.name;
                 }
               });
             }

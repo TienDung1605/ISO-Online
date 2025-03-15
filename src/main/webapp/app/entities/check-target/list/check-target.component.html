@@ -310,7 +310,7 @@
         <td class="text-center border">{{ index + 1 }}</td>
         <td class="text-center border">{{ checkTarget.name }}</td>
         <td class="text-center border">{{ checkTarget.inspectionTarget }}</td>
-        <td class="text-center border">{{ checkTarget.evaluationLevelId }}</td>
+        <td class="text-center border">{{ checkTarget.evaluationLevel }}</td>
         <td class="text-center border"><p-tag [value]="checkTarget.status" [severity]="getSeverity(checkTarget.status)" /></td>
         <td class="text-center border">{{ checkTarget.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ checkTarget.updatedAt | formatMediumDatetime }}</td>
