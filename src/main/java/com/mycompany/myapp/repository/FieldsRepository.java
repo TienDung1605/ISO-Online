@@ -4,6 +4,7 @@ import com.mycompany.myapp.domain.Fields;
 import com.mycompany.myapp.service.dto.FieldsDTO;
 import com.mycompany.myapp.service.dto.FieldsRespone;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -18,14 +19,22 @@ public interface FieldsRepository extends JpaRepository<Fields, Long> {
         "\tf.id as id\n" +
         "    ,f.name as name\n" +
         "    ,f.field_name as field_name\n" +
-        "    ,f.source_id as source_id\n" +
-        "    ,f.created_at as created_at\n" +
-        "    ,f.updated_at as updated_at\n" +
-        "    ,f.create_by as create_by\n" +
         "    ,s.name as source\n" +
-        " FROM `fields` as f\n" +
-        "inner join iso.source as s on s.id = f.source_id;",
+        " FROM `fields` as f \n" +
+        " inner join iso.source as s on s.id = f.source_id ; ",
         nativeQuery = true
     )
     public List<FieldsRespone> getAllListFields();
+
+    @Query(
+        value = "SELECT \n" +
+        "    COLUMN_NAME, \n" +
+        "    DATA_TYPE \n" +
+        "FROM \n" +
+        "    INFORMATION_SCHEMA.COLUMNS \n" +
+        "WHERE \n" +
+        "    TABLE_NAME = ?1 ;",
+        nativeQuery = true
+    )
+    public List<Object> getAllFieldInfo(String name);
 }

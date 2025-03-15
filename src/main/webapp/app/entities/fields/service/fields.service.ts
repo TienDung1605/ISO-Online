@@ -32,10 +32,13 @@ export class FieldsService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/fields');
   protected resourceUrl2 = this.applicationConfigService.getEndpointFor('api/fields/all');
-  getAllFields(): Observable<any> {
-    return this.http.get<any[]>(this.resourceUrl2, { observe: 'response' });
+  protected resourceUrl3 = this.applicationConfigService.getEndpointFor('api/fields/list');
+  getAllFields(): any {
+    return this.http.get<any[]>(this.resourceUrl2);
   }
-
+  getAllFieldInfo(name: string): Observable<any> {
+    return this.http.get<any[]>(`${this.resourceUrl3}/${name}`, { observe: 'response' });
+  }
   getFieldsBySource(sourceId: number): Observable<IFields[]> {
     return this.http.get<IFields[]>(`${this.resourceUrl}/source/${sourceId}`);
   }

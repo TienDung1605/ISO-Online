@@ -36,15 +36,14 @@
             formControlName="fieldName" /> -->
           <select
             class="form-control form-select"
-            name="fields"
-            id="field_fields"
-            [(ngModel)]="selectedField"
-            [ngModelOptions]="{ standalone: true }"
-            (change)="updateSourceId()"
+            name="fieldName"
+            id="field_fieldName"
+            data-cy="fieldName"
+            formControlName="fieldName"
             [ngClass]="{ 'is-invalid': editForm.get('selectedField')?.invalid && editForm.get('selectedField')?.touched }"
             required
           >
-            <option *ngFor="let item of field" [value]="item.name">{{ item.name }}</option>
+            <option *ngFor="let item of field" [value]="item">{{ item }}</option>
           </select>
           <div class="error-message" *ngIf="editForm.get('selectedField')?.invalid && editForm.get('selectedField')?.touched">
             <span *ngIf="editForm.get('selectedField')?.errors?.['required']">Tên không được để trống</span>
@@ -59,7 +58,7 @@
             class="form-control form-select"
             name="source"
             id="field_source"
-            [(ngModel)]="selectedSource"
+            [(ngModel)]="name"
             [ngModelOptions]="{ standalone: true }"
             (change)="updateSourceId()"
           >
