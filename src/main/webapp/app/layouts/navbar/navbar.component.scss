@@ -12,10 +12,12 @@ $active-color: #007bff;
 .sidebar {
   width: $sidebar-width;
   height: 100vh;
+  background: linear-gradient(180deg, $sidebar-background-color 0%, darken($sidebar-background-color, 3%) 100%);
   position: fixed;
   top: 0;
   left: 0;
   background-color: $sidebar-background-color;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   padding-top: 0;
   color: $sidebar-text-color;
   overflow-x: hidden;
@@ -51,13 +53,15 @@ $active-color: #007bff;
     text-decoration: none;
     height: 80px;
     position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 
     .sidebar-img {
       max-width: 180px;
       margin-top: 70px;
       height: auto;
       transition: all $transition-duration ease;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      // filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
   }
 
@@ -68,7 +72,7 @@ $active-color: #007bff;
     transition: all $transition-duration ease;
 
     .nav-item {
-      margin: 2px 0;
+      margin: 4px 0;
       position: relative;
 
       &:not(:last-child) {
@@ -82,11 +86,13 @@ $active-color: #007bff;
         color: $sidebar-text-color;
         text-decoration: none;
         transition: all $transition-duration ease;
-        border-radius: 4px;
+        border-radius: 8px;
         margin: 0 8px;
         font-weight: 400;
+        font-size: 0.95rem;
         position: relative;
         z-index: 1;
+        letter-spacing: 0.3px;
 
         fa-icon {
           width: 20px;

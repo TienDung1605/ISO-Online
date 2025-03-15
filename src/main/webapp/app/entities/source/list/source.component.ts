@@ -15,6 +15,10 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { ISource } from '../source.model';
 import { EntityArrayResponseType, SourceService } from '../service/source.service';
 import { SourceDeleteDialogComponent } from '../delete/source-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -30,6 +34,10 @@ import { SourceDeleteDialogComponent } from '../delete/source-delete-dialog.comp
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     ItemCountComponent,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    TagModule,
   ],
 })
 export class SourceComponent implements OnInit {
@@ -39,9 +47,20 @@ export class SourceComponent implements OnInit {
 
   sortState = sortStateSignal({});
 
-  itemsPerPage = ITEMS_PER_PAGE;
-  totalItems = 0;
+  sourceResult: any[] = [];
   page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
+    name: '',
+    source: '',
+    createdAt: '',
+    updatedAt: '',
+    createBy: '',
+  };
 
   public router = inject(Router);
   protected sourceService = inject(SourceService);
@@ -74,11 +93,60 @@ export class SourceComponent implements OnInit {
   }
 
   load(): void {
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.isLoading = true;
     this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
+      next: res => {
+        if (res.body) {
+          this.sources = res.body;
+          this.sourceResult = [...this.sources];
+          this.totalRecords = this.sources.length;
+          this.isLoading = false;
+        }
       },
     });
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  searchTable(): void {
+    if (!this.sources) {
+      return;
+    }
+
+    this.sourceResult = this.sources.filter(source => {
+      const createdDate = source.createdAt ? new Date(source.createdAt.toDate()).toISOString().split('T')[0] : '';
+      const updatedDate = source.updatedAt ? new Date(source.updatedAt.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.createdAt ? new Date(this.filters.createdAt).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.updatedAt ? new Date(this.filters.updatedAt).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || source.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.source || source.source?.toString().includes(this.filters.source)) &&
+        (!this.filters.createdAt || createdDate === searchCreatedDate) &&
+        (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
+        (!this.filters.createBy || source.createBy?.toString().includes(this.filters.createBy))
+      );
+    });
+    this.totalRecords = this.sourceResult.length;
+  }
+
+  onSearch(title: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[title] = value;
+    this.searchTable();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   navigateToWithComponentValues(event: SortState): void {
@@ -116,7 +184,6 @@ export class SourceComponent implements OnInit {
     const pageToLoad: number = page;
     const queryObject: any = {
       page: pageToLoad - 1,
-      size: this.itemsPerPage,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
     return this.sourceService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
@@ -125,7 +192,6 @@ export class SourceComponent implements OnInit {
   protected handleNavigation(page: number, sortState: SortState): void {
     const queryParamsObj = {
       page,
-      size: this.itemsPerPage,
       sort: this.sortService.buildSortParam(sortState),
     };
 

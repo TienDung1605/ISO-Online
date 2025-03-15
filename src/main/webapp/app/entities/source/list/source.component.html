@@ -1,12 +1,12 @@
 <div>
   <h2 id="page-heading" data-cy="SourceHeading">
-    <span jhiTranslate="isoApp.source.home.title">Sources</span>
+    <span>Nguồn</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="isoApp.source.home.refreshListLabel">Refresh list</span>
-      </button>
+        <span>Refresh list</span>
+      </button> -->
 
       <button
         id="jh-create-entity"
@@ -15,12 +15,12 @@
         [routerLink]="['/source/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="isoApp.source.home.createLabel">Thêm mới một Source</span>
+        <span>Thêm mới</span>
       </button>
     </div>
   </h2>
 
-  <jhi-alert-error></jhi-alert-error>
+  <!-- <jhi-alert-error></jhi-alert-error>
 
   <jhi-alert></jhi-alert>
 
@@ -133,5 +133,114 @@
         ></ngb-pagination>
       </div>
     </div>
-  }
+  } -->
+
+  <p-table
+    [value]="sourceResult"
+    [paginator]="true"
+    [rows]="selectedPageSize"
+    [rowsPerPageOptions]="pageSizeOptions"
+    (onPage)="onPageSizeChange($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [responsive]="true"
+    [rowHover]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Tên</th>
+        <th class="text-center border">Nguồn</th>
+        <th class="text-center border">Thời gian tạo</th>
+        <th class="text-center border">Thời gian cập nhật</th>
+        <th class="text-center border">Người cập nhật</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('source', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="date" placeholder="Search" style="padding-left: 30px" (input)="onSearch('createdAt', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="date" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updatedAt', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('createBy', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-source let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ source.name }}</td>
+        <td class="text-center border">{{ source.source }}</td>
+        <td class="text-center border">{{ source.createdAt | formatMediumDatetime }}</td>
+        <td class="text-center border">{{ source.updatedAt | formatMediumDatetime }}</td>
+        <td class="text-center border">{{ source.createBy }}</td>
+        <td class="text-center border">
+          <div class="btn-group action-buttons">
+            <a
+              [routerLink]="['/source', source.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+              style="border-radius: 8px"
+            >
+              <fa-icon icon="eye"></fa-icon>
+            </a>
+
+            <a
+              [routerLink]="['/source', source.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+              style="border-radius: 8px"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+            </a>
+
+            <button
+              type="submit"
+              (click)="delete(source)"
+              class="btn btn-danger btn-sm"
+              data-cy="entityDeleteButton"
+              style="border-radius: 8px"
+            >
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

@@ -7,7 +7,7 @@
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-fields"
-        [routerLink]="['/new']"
+        [routerLink]="['/field/new']"
       >
         <fa-icon icon="plus"></fa-icon>
         <span>Thêm mới</span>
@@ -32,7 +32,7 @@
         <th class="text-center border">STT</th>
         <th class="text-center border">Tên</th>
         <th class="text-center border">Tên Field</th>
-        <th class="text-center border">Nguồn (id)</th>
+        <th class="text-center border">Nguồn</th>
         <th class="text-center border">Thời gian tạo</th>
         <th class="text-center border">Thời gian cập nhật</th>
         <th class="text-center border">Người cập nhật</th>
@@ -96,7 +96,7 @@
         <td class="text-center border">{{ index + 1 }}</td>
         <td class="text-center border">{{ fields.name }}</td>
         <td class="text-center border">{{ fields.fieldName }}</td>
-        <td class="text-center border">{{ fields.sourceId }}</td>
+        <td class="text-center border">{{ fields.source }}</td>
         <td class="text-center border">{{ fields.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ fields.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ fields.createBy }}</td>

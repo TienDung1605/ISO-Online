@@ -18,6 +18,7 @@ import { FieldsDeleteDialogComponent } from '../delete/fields-delete-dialog.comp
 import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { SourceService } from 'app/entities/source/service/source.service';
 
 @Component({
   standalone: true,
@@ -70,6 +71,7 @@ export class FieldsComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
+  protected sourceService = inject(SourceService);
 
   trackId = (_index: number, item: IFields): number => this.fieldsService.getFieldsIdentifier(item);
 
@@ -107,7 +109,7 @@ export class FieldsComponent implements OnInit {
         if (res.body) {
           this.fields = res.body;
           this.fieldResult = [...this.fields];
-          this.fieldsService.query().subscribe(res1 => {
+          this.sourceService.query().subscribe(res1 => {
             if (res1.body) {
               this.fields?.forEach(field => {
                 const result = res1.body!.find((item: any) => item.id === field.sourceId);

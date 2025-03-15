@@ -2,17 +2,15 @@
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
       <h2 id="jhi-sample-report-heading" data-cy="SampleReportCreateUpdateHeading">
-        Thêm mới hoặc cập nhật mẫu biên bản kiểm tra
+        {{ editForm.controls.id.value ? 'Cập nhật mẫu biên bản kiểm tra' : 'Thêm mới mẫu biên bản kiểm tra' }}
       </h2>
 
       <div>
-
         @if (editForm.controls.id.value !== null) {
-        <div class="mb-3">
-          <label class="form-label" for="field_id">ID</label>
-          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id"
-            [readonly]="true" />
-        </div>
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
         }
 
         <div class="mb-3">
@@ -22,11 +20,10 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_status">Trạng thái</label>
-          <input type="number" class="form-control" name="status" id="field_status" data-cy="status"
-            formControlName="status" />
+          <input type="number" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
         </div>
 
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label class="form-label" for="field_createdAt">Thời gian tạo</label>
           <div class="d-flex">
             <input id="field_createdAt" data-cy="createdAt" type="datetime-local" class="form-control" name="createdAt"
@@ -46,12 +43,11 @@
           <label class="form-label" for="field_updateBy">Người cập nhật</label>
           <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy"
             formControlName="updateBy" />
-        </div>
+        </div> -->
 
         <div class="mb-3">
           <label class="form-label" for="field_frequency">Tần suất</label>
-          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency"
-            formControlName="frequency" />
+          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
         </div>
 
         <div class="mb-3">
@@ -61,25 +57,41 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_reportType">Loại BBKT</label>
-          <input type="text" class="form-control" name="reportType" id="field_reportType" data-cy="reportType"
-            formControlName="reportType" />
+          <input
+            type="text"
+            class="form-control"
+            name="reportType"
+            id="field_reportType"
+            data-cy="reportType"
+            formControlName="reportType"
+          />
         </div>
 
         <div class="mb-3">
           <label class="form-label" for="field_reportTypeId">Loại BBKT (ID)</label>
-          <input type="number" class="form-control" name="reportTypeId" id="field_reportTypeId" data-cy="reportTypeId"
-            formControlName="reportTypeId" />
+          <input
+            type="number"
+            class="form-control"
+            name="reportTypeId"
+            id="field_reportTypeId"
+            data-cy="reportTypeId"
+            formControlName="reportTypeId"
+          />
         </div>
       </div>
 
       <div>
-        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary"
-          (click)="previousState()">
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
         </button>
 
-        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
           <fa-icon icon="save"></fa-icon>&nbsp;<span>Lưu</span>
         </button>
       </div>

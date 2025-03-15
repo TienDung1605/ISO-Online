@@ -26,7 +26,10 @@ export class FieldsUpdateComponent implements OnInit {
   isSaving = false;
   fields: IFields | null = null;
   sources: ISource[] = [];
+  field: IFields[] = [];
   name = '';
+  selectedField = '';
+  selectedSource = '';
   account: Account | null = null;
   protected fieldsService = inject(FieldsService);
   protected fieldsFormService = inject(FieldsFormService);
@@ -46,6 +49,8 @@ export class FieldsUpdateComponent implements OnInit {
         this.updateForm(fields);
       }
     });
+    this.loadSources();
+    this.loadFields();
   }
 
   previousState(): void {
@@ -65,6 +70,22 @@ export class FieldsUpdateComponent implements OnInit {
       fields.createBy = this.account?.login;
       this.subscribeToSaveResponse(this.fieldsService.create(fields));
     }
+  }
+
+  loadSources(): void {
+    this.sourceService.query().subscribe(response => {
+      if (response.body) {
+        this.sources = response.body;
+      }
+    });
+  }
+
+  loadFields(): void {
+    this.fieldsService.query().subscribe(response => {
+      if (response.body) {
+        this.field = response.body;
+      }
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IFields>>): void {
@@ -88,10 +109,22 @@ export class FieldsUpdateComponent implements OnInit {
   protected updateSourceId(): void {
     const source = this.sources.find((s: ISource) => s.name === this.name);
     if (source) {
-      this.editForm.patchValue({ sourceId: source.id });
+      this.editForm.patchValue({
+        sourceId: source.id,
+        source: source.name,
+      });
     }
     console.log('check name', source);
   }
+
+  protected updateFieldId(): void {
+    const field = this.field.find((s: IFields) => s.name === this.name);
+    if (field) {
+      this.editForm.patchValue({ fieldName: field.name });
+    }
+    console.log('check name', field);
+  }
+
   protected updateForm(fields: IFields): void {
     this.fields = fields;
     this.fieldsFormService.resetForm(this.editForm, fields);

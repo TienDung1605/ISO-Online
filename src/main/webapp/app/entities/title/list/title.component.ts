@@ -82,7 +82,6 @@ export class TitleComponent implements OnInit {
   delete(title: ITitle): void {
     const modalRef = this.modalService.open(TitleDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.title = title;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),
