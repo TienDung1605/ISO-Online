@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-15">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+    <form name="editForm" role="form" novalidate [formGroup]="editForm">
       <h2 id="jhi-sample-report-heading" data-cy="SampleReportCreateUpdateHeading">
         {{ editForm.controls.id.value ? 'Cập nhật mẫu biên bản kiểm tra' : 'Thêm mới mẫu biên bản kiểm tra' }}
       </h2>
@@ -24,14 +24,27 @@
 
         <div class="mb-8">
           <label class="form-label" for="field_reportType">Loại BBKT</label>
-          <input
+          <!-- <input
             type="text"
             class="form-control"
             name="reportType"
             id="field_reportType"
             data-cy="reportType"
             formControlName="reportType"
-          />
+          /> -->
+          <select
+            class="form-control form-select"
+            name="reportType"
+            id="field_reportType"
+            data-cy="reportType"
+            formControlName="reportType"
+            (change)="onReportTypeChange()"
+          >
+            <option [value]="">-- Chọn loại biên bản --</option>
+            <option *ngFor="let source of listReportTypes" [value]="source.name">
+              {{ source.name }}
+            </option>
+          </select>
         </div>
         <!-- <div class="mb-8">
           <label class="form-label" for="field_reportTypeId">Loại BBKT (ID)</label>
@@ -40,7 +53,12 @@
         </div> -->
         <div class="mb-8">
           <label class="form-label" for="field_status">Trạng thái</label>
-          <input type="number" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+          <!-- <input type="number" class="form-control" name="status" id="field_status" data-cy="status"
+            formControlName="status" /> -->
+          <select class="form-control form-select" name="status" data-cy="status" formControlName="status">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="DEACTIVATE">DEACTIVATE</option>
+          </select>
         </div>
 
         <div class="mb-8">
@@ -63,7 +81,7 @@
           <span>Quản lý tiêu đề</span>
         </button>
 
-        <button type="button" class="btn btn-info">
+        <button type="button" class="btn btn-info" (click)="addNewRow()">
           <span>Thêm dòng</span>
         </button>
       </div>
@@ -73,24 +91,23 @@
           <thead>
             <tr>
               <th class="text-center border">STT</th>
-              <th class="text-center border"></th>
-              <th class="text-center border">Hình ảnh đánh giá</th>
+              <th class="text-center border" *ngFor="let item of listTitleHeaders">{{ item.name }}</th>
+              <!-- <th class="text-center border">Hình ảnh đánh giá</th> -->
               <th class="text-center border">Tuỳ chọn</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let i = index">
+            <tr *ngFor="let item of listTitleBody; let i = index">
               <td class="text-center border">{{ i + 1 }}</td>
-              <td class="text-center border"></td>
-              <td class="text-center border"><input type="image" /></td>
+              <td class="text-center border" *ngFor="let data of item.data">
+                <select [(ngModel)]="data.value" [ngModelOptions]="{ standalone: true }" (click)="checkEvent(data.header)">
+                  <option>{{ data.value }}</option>
+                  <option *ngFor="let item1 of listSuggestions" [value]="item1">{{ item1 }}</option>
+                </select>
+              </td>
+              <!-- <td class="text-center border"><input type="image" /></td> -->
               <td class="text-center border">
-                <button
-                  type="button"
-                  id="cancel-save"
-                  data-cy="entityCreateCancelButton"
-                  class="btn btn-secondary"
-                  (click)="previousState()"
-                >
+                <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="deleteRow(i)">
                   <fa-icon icon="ban"></fa-icon>&nbsp;<span>Xoá</span>
                 </button>
               </td>
@@ -100,28 +117,44 @@
       </div>
 
       <p-dialog header="Quản lý tiêu đề mẫu BBKT" [modal]="true" [(visible)]="visible" [style]="{ width: '70vw' }">
+        <button (click)="addNewTitle()">Thêm mới</button>
         <table>
           <thead>
             <tr>
               <th class="text-center border">STT</th>
               <th class="text-center border">Tên Tiêu đề</th>
-              <th class="text-center border">Danh mục</th>
-              <th class="text-center border">Vị trí</th>
+              <th class="text-center border">Trường thông tin</th>
+              <th class="text-center border">Số thứ tự</th>
               <th class="text-center border">Kiểu dữ liệu</th>
               <th class="text-center border">Tuỳ chọn</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="text-center border"></td>
-              <td class="text-center border"></td>
-              <td class="text-center border"></td>
-              <td class="text-center border"></td>
-              <td class="text-center border"></td>
-              <td class="text-center border"></td>
+            <tr *ngFor="let item of listTitlesView; let i = index">
+              <td class="text-center border">{{ i + 1 }}</td>
+              <td class="text-center border">
+                <select [(ngModel)]="item.name" [ngModelOptions]="{ standalone: true }" (change)="onTitlesChange(item.name, i)">
+                  <option *ngFor="let item of listTitles" [value]="item.name">{{ item.name }}</option>
+                </select>
+              </td>
+              <td class="text-center border">{{ item.field }}</td>
+              <td class="text-center border">
+                <input
+                  type="number"
+                  name="index"
+                  id="index"
+                  [(ngModel)]="item.index"
+                  [ngModelOptions]="{ standalone: true }"
+                  [max]="listTitlesView.length"
+                  min="1"
+                />
+              </td>
+              <td class="text-center border">{{ item.data_type }}</td>
+              <td class="text-center border"><button (click)="deleteTitle(i)">Xóa</button></td>
             </tr>
           </tbody>
         </table>
+        <button (click)="saveAndSortHeader()">Lưu</button>
       </p-dialog>
 
       <div class="d-flex justify-content-end">
@@ -135,6 +168,7 @@
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
+          (click)="save()"
         >
           <fa-icon icon="save"></fa-icon>&nbsp;<span>Lưu</span>
         </button>

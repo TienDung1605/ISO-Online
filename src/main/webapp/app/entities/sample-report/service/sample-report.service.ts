@@ -31,6 +31,7 @@ export class SampleReportService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/sample-reports');
+  protected resourceUrl1 = this.applicationConfigService.getEndpointFor('api/sample-reports/list');
 
   create(sampleReport: NewSampleReport): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(sampleReport);
@@ -38,7 +39,9 @@ export class SampleReportService {
       .post<RestSampleReport>(this.resourceUrl, copy, { observe: 'response' })
       .pipe(map(res => this.convertResponseFromServer(res)));
   }
-
+  getListSuggestions(body: any): Observable<EntityArrayResponseType> {
+    return this.http.post<any[]>(this.resourceUrl1, body, { observe: 'response' });
+  }
   update(sampleReport: ISampleReport): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(sampleReport);
     return this.http

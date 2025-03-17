@@ -31,12 +31,15 @@ export class TitleService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/titles');
+  protected resourceUrl1 = this.applicationConfigService.getEndpointFor('api/titles/all');
 
   create(title: NewTitle): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(title);
     return this.http.post<RestTitle>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));
   }
-
+  getAllTitles(): Observable<EntityArrayResponseType> {
+    return this.http.get<any[]>(this.resourceUrl1, { observe: 'response' });
+  }
   update(title: ITitle): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(title);
     return this.http
