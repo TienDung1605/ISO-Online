@@ -188,7 +188,7 @@ export class SampleReportUpdateComponent implements OnInit {
       if (element.data.length < this.listTitleHeaders.length) {
         this.listTitleHeaders.forEach((item: any) => {
           if (!element.data.find((elements: any) => elements.header === item.name)) {
-            element.data.push({ header: item.name, index: item.index, value: item.name });
+            element.data.push({ header: item.name, index: item.index, value: '' });
             console.log('element::', element);
             this.sortBody(this.listTitleHeaders);
           }
@@ -205,7 +205,7 @@ export class SampleReportUpdateComponent implements OnInit {
     // create body for new row
     var body: any[] = [];
     this.listTitleHeaders.forEach((element: any) => {
-      body.push({ header: element.name, index: element.index, value: element.name });
+      body.push({ header: element.name, index: element.index, value: '' });
     });
     this.listTitleBody = [...this.listTitleBody, { data: body }];
     console.log('body::', this.listTitleBody);
