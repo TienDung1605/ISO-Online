@@ -2,7 +2,11 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.SampleReport;
 import com.mycompany.myapp.repository.SampleReportRepository;
+import com.mycompany.myapp.service.dto.SampleReportRequestDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -24,6 +28,9 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/sample-reports")
 @Transactional
 public class SampleReportResource {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final Logger log = LoggerFactory.getLogger(SampleReportResource.class);
 
@@ -196,5 +203,12 @@ public class SampleReportResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/list")
+    public List<Object> getList(@RequestBody SampleReportRequestDTO requestDTO) {
+        String sql = "SELECT " + requestDTO.getField_name() + " FROM iso." + requestDTO.getSource_table() + " ;";
+        Query query = this.entityManager.createNativeQuery(sql);
+        return query.getResultList();
     }
 }

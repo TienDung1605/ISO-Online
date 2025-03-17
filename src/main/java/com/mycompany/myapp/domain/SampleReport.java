@@ -24,7 +24,7 @@ public class SampleReport implements Serializable {
     private String name;
 
     @Column(name = "status")
-    private Long status;
+    private String status;
 
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
@@ -47,7 +47,18 @@ public class SampleReport implements Serializable {
     @Column(name = "report_type_id")
     private Long reportTypeId;
 
+    @Column(name = "detail")
+    private String detail;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 
     public Long getId() {
         return this.id;
@@ -75,16 +86,16 @@ public class SampleReport implements Serializable {
         this.name = name;
     }
 
-    public Long getStatus() {
+    public String getStatus() {
         return this.status;
     }
 
-    public SampleReport status(Long status) {
+    public SampleReport status(String status) {
         this.setStatus(status);
         return this;
     }
 
-    public void setStatus(Long status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
