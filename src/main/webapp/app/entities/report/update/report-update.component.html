@@ -1,32 +1,30 @@
 <div class="d-flex justify-content-center">
-  <div class="col-8">
+  <div class="col-15">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-report-heading" data-cy="ReportCreateUpdateHeading" jhiTranslate="isoApp.report.home.createOrEditLabel">
-        Thêm mới hoặc cập nhật Report
+      <h2 id="jhi-report-heading" data-cy="ReportCreateUpdateHeading">
+        {{ editForm.controls.id.value ? 'Cập nhật Biên bản kiểm tra' : 'Thêm mới Biên bản kiểm tra' }}
       </h2>
 
       <div>
-        <jhi-alert-error></jhi-alert-error>
-
         @if (editForm.controls.id.value !== null) {
-          <div class="mb-3">
+          <div class="mb-8">
             <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
             <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.name" for="field_name">Name</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_name">Tên biên bản kiểm tra</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.code" for="field_code">Code</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.sampleReportId" for="field_sampleReportId">Sample Report Id</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_sampleReportId">Mẫu biên bản kiểm tra</label>
           <input
             type="number"
             class="form-control"
@@ -37,8 +35,8 @@
           />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.testOfObject" for="field_testOfObject">Test Of Object</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_testOfObject">Đối tượng kiểm tra</label>
           <input
             type="text"
             class="form-control"
@@ -49,77 +47,53 @@
           />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.checker" for="field_checker">Checker</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_checker">Người kiểm tra</label>
           <input type="text" class="form-control" name="checker" id="field_checker" data-cy="checker" formControlName="checker" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.status" for="field_status">Status</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_status">Trạng thái</label>
           <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.frequency" for="field_frequency">Frequency</label>
-          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+        <!-- <div class="mb-8">
+          <label class="form-label" for="field_frequency">Frequency</label>
+          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency"
+            formControlName="frequency" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.reportType" for="field_reportType">Report Type</label>
-          <input
-            type="text"
-            class="form-control"
-            name="reportType"
-            id="field_reportType"
-            data-cy="reportType"
-            formControlName="reportType"
-          />
+        <div class="mb-8">
+          <label class="form-label" for="field_reportType">Report Type</label>
+          <input type="text" class="form-control" name="reportType" id="field_reportType" data-cy="reportType"
+            formControlName="reportType" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.reportTypeId" for="field_reportTypeId">Report Type Id</label>
-          <input
-            type="number"
-            class="form-control"
-            name="reportTypeId"
-            id="field_reportTypeId"
-            data-cy="reportTypeId"
-            formControlName="reportTypeId"
-          />
+        <div class="mb-8">
+          <label class="form-label" for="field_reportTypeId">Report Type
+            Id</label>
+          <input type="number" class="form-control" name="reportTypeId" id="field_reportTypeId" data-cy="reportTypeId"
+            formControlName="reportTypeId" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.createdAt" for="field_createdAt">Created At</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_createdAt">Created At</label>
           <div class="d-flex">
-            <input
-              id="field_createdAt"
-              data-cy="createdAt"
-              type="datetime-local"
-              class="form-control"
-              name="createdAt"
-              formControlName="createdAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
+            <input id="field_createdAt" data-cy="createdAt" type="datetime-local" class="form-control" name="createdAt"
+              formControlName="createdAt" placeholder="YYYY-MM-DD HH:mm" />
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.updatedAt" for="field_updatedAt">Updated At</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_updatedAt">Updated At</label>
           <div class="d-flex">
-            <input
-              id="field_updatedAt"
-              data-cy="updatedAt"
-              type="datetime-local"
-              class="form-control"
-              name="updatedAt"
-              formControlName="updatedAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
+            <input id="field_updatedAt" data-cy="updatedAt" type="datetime-local" class="form-control" name="updatedAt"
+              formControlName="updatedAt" placeholder="YYYY-MM-DD HH:mm" />
           </div>
-        </div>
+        </div> -->
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.scoreScale" for="field_scoreScale">Score Scale</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_scoreScale">Thang điểm</label>
           <input
             type="text"
             class="form-control"
@@ -130,25 +104,64 @@
           />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.updateBy" for="field_updateBy">Update By</label>
-          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
+        <!-- <div class="mb-8">
+          <label class="form-label" for="field_updateBy">Update By</label>
+          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy"
+            formControlName="updateBy" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.planId" for="field_planId">Plan Id</label>
-          <input type="text" class="form-control" name="planId" id="field_planId" data-cy="planId" formControlName="planId" />
+        <div class="mb-8">
+          <label class="form-label" for="field_planId">Plan Id</label>
+          <input type="text" class="form-control" name="planId" id="field_planId" data-cy="planId"
+            formControlName="planId" />
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.report.user" for="field_user">User</label>
+        <div class="mb-8">
+          <label class="form-label" for="field_user">User</label>
           <input type="text" class="form-control" name="user" id="field_user" data-cy="user" formControlName="user" />
-        </div>
+        </div> -->
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-info">
+          <span>Thêm dòng</span>
+        </button>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center border">STT</th>
+              <th class="text-center border"></th>
+              <th class="text-center border">Hình ảnh đánh giá</th>
+              <th class="text-center border">Tuỳ chọn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i = index">
+              <td class="text-center border">{{ i + 1 }}</td>
+              <td class="text-center border"></td>
+              <td class="text-center border"><input type="image" /></td>
+              <td class="text-center border">
+                <button
+                  type="button"
+                  id="cancel-save"
+                  data-cy="entityCreateCancelButton"
+                  class="btn btn-secondary"
+                  (click)="previousState()"
+                >
+                  <fa-icon icon="ban"></fa-icon>&nbsp;<span>Xoá</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
         </button>
 
         <button
@@ -158,7 +171,7 @@
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Lưu</span>
         </button>
       </div>
     </form>

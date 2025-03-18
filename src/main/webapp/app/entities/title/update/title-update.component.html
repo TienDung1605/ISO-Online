@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-title-heading" data-cy="TitleCreateUpdateHeading">Thêm mới hoặc cập nhật tiêu đề</h2>
+      <h2 id="jhi-title-heading" data-cy="TitleCreateUpdateHeading">
+        {{ editForm.controls.id.value ? 'Cập nhật tiêu đề' : 'Thêm mới tiêu đề' }}
+      </h2>
 
       <div>
-        <jhi-alert-error></jhi-alert-error>
-
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
