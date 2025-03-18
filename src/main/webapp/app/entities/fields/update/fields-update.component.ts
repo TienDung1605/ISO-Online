@@ -80,18 +80,20 @@ export class FieldsUpdateComponent implements OnInit {
   }
 
   loadFields(name: string): void {
-    // this.fieldsService.query().subscribe(response => {
-    //   if (response.body) {
-    //     this.field = response.body;
-    //   }
-    // });
-    this.fieldsService.getAllFieldInfo(name).subscribe(response => {
-      if (response.body) {
-        response.body.forEach((field: any) => {
-          this.field.push(field[0]);
-        });
-        console.log('check name', response.body);
-      }
+    this.field = [];
+    this.sourceService.getListTable().subscribe(res => {
+      const result = res.find(x => x[2] === name);
+
+      this.sourceService.getListColumns().subscribe(response => {
+        if (response) {
+          response.forEach((field: any) => {
+            if (field[3] === result[0]) {
+              console.log('check name', field, result);
+              this.field.push(field[2]);
+            }
+          });
+        }
+      });
     });
   }
 

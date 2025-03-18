@@ -36,7 +36,7 @@ export class SourceUpdateComponent implements OnInit {
     this.accountService.identity().subscribe(account => {
       this.account = account;
     });
-    this.sourceService.getAllTables().subscribe(list => {
+    this.sourceService.getListTable().subscribe(list => {
       this.list = list;
       console.log('Danh sacsh table', this.list);
     });

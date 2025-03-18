@@ -32,10 +32,17 @@ export class SourceService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/sources');
   protected getAllTablesUrl = this.applicationConfigService.getEndpointFor('api/sources/tables');
+  protected getAllTablesUrl1 = this.applicationConfigService.getEndpointFor('api/sources/list');
+  protected getAllTablesUrl2 = this.applicationConfigService.getEndpointFor('api/sources/list-columns');
   getAllTables(): Observable<string[]> {
     return this.http.get<string[]>(this.getAllTablesUrl);
   }
-
+  getListTable(): Observable<any[]> {
+    return this.http.get<any>(this.getAllTablesUrl1);
+  }
+  getListColumns(): Observable<any[]> {
+    return this.http.get<any>(this.getAllTablesUrl2);
+  }
   getAllSources(): Observable<ISource[]> {
     return this.http.get<ISource[]>(this.resourceUrl);
   }

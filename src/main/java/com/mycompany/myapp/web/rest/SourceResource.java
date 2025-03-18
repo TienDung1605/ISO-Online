@@ -2,8 +2,12 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.repository.SourceRepository;
 import com.mycompany.myapp.service.SourceService;
+import com.mycompany.myapp.service.dto.SampleReportRequestDTO;
 import com.mycompany.myapp.service.dto.SourceDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -28,6 +32,9 @@ import tech.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api/sources")
 public class SourceResource {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final Logger log = LoggerFactory.getLogger(SourceResource.class);
 
@@ -179,5 +186,19 @@ public class SourceResource {
     public List<String> getAllTable() {
         List<String> list = this.sourceRepository.getAllTables();
         return list;
+    }
+
+    @GetMapping("/list")
+    public List<Object[]> getList() {
+        String sql = "SELECT * FROM iso.table_management ;";
+        Query query = this.entityManager.createNativeQuery(sql);
+        return query.getResultList();
+    }
+
+    @GetMapping("/list-columns")
+    public List<Object[]> getListColumns() {
+        String sql = "SELECT * FROM iso.column_management where length(discription) >1;";
+        Query query = this.entityManager.createNativeQuery(sql);
+        return query.getResultList();
     }
 }

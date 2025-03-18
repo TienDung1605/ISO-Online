@@ -33,7 +33,7 @@
         <div class="mb-3">
           <label class="form-label" for="field_source">Nguồn</label>
           <select class="form-control form-select" name="source" id="field_source" data-cy="source" formControlName="source">
-            <option *ngFor="let item of list" [value]="item">{{ item }}</option>
+            <option *ngFor="let item of list" [value]="item[2]">{{ item[2] }}</option>
           </select>
         </div>
       </div>
