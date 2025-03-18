@@ -118,24 +118,31 @@ export class TitleUpdateComponent implements OnInit {
   }
 
   onFieldChange(): void {
-    const field_name = this.field.find(f => f.name === this.selectedField)?.field_name;
-    this.selectedSource = this.field.find(f => f.name === this.selectedField)?.source;
-    this.fieldsService.getAllFieldInfo(this.sourceTableName.find((x: any) => x.name === this.selectedSource)?.source).subscribe(data => {
-      console.log('check log: ', data);
-      const dataType = data.body?.find((x: any) => x[0] === field_name)?.[1];
-      if (dataType) {
-        this.editForm.patchValue({
-          dataType: dataType,
+    this.sourceService.getListTable().subscribe(table => {
+      this.sourceService.getListColumns().subscribe(columns => {
+        const field_name = columns.find(f => f[2] === this.field.find(x => x.name === this.selectedField)?.field_name);
+        console.log('check column::', field_name, columns);
+        this.selectedSource = this.field.find(f => f.name === this.selectedField)?.source;
+        const table_id = table.find(x => x[2] === this.sourceTableName.find(f => f.name === this.selectedSource)?.source);
+        console.log('select table', table_id, this.sourceTableName.find(f => f.name === this.selectedSource)?.source);
+        this.fieldsService.getAllFieldInfo(table_id[1]).subscribe(data => {
+          const dataType = data.body?.find((x: any) => x[0] === field_name[1]);
+          console.log('check log: ', data, field_name);
+          if (dataType) {
+            this.editForm.patchValue({
+              dataType: dataType[1],
+            });
+          } else {
+            this.editForm.patchValue({
+              dataType: '',
+            });
+          }
         });
-      } else {
         this.editForm.patchValue({
-          dataType: '',
+          field: this.selectedField,
+          source: this.field.find(f => f.name === this.selectedField)?.source,
         });
-      }
-    });
-    this.editForm.patchValue({
-      field: this.selectedField,
-      source: this.field.find(f => f.name === this.selectedField)?.source,
+      });
     });
   }
 

@@ -22,6 +22,7 @@ import { TitleService } from 'app/entities/title/service/title.service';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import dayjs from 'dayjs/esm';
+import { SourceService } from 'app/entities/source/service/source.service';
 
 @Component({
   standalone: true,
@@ -47,7 +48,7 @@ export class SampleReportUpdateComponent implements OnInit {
   protected reportTypeService = inject(ReportTypeService);
   protected titleService = inject(TitleService);
   protected accountService = inject(AccountService);
-
+  protected sourceService = inject(SourceService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: SampleReportFormGroup = this.sampleReportFormService.createSampleReportFormGroup();
 
@@ -244,23 +245,30 @@ export class SampleReportUpdateComponent implements OnInit {
     });
   }
   checkEvent(header: string): void {
-    console.log('check event', this.listTitleBody);
+    console.log('check event', this.listTitleHeaders);
     const data = this.listTitleHeaders.find((element: any) => element.name === header);
-    if (data) {
-      console.log('data::', data);
-      const body = { field_name: data.field_name, source_table: data.source_table };
-      this.sampleReportService.getListSuggestions(body).subscribe((res: any) => {
-        this.listSuggestions = res.body;
-        console.log('suggestions::', this.listSuggestions);
+    this.sourceService.getListTable().subscribe(tables => {
+      this.sourceService.getListColumns().subscribe(columns => {
+        const column = columns.find((element: any) => element[2] === data.field_name);
+        const table = tables.find(x => x[2] === data.source_table);
+        console.log('check column and table :: ', column, table); // column and table
+        if (data) {
+          console.log('data::', data);
+          const body = { field_name: column[1], source_table: table[1] };
+          this.sampleReportService.getListSuggestions(body).subscribe((res: any) => {
+            this.listSuggestions = res.body;
+            console.log('suggestions::', this.listSuggestions);
+          });
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'No data found',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        }
       });
-    } else {
-      Swal.fire({
-        title: 'Error',
-        text: 'No data found',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
-    }
+    });
   }
   // ---------------------------------------------------------------------------------------------
   protected updateForm(sampleReport: ISampleReport): void {
