@@ -307,14 +307,14 @@
               {{ index + 1 }}
             </td>
             <td>
-              <select [(ngModel)]="planDetailResults[index].checkerName">
+              <select [(ngModel)]="planDetailResults[index].checkerName" [ngModelOptions]="{ standalone: true }">
                 <option *ngFor="let data of planDetailResults" [value]="data.checkerName">
                   {{ data.checkerName }}
                 </option>
               </select>
             </td>
             <td>
-              <select [(ngModel)]="planDetailResults[index].code">
+              <select [(ngModel)]="planDetailResults[index].code" [ngModelOptions]="{ standalone: true }">
                 <option *ngFor="let data of planDetailResults" [value]="data.code">
                   {{ data.code }}
                 </option>
