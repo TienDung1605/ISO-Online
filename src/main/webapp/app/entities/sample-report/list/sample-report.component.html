@@ -264,7 +264,7 @@
         <th class="text-center border">Tên</th>
         <th class="text-center border">Mã mẫu BBKT</th>
         <th class="text-center border">Loại BBKT</th>
-        <th class="text-center border">Tần suất</th>
+        <!-- <th class="text-center border">Tần suất</th> -->
         <th class="text-center border">Trạng thái</th>
         <th class="text-center border">Ngày tạo</th>
         <th class="text-center border">Ngày cập nhật</th>
@@ -286,7 +286,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('code', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -294,7 +294,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('reportType', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -302,7 +302,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('status', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -310,7 +310,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('createdAt', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -318,7 +318,7 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updatedAt', $event)" />
           </p-iconField>
         </th>
         <th class="text-center border">
@@ -326,17 +326,10 @@
             <p-inputIcon>
               <i class="pi pi-search"></i>
             </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updateBy', $event)" />
           </p-iconField>
         </th>
-        <th class="text-center border">
-          <p-iconField iconPosition="left" class="ml-auto">
-            <p-inputIcon>
-              <i class="pi pi-search"></i>
-            </p-inputIcon>
-            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
-          </p-iconField>
-        </th>
+
         <th class="text-center border"></th>
       </tr>
     </ng-template>
@@ -346,7 +339,7 @@
         <td class="text-center border">{{ sampleReport.name }}</td>
         <td class="text-center border">{{ sampleReport.code }}</td>
         <td class="text-center border">{{ sampleReport.reportType }}</td>
-        <td class="text-center border">{{ sampleReport.frequency }}</td>
+        <!-- <td class="text-center border">{{ sampleReport.frequency }}</td> -->
         <td class="text-center border">{{ sampleReport.status }}</td>
         <td class="text-center border">{{ sampleReport.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ sampleReport.updatedAt | formatMediumDatetime }}</td>

@@ -157,7 +157,7 @@ spring:
       client:
         provider:
           oidc:
-            issuer-uri: http://localhost:8180/auth/realms/jhipster
+            issuer-uri: http://localhost:8080/auth/realms/jhipster
         registration:
           oidc:
             client-id: web_app

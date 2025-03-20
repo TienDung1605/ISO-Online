@@ -76,6 +76,11 @@ export class SampleReportUpdateComponent implements OnInit {
         this.listTitleBody = data.body;
         sessionStorage.setItem('listTitlesView', JSON.stringify(data.header));
       }
+      this.editForm.get('name')?.valueChanges.subscribe(value => {
+        if (value) {
+          this.generateCode(value);
+        }
+      });
     });
     this.editForm.get('name')?.addValidators([Validators.required]);
     this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
@@ -182,6 +187,16 @@ export class SampleReportUpdateComponent implements OnInit {
         this.onSaveError();
       },
     });
+  }
+
+  generateCode(name: string): void {
+    const currentDate = dayjs().format('DDMMYYYYHHmm');
+    const initials = name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('');
+    const code = `${initials}-${currentDate}`;
+    this.editForm.patchValue({ code });
   }
 
   onReportTypeChange(): void {}
