@@ -32,6 +32,10 @@ export class PartsService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/parts');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<IParts[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(parts: NewParts): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(parts);
     return this.http.post<RestParts>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));

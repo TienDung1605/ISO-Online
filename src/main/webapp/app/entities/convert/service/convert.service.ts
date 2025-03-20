@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
 import dayjs from 'dayjs/esm';
@@ -31,6 +31,10 @@ export class ConvertService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/converts');
+
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<IConvert[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
 
   create(convert: NewConvert): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(convert);

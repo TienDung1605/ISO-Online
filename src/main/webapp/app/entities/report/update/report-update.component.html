@@ -7,20 +7,36 @@
 
       <div>
         @if (editForm.controls.id.value !== null) {
-          <div class="mb-8">
+          <div class="mb-5">
             <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
             <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
-        <div class="mb-8">
-          <label class="form-label" for="field_name">Tên biên bản kiểm tra</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+        <div class="mb-5">
+          <label class="form-label" for="field_code">Mã biên bản kiểm tra</label>
+          <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
         </div>
 
-        <div class="mb-8">
-          <label class="form-label" for="field_code">Code</label>
-          <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
+        <div class="mb-5">
+          <label class="form-label" for="field_name">Tên biên bản kiểm tra</label>
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="field_name"
+            data-cy="name"
+            formControlName="name"
+            [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
+            required
+          />
+          <div
+            class="error-message"
+            *ngIf="editForm.get('name')?.invalid && (editForm.get('name')?.touched || editForm.get('name')?.dirty)"
+          >
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống </span>
+            <span *ngIf="editForm.get('name')?.errors?.['duplicate']">Tên này đã tồn tại</span>
+          </div>
         </div>
 
         <div class="mb-8">

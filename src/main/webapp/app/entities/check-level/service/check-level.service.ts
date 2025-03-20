@@ -32,6 +32,10 @@ export class CheckLevelService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/check-levels');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<ICheckLevel[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   getAllCheckLevels(): Observable<ICheckLevel[]> {
     return this.http.get<ICheckLevel[]>(this.resourceUrl);
   }

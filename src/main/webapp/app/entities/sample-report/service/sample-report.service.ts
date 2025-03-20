@@ -33,6 +33,10 @@ export class SampleReportService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/sample-reports');
   protected resourceUrl1 = this.applicationConfigService.getEndpointFor('api/sample-reports/list');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<ISampleReport[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(sampleReport: NewSampleReport): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(sampleReport);
     return this.http

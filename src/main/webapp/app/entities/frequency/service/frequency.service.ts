@@ -32,6 +32,10 @@ export class FrequencyService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/frequencies');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<IFrequency[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(frequency: NewFrequency): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(frequency);
     return this.http

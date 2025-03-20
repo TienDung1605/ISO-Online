@@ -32,6 +32,10 @@ export class CheckerGroupService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/checker-groups');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<ICheckerGroup[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   getAllCheckerGroups(): Observable<ICheckerGroup[]> {
     return this.http.get<ICheckerGroup[]>(this.resourceUrl);
   }

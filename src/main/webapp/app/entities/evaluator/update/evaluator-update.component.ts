@@ -2,10 +2,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
 import { IEvaluator } from '../evaluator.model';
 import { EvaluatorService } from '../service/evaluator.service';
@@ -58,6 +58,9 @@ export class EvaluatorUpdateComponent implements OnInit {
         });
       }
     });
+    this.editForm.get('name')?.addValidators([Validators.required]);
+    this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
+    this.editForm.get('name')?.updateValueAndValidity();
     this.loadCheckerGroups();
   }
 
@@ -65,15 +68,24 @@ export class EvaluatorUpdateComponent implements OnInit {
     window.history.back();
   }
 
+  duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+    if (!control.value) {
+      return of(null);
+    }
+    return this.evaluatorService.checkNameExists(control.value).pipe(
+      map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
+      catchError(() => of(null)),
+    );
+  }
+
   save(): void {
     this.isSaving = true;
     const evaluator = this.evaluatorFormService.getEvaluator(this.editForm);
-    // if (this.account) {
-    //   evaluator.updateBy = this.account.login;
-    //   evaluator.createdAt = dayjs();
-    //   evaluator.updatedAt = dayjs();
-    //   // evaluator.status = this.status
-    // }
+    if (this.editForm.invalid) {
+      this.markAllAsTouched();
+      this.showValidationError();
+      return;
+    }
     if (evaluator.id !== null) {
       evaluator.updatedAt = dayjs(new Date());
       evaluator.updateBy = this.account?.login;
@@ -84,6 +96,30 @@ export class EvaluatorUpdateComponent implements OnInit {
       evaluator.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.evaluatorService.create(evaluator));
     }
+  }
+
+  markAllAsTouched(): void {
+    Object.values(this.editForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  showValidationError(): void {
+    const errors = this.editForm.get('name')?.errors;
+    let errorMessage = 'Vui lòng kiểm tra lại thông tin';
+
+    if (errors?.['required']) {
+      errorMessage = 'Tên không được để trống';
+    } else if (errors?.['duplicate']) {
+      errorMessage = 'Tên này đã tồn tại';
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: errorMessage,
+      confirmButtonText: 'OK',
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IEvaluator>>): void {
@@ -169,4 +205,7 @@ export class EvaluatorUpdateComponent implements OnInit {
       }
     });
   }
+}
+function of(arg0: null): Observable<ValidationErrors | null> {
+  throw new Error('Function not implemented.');
 }

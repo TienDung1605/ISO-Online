@@ -32,6 +32,10 @@ export class CriteriaGroupService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/criteria-groups');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<ICriteriaGroup[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(criteriaGroup: NewCriteriaGroup): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(criteriaGroup);
     return this.http

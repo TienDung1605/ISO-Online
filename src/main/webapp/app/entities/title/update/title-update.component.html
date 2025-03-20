@@ -15,7 +15,23 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_name">Tên</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="field_name"
+            data-cy="name"
+            formControlName="name"
+            [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
+            required
+          />
+          <div
+            class="error-message"
+            *ngIf="editForm.get('name')?.invalid && (editForm.get('name')?.touched || editForm.get('name')?.dirty)"
+          >
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống </span>
+            <span *ngIf="editForm.get('name')?.errors?.['duplicate']">Tên này đã tồn tại</span>
+          </div>
         </div>
 
         <div class="mb-3">

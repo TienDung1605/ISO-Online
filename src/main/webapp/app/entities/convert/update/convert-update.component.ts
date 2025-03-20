@@ -1,11 +1,20 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, finalize, map, tap } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 
 import { IConvert } from '../convert.model';
 import { ConvertService } from '../service/convert.service';
@@ -25,6 +34,7 @@ export class ConvertUpdateComponent implements OnInit {
   isSaving = false;
   convert: IConvert | null = null;
   account: Account | null = null;
+  ediForms: FormGroup | null = null;
   protected convertService = inject(ConvertService);
   protected convertFormService = inject(ConvertFormService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -67,15 +77,34 @@ export class ConvertUpdateComponent implements OnInit {
         this.editForm.get('mark')?.enable();
       }
     });
+    // this.editForm = this.convertFormService.createConvertFormGroup();
+    this.editForm.get('name')?.addValidators([Validators.required]);
+    this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
+    this.editForm.get('name')?.updateValueAndValidity();
   }
 
   previousState(): void {
     window.history.back();
   }
 
+  duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+    if (!control.value) {
+      return of(null);
+    }
+    return this.convertService.checkNameExists(control.value).pipe(
+      map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
+      catchError(() => of(null)),
+    );
+  }
+
   save(): void {
     this.isSaving = true;
     const convert = this.convertFormService.getConvert(this.editForm);
+    if (this.editForm.invalid) {
+      this.markAllAsTouched();
+      this.showValidationError();
+      return;
+    }
     if (convert.type === 'Bước nhảy') {
       convert.mark = '';
     }
@@ -89,6 +118,30 @@ export class ConvertUpdateComponent implements OnInit {
       convert.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.convertService.create(convert));
     }
+  }
+
+  markAllAsTouched(): void {
+    Object.values(this.editForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  showValidationError(): void {
+    const errors = this.editForm.get('name')?.errors;
+    let errorMessage = 'Vui lòng kiểm tra lại thông tin';
+
+    if (errors?.['required']) {
+      errorMessage = 'Tên không được để trống';
+    } else if (errors?.['duplicate']) {
+      errorMessage = 'Tên này đã tồn tại';
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: errorMessage,
+      confirmButtonText: 'OK',
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IConvert>>): void {

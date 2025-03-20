@@ -32,6 +32,10 @@ export class CheckTargetService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/check-targets');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<ICheckTarget[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(checkTarget: NewCheckTarget): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(checkTarget);
     return this.http

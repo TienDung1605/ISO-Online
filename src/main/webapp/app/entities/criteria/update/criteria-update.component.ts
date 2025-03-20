@@ -1,17 +1,20 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
 import { ICriteria } from '../criteria.model';
 import { CriteriaService } from '../service/criteria.service';
 import { CriteriaFormService, CriteriaFormGroup } from './criteria-form.service';
 import Swal from 'sweetalert2';
 import { CriteriaGroupService } from 'app/entities/criteria-group/service/criteria-group.service';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/auth/account.model';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -22,6 +25,7 @@ import { CriteriaGroupService } from 'app/entities/criteria-group/service/criter
 export class CriteriaUpdateComponent implements OnInit {
   isSaving = false;
   criteria: ICriteria | null = null;
+  account: Account | null = null;
   criteriaGroups: any[] = [];
   name = '';
 
@@ -29,6 +33,7 @@ export class CriteriaUpdateComponent implements OnInit {
   protected criteriaFormService = inject(CriteriaFormService);
   protected activatedRoute = inject(ActivatedRoute);
   protected criteriaGroupService = inject(CriteriaGroupService);
+  protected accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: CriteriaFormGroup = this.criteriaFormService.createCriteriaFormGroup();
 
@@ -43,6 +48,18 @@ export class CriteriaUpdateComponent implements OnInit {
         });
       }
     });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+
+      if (account) {
+        this.editForm.patchValue({
+          updateBy: account.login,
+        });
+      }
+    });
+    this.editForm.get('name')?.addValidators([Validators.required]);
+    this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
+    this.editForm.get('name')?.updateValueAndValidity();
     this.loadCriateriaGroups();
   }
 
@@ -50,14 +67,58 @@ export class CriteriaUpdateComponent implements OnInit {
     window.history.back();
   }
 
+  duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+    if (!control.value) {
+      return of(null);
+    }
+    return this.criteriaService.checkNameExists(control.value).pipe(
+      map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
+      catchError(() => of(null)),
+    );
+  }
+
   save(): void {
     this.isSaving = true;
     const criteria = this.criteriaFormService.getCriteria(this.editForm);
+    if (this.editForm.invalid) {
+      this.markAllAsTouched();
+      this.showValidationError();
+      return;
+    }
     if (criteria.id !== null) {
+      criteria.updatedAt = dayjs(new Date());
+      criteria.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.criteriaService.update(criteria));
     } else {
+      criteria.createdAt = dayjs(new Date());
+      criteria.updatedAt = dayjs(new Date());
+      criteria.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.criteriaService.create(criteria));
     }
+  }
+
+  markAllAsTouched(): void {
+    Object.values(this.editForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  showValidationError(): void {
+    const errors = this.editForm.get('name')?.errors;
+    let errorMessage = 'Vui lòng kiểm tra lại thông tin';
+
+    if (errors?.['required']) {
+      errorMessage = 'Tên không được để trống';
+    } else if (errors?.['duplicate']) {
+      errorMessage = 'Tên này đã tồn tại';
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: errorMessage,
+      confirmButtonText: 'OK',
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICriteria>>): void {

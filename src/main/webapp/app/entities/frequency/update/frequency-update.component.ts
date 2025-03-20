@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
 import { IFrequency } from '../frequency.model';
 import { FrequencyService } from '../service/frequency.service';
@@ -46,15 +46,33 @@ export class FrequencyUpdateComponent implements OnInit {
         });
       }
     });
+    this.editForm.get('name')?.addValidators([Validators.required]);
+    this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
+    this.editForm.get('name')?.updateValueAndValidity();
   }
 
   previousState(): void {
     window.history.back();
   }
 
+  duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+    if (!control.value) {
+      return of(null);
+    }
+    return this.frequencyService.checkNameExists(control.value).pipe(
+      map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
+      catchError(() => of(null)),
+    );
+  }
+
   save(): void {
     this.isSaving = true;
     const frequency = this.frequencyFormService.getFrequency(this.editForm);
+    if (this.editForm.invalid) {
+      this.markAllAsTouched();
+      this.showValidationError();
+      return;
+    }
     if (frequency.id !== null) {
       frequency.updatedAt = dayjs(new Date());
       frequency.updateBy = this.account?.login;
@@ -65,6 +83,30 @@ export class FrequencyUpdateComponent implements OnInit {
       frequency.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.frequencyService.create(frequency));
     }
+  }
+
+  markAllAsTouched(): void {
+    Object.values(this.editForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  showValidationError(): void {
+    const errors = this.editForm.get('name')?.errors;
+    let errorMessage = 'Vui lòng kiểm tra lại thông tin';
+
+    if (errors?.['required']) {
+      errorMessage = 'Tên không được để trống';
+    } else if (errors?.['duplicate']) {
+      errorMessage = 'Tên này đã tồn tại';
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: errorMessage,
+      confirmButtonText: 'OK',
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IFrequency>>): void {

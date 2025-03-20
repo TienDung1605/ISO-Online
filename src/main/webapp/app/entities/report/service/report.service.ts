@@ -32,6 +32,10 @@ export class ReportService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/reports');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<IReport[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(report: NewReport): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(report);
     return this.http

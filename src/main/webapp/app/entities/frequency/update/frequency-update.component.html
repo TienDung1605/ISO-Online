@@ -24,8 +24,12 @@
             [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
             required
           />
-          <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
-            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống</span>
+          <div
+            class="error-message"
+            *ngIf="editForm.get('name')?.invalid && (editForm.get('name')?.touched || editForm.get('name')?.dirty)"
+          >
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống </span>
+            <span *ngIf="editForm.get('name')?.errors?.['duplicate']">Tên này đã tồn tại</span>
           </div>
         </div>
 

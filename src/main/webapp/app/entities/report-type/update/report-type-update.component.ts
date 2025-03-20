@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { IReportType } from '../report-type.model';
 import { ReportTypeService } from '../service/report-type.service';
@@ -29,6 +29,8 @@ export class ReportTypeUpdateComponent implements OnInit {
   protected reportTypeFormService = inject(ReportTypeFormService);
   protected activatedRoute = inject(ActivatedRoute);
   protected accountService = inject(AccountService);
+  protected formBuilder = inject(FormBuilder);
+
   //set list status
   // listStatus = [{ label: 'ACTIVE' }, { label: 'DEACTIVATE' }];
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -48,7 +50,22 @@ export class ReportTypeUpdateComponent implements OnInit {
           status: 'ACTIVE',
         });
       }
+      this.editForm.get('name')?.valueChanges.subscribe(value => {
+        if (value) {
+          this.generateCode(value);
+        }
+      });
     });
+  }
+
+  generateCode(name: string): void {
+    const currentDate = dayjs().format('DDMMYYYYHHmm');
+    const initials = name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('');
+    const code = `${initials}-${currentDate}`;
+    this.editForm.patchValue({ code });
   }
 
   previousState(): void {

@@ -33,6 +33,10 @@ export class TitleService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/titles');
   protected resourceUrl1 = this.applicationConfigService.getEndpointFor('api/titles/all');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<ITitle[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(title: NewTitle): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(title);
     return this.http.post<RestTitle>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));

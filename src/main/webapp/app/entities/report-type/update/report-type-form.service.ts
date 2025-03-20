@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 
 import dayjs from 'dayjs/esm';
 import { DATE_TIME_FORMAT } from 'app/config/input.constants';
@@ -44,26 +44,21 @@ export type ReportTypeFormGroup = FormGroup<ReportTypeFormGroupContent>;
 
 @Injectable({ providedIn: 'root' })
 export class ReportTypeFormService {
+  constructor(protected fb: FormBuilder) {}
   createReportTypeFormGroup(reportType: ReportTypeFormGroupInput = { id: null }): ReportTypeFormGroup {
     const reportTypeRawValue = this.convertReportTypeToReportTypeRawValue({
       ...this.getFormDefaults(),
       ...reportType,
     });
-    return new FormGroup<ReportTypeFormGroupContent>({
-      id: new FormControl(
-        { value: reportTypeRawValue.id, disabled: true },
-        {
-          nonNullable: true,
-          validators: [Validators.required],
-        },
-      ),
-      code: new FormControl(reportTypeRawValue.code),
-      name: new FormControl(reportTypeRawValue.name),
-      status: new FormControl(reportTypeRawValue.status),
-      createdAt: new FormControl(reportTypeRawValue.createdAt),
-      updatedAt: new FormControl(reportTypeRawValue.updatedAt),
-      updateBy: new FormControl(reportTypeRawValue.updateBy),
-    });
+    return this.fb.group({
+      id: [{ value: reportTypeRawValue.id, disabled: true }],
+      code: [reportTypeRawValue.code, [Validators.required]],
+      name: [reportTypeRawValue.name, [Validators.required]],
+      status: [reportTypeRawValue.status],
+      createdAt: [reportTypeRawValue.createdAt],
+      updatedAt: [reportTypeRawValue.updatedAt],
+      updateBy: [reportTypeRawValue.updateBy],
+    }) as ReportTypeFormGroup;
   }
 
   getReportType(form: ReportTypeFormGroup): IReportType | NewReportType {

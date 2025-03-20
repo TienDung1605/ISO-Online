@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
 import { ICheckTarget } from '../check-target.model';
 import { CheckTargetService } from '../service/check-target.service';
@@ -57,6 +57,9 @@ export class CheckTargetUpdateComponent implements OnInit {
         });
       }
     });
+    this.editForm.get('name')?.addValidators([Validators.required]);
+    this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
+    this.editForm.get('name')?.updateValueAndValidity();
     this.loadCheckLevels();
   }
 
@@ -64,9 +67,24 @@ export class CheckTargetUpdateComponent implements OnInit {
     window.history.back();
   }
 
+  duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+    if (!control.value) {
+      return of(null);
+    }
+    return this.checkTargetService.checkNameExists(control.value).pipe(
+      map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
+      catchError(() => of(null)),
+    );
+  }
+
   save(): void {
     this.isSaving = true;
     const checkTarget = this.checkTargetFormService.getCheckTarget(this.editForm);
+    if (this.editForm.invalid) {
+      this.markAllAsTouched();
+      this.showValidationError();
+      return;
+    }
     if (checkTarget.id !== null) {
       checkTarget.updatedAt = dayjs(new Date());
       checkTarget.updateBy = this.account?.login;
@@ -77,6 +95,30 @@ export class CheckTargetUpdateComponent implements OnInit {
       checkTarget.updateBy = this.account?.login;
       this.subscribeToSaveResponse(this.checkTargetService.create(checkTarget));
     }
+  }
+
+  markAllAsTouched(): void {
+    Object.values(this.editForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  showValidationError(): void {
+    const errors = this.editForm.get('name')?.errors;
+    let errorMessage = 'Vui lòng kiểm tra lại thông tin';
+
+    if (errors?.['required']) {
+      errorMessage = 'Tên không được để trống';
+    } else if (errors?.['duplicate']) {
+      errorMessage = 'Tên này đã tồn tại';
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: errorMessage,
+      confirmButtonText: 'OK',
+    });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICheckTarget>>): void {

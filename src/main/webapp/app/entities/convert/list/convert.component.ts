@@ -132,6 +132,14 @@ export class ConvertComponent implements OnInit {
       });
   }
 
+  onEditClick(id: number | undefined): void {
+    if (id) {
+      this.router.navigate(['/convert', id, 'edit']);
+    } else {
+      console.error('Convert ID is invalid:', id);
+    }
+  }
+
   onPageSizeChange(event: any): void {
     this.selectedPageSize = event.rows;
     this.first = event.first;

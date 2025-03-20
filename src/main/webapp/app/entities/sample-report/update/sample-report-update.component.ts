@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, map } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
 import { ISampleReport } from '../sample-report.model';
 import { SampleReportService } from '../service/sample-report.service';
@@ -36,8 +36,8 @@ export class SampleReportUpdateComponent implements OnInit {
   listReportTypes: any[] = [];
   listTitles: any[] = [];
   listTitlesView: any[] = [];
-  listTitleHeaders: any[] = []; // list of headers and source, table information
-  listTitleBody: any[] = []; // list of body and source, table information
+  listTitleHeaders: any[] = [];
+  listTitleBody: any[] = [];
   dataOnChange = false;
   listSuggestions: any[] = [];
   account: Account | null = null;
@@ -76,16 +76,33 @@ export class SampleReportUpdateComponent implements OnInit {
         sessionStorage.setItem('listTitlesView', JSON.stringify(data.header));
       }
     });
+    this.editForm.get('name')?.addValidators([Validators.required]);
+    this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
+    this.editForm.get('name')?.updateValueAndValidity();
   }
 
   previousState(): void {
     window.history.back();
   }
 
+  duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+    if (!control.value) {
+      return of(null);
+    }
+    return this.sampleReportService.checkNameExists(control.value).pipe(
+      map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
+      catchError(() => of(null)),
+    );
+  }
+
   save(): void {
     this.isSaving = true;
-
     const sampleReport = this.sampleReportFormService.getSampleReport(this.editForm);
+    if (this.editForm.invalid) {
+      this.markAllAsTouched();
+      this.showValidationError();
+      return;
+    }
     sampleReport.updateBy = this.account?.login;
     sampleReport.detail = JSON.stringify({ header: this.listTitleHeaders, body: this.listTitleBody });
     sampleReport.updatedAt = dayjs(new Date());
@@ -97,28 +114,75 @@ export class SampleReportUpdateComponent implements OnInit {
     }
   }
 
+  markAllAsTouched(): void {
+    Object.values(this.editForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  showValidationError(): void {
+    const errors = this.editForm.get('name')?.errors;
+    let errorMessage = 'Vui lòng kiểm tra lại thông tin';
+
+    if (errors?.['required']) {
+      errorMessage = 'Tên không được để trống';
+    } else if (errors?.['duplicate']) {
+      errorMessage = 'Tên này đã tồn tại';
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: errorMessage,
+      confirmButtonText: 'OK',
+    });
+  }
+
   showDialog(): void {
     this.visible = true;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ISampleReport>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+      next: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.sampleReport?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+        });
+        this.onSaveSuccess();
+      },
+      error: () => {
+        Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen(toast) {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: 'success',
+          title: this.sampleReport?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+        });
+        this.onSaveError();
+      },
     });
   }
 
-  protected onSaveSuccess(): void {
-    this.previousState();
-  }
-
-  protected onSaveError(): void {
-    // Api for inheritance.
-  }
-
-  protected onSaveFinalize(): void {
-    this.isSaving = false;
-  }
   onReportTypeChange(): void {}
   // ------------------ Title Table ------------------
   onTitlesChange(title: any, index: any): void {
@@ -261,6 +325,17 @@ export class SampleReportUpdateComponent implements OnInit {
         confirmButtonText: 'OK',
       });
     }
+  }
+  protected onSaveSuccess(): void {
+    this.previousState();
+  }
+
+  protected onSaveError(): void {
+    // Api for inheritance.
+  }
+
+  protected onSaveFinalize(): void {
+    this.isSaving = false;
   }
   // ---------------------------------------------------------------------------------------------
   protected updateForm(sampleReport: ISampleReport): void {

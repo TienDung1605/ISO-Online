@@ -1,7 +1,9 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-check-level-heading" data-cy="CheckLevelCreateUpdateHeading">Thêm mới hoặc cập nhật Cấp độ đánh giá</h2>
+      <h2 id="jhi-check-level-heading" data-cy="CheckLevelCreateUpdateHeading">
+        {{ editForm.controls.id.value ? 'Cập nhật Cấp độ đánh giá' : 'Thêm mới Cấp độ đánh giá' }}
+      </h2>
 
       <div>
         @if (editForm.controls.id.value !== null) {
@@ -23,8 +25,12 @@
             [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
             required
           />
-          <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
-            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống</span>
+          <div
+            class="error-message"
+            *ngIf="editForm.get('name')?.invalid && (editForm.get('name')?.touched || editForm.get('name')?.dirty)"
+          >
+            <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống </span>
+            <span *ngIf="editForm.get('name')?.errors?.['duplicate']">Tên này đã tồn tại</span>
           </div>
         </div>
 

@@ -15,19 +15,10 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_code">Mã loại BBKT</label>
-          <input
-            type="text"
-            class="form-control"
-            name="code"
-            id="field_code"
-            data-cy="code"
-            formControlName="code"
-            [ngClass]="{ 'is-invalid': editForm.get('code')?.invalid && editForm.get('code')?.touched }"
-            required
-          />
-          <div class="error-message" *ngIf="editForm.get('code')?.invalid && editForm.get('code')?.touched">
+          <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" readonly />
+          <!-- <div class="error-message" *ngIf="editForm.get('code')?.invalid && editForm.get('code')?.touched">
             <span *ngIf="editForm.get('code')?.errors?.['required']">Mã không được để trống</span>
-          </div>
+          </div> -->
         </div>
 
         <div class="mb-3">

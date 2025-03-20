@@ -32,6 +32,10 @@ export class EvaluatorService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/evaluators');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<IEvaluator[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   create(evaluator: NewEvaluator): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(evaluator);
     return this.http

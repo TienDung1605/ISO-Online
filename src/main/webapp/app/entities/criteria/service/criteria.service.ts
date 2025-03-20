@@ -32,6 +32,10 @@ export class CriteriaService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/criteria');
 
+  checkNameExists(name: string): Observable<boolean> {
+    return this.http.get<ICriteria[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
+  }
+
   getAllCriteriaGroups(): Observable<ICriteria[]> {
     return this.http.get<ICriteria[]>(this.resourceUrl);
   }
