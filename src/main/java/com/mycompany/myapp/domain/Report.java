@@ -65,6 +65,9 @@ public class Report implements Serializable {
     @Column(name = "user")
     private String user;
 
+    @Column(name = "detail")
+    private String detail;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -74,6 +77,14 @@ public class Report implements Serializable {
     public Report id(Long id) {
         this.setId(id);
         return this;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public void setId(Long id) {

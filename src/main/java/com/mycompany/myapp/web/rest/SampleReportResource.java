@@ -211,4 +211,16 @@ public class SampleReportResource {
         Query query = this.entityManager.createNativeQuery(sql);
         return query.getResultList();
     }
+
+    @GetMapping("/all")
+    public List<Object> getSampleReports() {
+        List<Object> list = this.sampleReportRepository.getSampleReports();
+        return list;
+    }
+
+    @GetMapping("/detail/{code}")
+    public String getSampleReportDetail(@PathVariable String code) {
+        String result = this.sampleReportRepository.getSampleReportDetail(code);
+        return result;
+    }
 }

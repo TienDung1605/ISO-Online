@@ -41,14 +41,12 @@
 
         <div class="mb-8">
           <label class="form-label" for="field_sampleReportId">Mẫu biên bản kiểm tra</label>
-          <input
-            type="number"
-            class="form-control"
-            name="sampleReportId"
-            id="field_sampleReportId"
-            data-cy="sampleReportId"
-            formControlName="sampleReportId"
-          />
+          <!-- <input type="number" class="form-control" name="sampleReportId" id="field_sampleReportId"
+            data-cy="sampleReportId" formControlName="sampleReportId" /> -->
+          <select [(ngModel)]="sampleReport" [ngModelOptions]="{ standalone: true }" (change)="updateSampleReportId()">
+            <option value=""></option>
+            <option *ngFor="let item of sampleReports" [value]="item[1]">{{ item[1] }}({{ item[2] }})</option>
+          </select>
         </div>
 
         <div class="mb-8">
@@ -139,7 +137,7 @@
       </div>
 
       <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-info">
+        <button type="button" class="btn btn-info" (click)="addNewRow()">
           <span>Thêm dòng</span>
         </button>
       </div>
@@ -149,24 +147,23 @@
           <thead>
             <tr>
               <th class="text-center border">STT</th>
-              <th class="text-center border"></th>
-              <th class="text-center border">Hình ảnh đánh giá</th>
+              <th class="text-center border" *ngFor="let item of listTitleHeaders">{{ item.name }}</th>
+              <!-- <th class="text-center border">Hình ảnh đánh giá</th> -->
               <th class="text-center border">Tuỳ chọn</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let i = index">
+            <tr *ngFor="let item of listTitleBody; let i = index">
               <td class="text-center border">{{ i + 1 }}</td>
-              <td class="text-center border"></td>
-              <td class="text-center border"><input type="image" /></td>
+              <td class="text-center border" *ngFor="let data of item.data">
+                <select [(ngModel)]="data.value" [ngModelOptions]="{ standalone: true }" (click)="checkEvent(data.header)">
+                  <option>{{ data.value }}</option>
+                  <option *ngFor="let item1 of listSuggestions" [value]="item1">{{ item1 }}</option>
+                </select>
+              </td>
+              <!-- <td class="text-center border"><input type="image" /></td> -->
               <td class="text-center border">
-                <button
-                  type="button"
-                  id="cancel-save"
-                  data-cy="entityCreateCancelButton"
-                  class="btn btn-secondary"
-                  (click)="previousState()"
-                >
+                <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="deleteRow(i)">
                   <fa-icon icon="ban"></fa-icon>&nbsp;<span>Xoá</span>
                 </button>
               </td>

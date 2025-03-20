@@ -115,7 +115,8 @@ export class PlanUpdateComponent implements OnInit {
 
   addNewRow(): void {
     const newRow = { ...this.emptyRow };
-    this.planDetailResults = [...this.planDetailResults, newRow];
+    this.planDetailResults.push(newRow);
+    console.log('check');
     const Toast = Swal.mixin({
       toast: true,
       position: 'top-end',
