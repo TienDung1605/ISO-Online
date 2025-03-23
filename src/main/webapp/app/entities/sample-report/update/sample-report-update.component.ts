@@ -23,6 +23,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import dayjs from 'dayjs/esm';
 import { SourceService } from 'app/entities/source/service/source.service';
+import { ConvertService } from 'app/entities/convert/service/convert.service';
 
 @Component({
   standalone: true,
@@ -42,6 +43,7 @@ export class SampleReportUpdateComponent implements OnInit {
   dataOnChange = false;
   listSuggestions: any[] = [];
   account: Account | null = null;
+  types: string[] = [];
   protected sampleReportService = inject(SampleReportService);
   protected sampleReportFormService = inject(SampleReportFormService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -49,6 +51,7 @@ export class SampleReportUpdateComponent implements OnInit {
   protected titleService = inject(TitleService);
   protected accountService = inject(AccountService);
   protected sourceService = inject(SourceService);
+  protected convertService = inject(ConvertService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: SampleReportFormGroup = this.sampleReportFormService.createSampleReportFormGroup();
 
@@ -82,9 +85,16 @@ export class SampleReportUpdateComponent implements OnInit {
         }
       });
     });
+    this.loadTypes();
     this.editForm.get('name')?.addValidators([Validators.required]);
     this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
     this.editForm.get('name')?.updateValueAndValidity();
+  }
+
+  loadTypes(): void {
+    this.convertService.getTypes().subscribe(types => {
+      this.types = types;
+    });
   }
 
   previousState(): void {

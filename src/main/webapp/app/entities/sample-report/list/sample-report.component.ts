@@ -14,6 +14,7 @@ import { SampleReportDeleteDialogComponent } from '../delete/sample-report-delet
 import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ConvertService } from 'app/entities/convert/service/convert.service';
 
 @Component({
   standalone: true,
@@ -62,6 +63,7 @@ export class SampleReportComponent implements OnInit {
 
   public router = inject(Router);
   protected sampleReportService = inject(SampleReportService);
+  protected convertSevice = inject(ConvertService);
   protected activatedRoute = inject(ActivatedRoute);
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);

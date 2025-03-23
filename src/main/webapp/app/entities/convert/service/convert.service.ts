@@ -36,6 +36,16 @@ export class ConvertService {
     return this.http.get<IConvert[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
   }
 
+  getTypes(): Observable<string[]> {
+    return this.http
+      .get<IConvert[]>(this.resourceUrl)
+      .pipe(
+        map(converts =>
+          Array.from(new Set(converts.map(convert => convert.type).filter((type): type is string => type !== null && type !== undefined))),
+        ),
+      );
+  }
+
   create(convert: NewConvert): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(convert);
     return this.http

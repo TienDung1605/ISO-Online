@@ -84,7 +84,11 @@
 
         <div class="mb-8">
           <label class="form-label" for="field_frequency">Loại đánh giá</label>
-          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+          <!-- <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" /> -->
+          <select class="form-control form-select" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency">
+            <option [value]="">-- Chọn loại đánh giá --</option>
+            <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+          </select>
         </div>
         <div class="mb-8">
           <label class="form-label" for="field_frequency">Thang điểm</label>
@@ -132,47 +136,6 @@
         </table>
       </div>
 
-      <p-dialog header="Quản lý tiêu đề mẫu BBKT" [modal]="true" [(visible)]="visible" [style]="{ width: '70vw' }">
-        <button (click)="addNewTitle()">Thêm mới</button>
-        <table>
-          <thead>
-            <tr>
-              <th class="text-center border">STT</th>
-              <th class="text-center border">Tên Tiêu đề</th>
-              <th class="text-center border">Trường thông tin</th>
-              <th class="text-center border">Số thứ tự</th>
-              <th class="text-center border">Kiểu dữ liệu</th>
-              <th class="text-center border">Tuỳ chọn</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of listTitlesView; let i = index">
-              <td class="text-center border">{{ i + 1 }}</td>
-              <td class="text-center border">
-                <select [(ngModel)]="item.name" [ngModelOptions]="{ standalone: true }" (change)="onTitlesChange(item.name, i)">
-                  <option *ngFor="let item of listTitles" [value]="item.name">{{ item.name }}</option>
-                </select>
-              </td>
-              <td class="text-center border">{{ item.field }}</td>
-              <td class="text-center border">
-                <input
-                  type="number"
-                  name="index"
-                  id="index"
-                  [(ngModel)]="item.index"
-                  [ngModelOptions]="{ standalone: true }"
-                  [max]="listTitlesView.length"
-                  min="1"
-                />
-              </td>
-              <td class="text-center border">{{ item.data_type }}</td>
-              <td class="text-center border"><button (click)="deleteTitle(i)">Xóa</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <button (click)="saveAndSortHeader()">Lưu</button>
-      </p-dialog>
-
       <div class="d-flex justify-content-end">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
@@ -192,3 +155,43 @@
     </form>
   </div>
 </div>
+<p-dialog header="Quản lý tiêu đề mẫu BBKT" [modal]="true" [(visible)]="visible" [style]="{ width: '70vw' }">
+  <button type="submit" class="btn btn-primary" (click)="addNewTitle()">Thêm mới</button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Tên Tiêu đề</th>
+        <th class="text-center border">Trường thông tin</th>
+        <th class="text-center border">Số thứ tự</th>
+        <th class="text-center border">Kiểu dữ liệu</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listTitlesView; let i = index">
+        <td class="text-center border">{{ i + 1 }}</td>
+        <td class="text-center border">
+          <select [(ngModel)]="item.name" [ngModelOptions]="{ standalone: true }" (change)="onTitlesChange(item.name, i)">
+            <option *ngFor="let item of listTitles" [value]="item.name">{{ item.name }}</option>
+          </select>
+        </td>
+        <td class="text-center border">{{ item.field }}</td>
+        <td class="text-center border">
+          <input
+            type="number"
+            name="index"
+            id="index"
+            [(ngModel)]="item.index"
+            [ngModelOptions]="{ standalone: true }"
+            [max]="listTitlesView.length"
+            min="1"
+          />
+        </td>
+        <td class="text-center border">{{ item.data_type }}</td>
+        <td class="text-center border"><button class="btn btn-danger" (click)="deleteTitle(i)">Xóa</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-primary" type="submit" class="btn btn-primary" (click)="saveAndSortHeader()">Lưu</button>
+</p-dialog>
