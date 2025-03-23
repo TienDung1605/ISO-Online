@@ -12,4 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
     public List<Report> findAllByPlanId(Long planId);
+
+    @Query(value = "" + "select * from `report` where plan_id is null ;", nativeQuery = true)
+    public List<Report> getAllWherePlanIdIsNull();
 }

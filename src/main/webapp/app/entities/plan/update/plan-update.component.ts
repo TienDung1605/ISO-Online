@@ -19,6 +19,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
+import { ReportService } from 'app/entities/report/service/report.service';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { BrowserModule } from '@angular/platform-browser';
 
@@ -70,7 +71,8 @@ export class PlanUpdateComponent implements OnInit {
     numberOfCheck: '',
     paticipant: '',
   };
-
+  listReport: any[] = []; // list report where dont have plan
+  listReportDetail: any[] = []; // list report detail where in current plan
   @ViewChild('userTesting') userTesting!: TemplateRef<any>;
 
   protected planService = inject(PlanService);
@@ -78,10 +80,15 @@ export class PlanUpdateComponent implements OnInit {
   protected activatedRoute = inject(ActivatedRoute);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
+  protected reportService = inject(ReportService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: PlanFormGroup = this.planFormService.createPlanFormGroup();
 
   ngOnInit(): void {
+    this.reportService.getAllWherePlanIdIsNull().subscribe(res => {
+      this.listReport = res;
+      console.log('check report list :: ', res);
+    });
     this.activatedRoute.data.subscribe(({ plan }) => {
       this.plan = plan;
       if (plan) {
@@ -92,10 +99,6 @@ export class PlanUpdateComponent implements OnInit {
         this.isEditMode = false;
         this.editForm = this.planFormService.createPlanFormGroup();
       }
-    });
-    this.planService.getPlanDetail().subscribe(res => {
-      this.planDetailResults = res;
-      console.log('db trả về', res);
     });
   }
 
@@ -193,5 +196,9 @@ export class PlanUpdateComponent implements OnInit {
   protected updateForm(plan: IPlan): void {
     this.plan = plan;
     this.planFormService.resetForm(this.editForm, plan);
+    this.reportService.getAllByPlanId(plan.id).subscribe(res => {
+      this.listReportDetail = res;
+      console.log('check report detail :: ', res);
+    });
   }
 }
