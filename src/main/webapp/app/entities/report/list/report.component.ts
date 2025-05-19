@@ -18,6 +18,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { SampleReportService } from 'app/entities/sample-report/service/sample-report.service';
 import { ReportTypeService } from 'app/entities/report-type/service/report-type.service';
 import { PlanService } from 'app/entities/plan/service/plan.service';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -36,6 +37,7 @@ import { PlanService } from 'app/entities/plan/service/plan.service';
     TableModule,
     IconFieldModule,
     InputIconModule,
+    TagModule,
   ],
 })
 export class ReportComponent implements OnInit {
@@ -161,6 +163,15 @@ export class ReportComponent implements OnInit {
     const value = (event.target as HTMLInputElement).value;
     this.filters[report] = value;
     this.searchTable();
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   onPageSizeChange(event: any): void {

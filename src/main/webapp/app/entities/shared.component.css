@@ -1978,6 +1978,19 @@ input.ng-invalid.ng-touched {
   justify-content: space-between;
   margin-bottom: 20px;
   position: relative;
+
+  .custom-button-apply {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin-top: 24px;
+    border-radius: 6px;
+
+    ::ng-deep .p-button {
+      height: 38px;
+    }
+  }
 }
 
 .col-container-child {
@@ -2444,6 +2457,13 @@ h2 {
   vertical-align: top;
 }
 
+.mb-4 {
+  display: inline-block;
+  width: calc(24% - 20px);
+  margin: 10px;
+  vertical-align: top;
+}
+
 .form-label {
   color: #34495e;
   font-weight: 700;
@@ -2597,6 +2617,123 @@ p-dialog {
   }
 }
 
+:host ::ng-deep .excel-template-dialog {
+  .p-dialog-header {
+    background: #f8fafb;
+    border-bottom: 1px solid #eef2f5;
+    padding: 1rem 1.5rem;
+
+    .p-dialog-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+  }
+
+  .p-dialog-content {
+    padding: 2rem;
+    background: #ffffff;
+
+    .excel-template-content {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .excel-btn {
+        min-width: 150px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .p-button-label {
+          font-weight: 500;
+        }
+
+        .pi {
+          font-size: 1.1rem;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+.excel-template-dialog.p-dialog {
+  .p-dialog-header {
+    background: #f8fafb !important;
+    border-bottom: 1px solid #eef2f5 !important;
+    border-radius: 6px 6px 0 0 !important;
+    padding: 1.25rem !important;
+
+    .p-dialog-title {
+      font-size: 1.25rem !important;
+      font-weight: 600 !important;
+      color: #2c3e50 !important;
+    }
+
+    .p-dialog-header-icons {
+      .p-dialog-header-icon {
+        color: #6c757d !important;
+
+        &:hover {
+          background: #e9ecef !important;
+        }
+      }
+    }
+  }
+
+  .p-dialog-content {
+    padding: 2rem !important;
+    background: #ffffff !important;
+
+    .excel-template-content {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 1.5rem !important;
+
+      .excel-btn {
+        &.p-button {
+          min-width: 160px !important;
+          padding: 0.75rem 1.5rem !important;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+          transition: all 0.2s ease !important;
+
+          &:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+          }
+
+          .p-button-label {
+            font-weight: 500 !important;
+            font-size: 1rem !important;
+          }
+
+          .pi {
+            font-size: 1.1rem !important;
+            margin-right: 0.5rem !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.ui-dialog {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.swal2-container {
+  z-index: 9999 !important;
+}
+
 @media (max-width: 992px) {
   .mb-8 {
     width: calc(50% - 20px);
@@ -2607,5 +2744,15 @@ p-dialog {
   .mb-8 {
     width: 100%;
     margin: 10px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  :host ::ng-deep .excel-template-dialog {
+    .excel-template-content {
+      .excel-btn {
+        min-width: 130px;
+      }
+    }
   }
 }

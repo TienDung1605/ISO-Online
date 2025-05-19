@@ -116,7 +116,16 @@ const routes: Routes = [
     data: { pageTitle: 'isoApp.source.home.title' },
     loadChildren: () => import('./source/source.routes'),
   },
-  /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
+  {
+    path: 'summarize-plan',
+    data: { pageTitle: 'isoApp.summarizePlan.home.title' },
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./summarize-plan/summarize-plan.routes'),
+      },
+    ],
+  },
 ];
 
 export default routes;

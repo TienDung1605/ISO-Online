@@ -1,0 +1,260 @@
+<div>
+  <h2 id="page-heading" data-cy="SummarizePlanHeading">
+    <span>Tổng hợp kế hoạch kiểm tra</span>
+  </h2>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Mã kế hoạch</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên kế hoạch</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Đối tượng kế hoạch đánh giá</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tần suất</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+  </div>
+  <p-table [value]="summarizePlanResult" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Mã BBKT</th>
+        <th class="text-center border">Tên BBKT</th>
+        <th class="text-center border">Đối tượng kiểm tra</th>
+        <th class="text-center border">Tổng đợt kiểm tra</th>
+        <th class="text-center border">Thang điểm</th>
+        <th class="text-center border">Tổng điểm quy lỗi</th>
+        <th class="text-center border">Tổng điểm BBKT</th>
+        <th class="text-center border">Điểm trung bình</th>
+        <th class="text-center border">Tổng lỗi</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border">
+          <p-columnFilter type="text" field="code" placeholder="Search"></p-columnFilter>
+        </th>
+        <th class="text-center border"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-summarize let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ summarize.bbktCode }}</td>
+        <td class="text-center border">{{ summarize.bbktName }}</td>
+        <td class="text-center border">{{ summarize.inspectionObject }}</td>
+        <td class="text-center border">{{ summarize.totalInspection }}</td>
+        <td class="text-center border">{{ summarize.pointScale }}</td>
+        <td class="text-center border">{{ summarize.totalErrorPoints }}</td>
+        <td class="text-center border">{{ summarize.totalBbktPoints }}</td>
+        <td class="text-center border">{{ summarize.averagePoints }}</td>
+        <td class="text-center border">{{ summarize.totalErrors }}</td>
+        <td class="text-center border">
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-info"
+              aria-label="check"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'info'"
+              title="Chi tiết"
+              (onClick)="showDialogGeneralCheckPlan()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Xuất dữ liệu"
+        icon="pi pi-file-excel"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="success"
+      />
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  header="Tổng hợp biên bản kiểm tra"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogGeneralCheckPlan"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Mã kế hoạch</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên kế hoạch</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Đối tượng kế hoạch đánh giá</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tần suất</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+  </div>
+  <p-table
+    [value]="checkPlanDetails"
+    [paginator]="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Điểm theo đợt kiểm tra</th>
+        <th class="text-center border">Tên BBKT</th>
+        <th class="text-center border">Ngày kiểm tra</th>
+        <th class="text-center border">NC</th>
+        <th class="text-center border">LY</th>
+        <th class="text-center border">Không đạt</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-detail let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ detail.score }}</td>
+        <td class="text-center border">{{ detail.reportName }}</td>
+        <td class="text-center border">{{ detail.checkDate }}</td>
+        <td class="text-center border">{{ detail.nc }}</td>
+        <td class="text-center border">{{ detail.ly }}</td>
+        <td class="text-center border">{{ detail.notPass }}</td>
+        <td class="text-center border">
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-reply"
+              aria-label="check"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'info'"
+              title="Chi tiết"
+              (onClick)="showDialogSummaryOfCriteriaConclusion()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>
+
+<p-dialog
+  header="Tổng hợp kết luận tiêu chí"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogSummaryOfCriteriaConclusion"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Ngày kiểm tra</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên BBKT</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+  </div>
+  <p-table [value]="criteriaSummaries">
+    <ng-template
+      pTemplate="header"
+      [paginator]="true"
+      [rows]="100"
+      [responsive]="true"
+      styleClass="p-datatable-gridlines"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [autoLayout]="true"
+    >
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Nhóm tiêu chí</th>
+        <th class="text-center border">Tên tiêu chí</th>
+        <th class="text-center border">Kết luận</th>
+        <th class="text-center border">Nội dung đánh giá</th>
+        <th class="text-center border">Hình ảnh đánh giá</th>
+        <th class="text-center border">Trạng thái</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-criteria let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ criteria.criteriaGroup }}</td>
+        <td class="text-center border">{{ criteria.criteriaName }}</td>
+        <td class="text-center border">{{ criteria.conclusion }}</td>
+        <td class="text-center border">{{ criteria.evaluationContent }}</td>
+        <td class="text-center border">{{ criteria.evaluationImage }}</td>
+        <td class="text-center border"><p-tag [value]="criteria.status" [severity]="getSeverity(criteria.status)" /></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>

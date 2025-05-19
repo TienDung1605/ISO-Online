@@ -9,7 +9,7 @@
         aria-label="Gross"
         styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-plan-btn"
         [severity]="'help'"
-        (onClick)="navigateToGrossScript()"
+        (onClick)="navigateToScript()"
       />
       <button
         id="jh-create-entity"
@@ -21,10 +21,9 @@
         <span>Thêm mới</span>
       </button>
     </div>
+    <button (click)="navigateToSummarizePlan()">Check url</button>
   </h2>
-  <!--
-  <input type='radio' name="gender" />
-  <input type='radio' name="gender" /> -->
+
   <p-table
     #dt2
     [value]="planDetailResults"
@@ -134,6 +133,7 @@
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'info'"
               title="Sao chép"
+              (onClick)="copyPlan(rowNode.id)"
             />
             <p-button
               icon="pi pi-pencil"
@@ -150,21 +150,30 @@
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'help'"
               title="Gộp"
+              (onClick)="navigateToGrossScript()"
             />
             <p-button
               icon="pi pi-check"
               aria-label="Check"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'success'"
-              (onClick)="openModalEvaluationPlan()"
+              (onClick)="showDialogCheckScript()"
               title="Kiểm tra"
+            />
+            <p-button
+              icon="pi pi-eye"
+              aria-label="View"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'info'"
+              title="Xem chi tiết"
+              (onClick)="navigateToSummarizePlan()"
             />
             <p-button
               icon="pi pi-file-excel"
               aria-label="Excel"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'success'"
-              (onClick)="openModalInspectionData()"
+              (onClick)="showDialogExcel()"
               title="Xuất excel"
             />
             <p-button
@@ -287,6 +296,7 @@
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                         [severity]="'success'"
                         title="Đánh giá"
+                        (onClick)="showDialogCheckPlan()"
                       />
                       <p-button
                         icon="pi pi-eye"
@@ -294,6 +304,7 @@
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                         [severity]="'info'"
                         title="Xem chi tiết"
+                        (onClick)="showDialogGeneralCheckPlan()"
                       />
                       <p-button
                         icon="pi pi-wrench"
@@ -967,330 +978,579 @@
       />
     </div>
   </ng-template>
-  <!-- <p-treeTable [value]="treeNodes" [scrollable]="true" showGridlines [tableStyle]="{'min-width':'50rem'}">
-  <ng-template pTemplate="header">
-    <tr>
-      <th>ID</th>
-      <th>Mã kế hoạch</th>
-      <th>Tên kế hoạch</th>
-      <th>Đối tượng kế hoạch đánh giá</th>
-      <th>Tần suất</th>
-      <th>Thời gian bắt đầu</th>
-      <th>Thời gian kết thúc</th>
-      <th>Trạng thái kế hoạch</th>
-      <th>Đối tượng kiểm tra</th>
-      <th>Loại BBKT (ID)</th>
-      <th>Tên loại BBKT</th>
-      <th>Số lần kiểm tra</th>
-      <th>Người thực hiện</th>
-      <th>Người tham gia</th>
-      <th>Nhóm người dùng</th>
-      <th>Tên người dùng</th>
-      <th>Nhóm người dùng (ID)</th>
-      <th>Tên người dùng (ID)</th>
-      <th>Gộp</th>
-      <th>Ngày kiểm tra</th>
-      <th>Tên kết quả đánh giá</th>
-      <th>Kịch bản (ID)</th>
-      <th>Người tạo</th>
-      <th>Trạng thái</th>
-      <th>Thời gian tạo</th>
-      <th>Thời gian cập nhật</th>
-      <th>Người cập nhật</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-rowNode let-plan="rowData">
-    <tr [ttRow]="rowNode">
-      <td>
-        <p-treeTableToggler [rowNode]="rowNode" />
-        {{ plan.id }}
-      </td>
-      <td>{{ plan.code }}</td>
-      <td>{{ plan.name }}</td>
-      <td>{{ plan.subject }}</td>
-      <td>{{ plan.frequency }}</td>
-      <td>{{ plan.timeStart | formatMediumDatetime }}</td>
-      <td>{{ plan.timeEnd | formatMediumDatetime }}</td>
-      <td>{{ plan.statusPlan }}</td>
-      <td>{{ plan.testObject }}</td>
-      <td>{{ plan.reportTypeId }}</td>
-      <td>{{ plan.reportTypeName }}</td>
-      <td>{{ plan.subjectOfAssetmentPlan }}</td>
-      <td>{{ plan.frequency }}</td>
-      <td>{{ plan.timeStart | formatMediumDatetime }}</td>
-      <td>{{ plan.timeEnd | formatMediumDatetime }}</td>
-      <td>{{ plan.statusPlan }}</td>
-      <td>{{ plan.testObject }}</td>
-      <td>{{ plan.reportTypeId }}</td>
-      <td>{{ plan.reportTypeName }}</td>
-      <td>{{ plan.numberOfCheck }}</td>
-      <td>{{ plan.implementer }}</td>
-      <td>{{ plan.paticipant }}</td>
-      <td>{{ plan.checkerGroup }}</td>
-      <td>{{ plan.checkerName }}</td>
-      <td>{{ plan.checkerGroupId }}</td>
-      <td>{{ plan.checkerId }}</td>
-      <td>{{ plan.gross }}</td>
-      <td>{{ plan.timeCheck }}</td>
-      <td>{{ plan.nameResult }}</td>
-      <td>{{ plan.scriptId }}</td>
-      <td>{{ plan.createBy }}</td>
-      <td>{{ plan.status }}</td>
-      <td>{{ plan.createdAt | formatMediumDatetime }}</td>
-      <td>{{ plan.updatedAt | formatMediumDatetime }}</td>
-      <td>{{ plan.updateBy }}</td>
-    </tr>
-  </ng-template>
-</p-treeTable> -->
+</div>
 
-  <!-- @if (plans && plans.length > 0) {
-<div class="table-responsive table-entities" id="entities">
-  <table class="table table-striped" aria-describedby="page-heading">
-    <thead>
-      <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-        <th scope="col" jhiSortBy="id">
-          <div class="d-flex">
-            <span>ID</span>
+<p-dialog
+  header="Form mẫu xuất Excel"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogVisible"
+  [style]="{ width: '50vw' }"
+  [contentStyle]="{ height: '200px' }"
+  styleClass="excel-template-dialog"
+>
+  <div class="excel-template-content">
+    <p-button
+      label="Mẫu QLCL"
+      icon="pi pi-file-excel"
+      (onClick)="dialogVisible = false"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 excel-btn"
+      severity="success"
+    />
+    <p-button
+      label="Mẫu QLHT"
+      icon="pi pi-file-excel"
+      (onClick)="dialogVisible = false"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 excel-btn"
+      severity="success"
+    />
+    <p-button
+      label="Mẫu AT-5s"
+      icon="pi pi-file-excel"
+      (onClick)="dialogVisible = false"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 excel-btn"
+      severity="success"
+    />
+  </div>
+</p-dialog>
 
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="code">
-          <div class="d-flex">
-            <span>Mã kế hoạch</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="name">
-          <div class="d-flex">
-            <span>Tên kế hoạch</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="subjectOfAssetmentPlan">
-          <div class="d-flex">
-            <span>Đối tượng kế hoạch đánh giá</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="frequency">
-          <div class="d-flex">
-            <span>Tần suất</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="timeStart">
-          <div class="d-flex">
-            <span>Thời gian bắt đầu</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="timeEnd">
-          <div class="d-flex">
-            <span>Thời gian kết thúc</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="statusPlan">
-          <div class="d-flex">
-            <span>Trạng thái kế hoạch</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="testObject">
-          <div class="d-flex">
-            <span>Đối tượng kiểm tra</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="reportTypeId">
-          <div class="d-flex">
-            <span>Loại BBKT (ID)</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="reportTypeName">
-          <div class="d-flex">
-            <span>Tên loại BBKT</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="numberOfCheck">
-          <div class="d-flex">
-            <span>Số lần kiểm tra</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="implementer">
-          <div class="d-flex">
-            <span>Người thực hiện</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="paticipant">
-          <div class="d-flex">
-            <span>Người tham gia</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="checkerGroup">
-          <div class="d-flex">
-            <span>Nhóm người dùng</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="checkerName">
-          <div class="d-flex">
-            <span>Tên người dùng</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="checkerGroupId">
-          <div class="d-flex">
-            <span>Nhóm người dùng (ID)</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="checkerId">
-          <div class="d-flex">
-            <span>Tên người dùng (ID)</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="gross">
-          <div class="d-flex">
-            <span>Gộp</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="timeCheck">
-          <div class="d-flex">
-            <span>Ngày kiểm tra</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="nameResult">
-          <div class="d-flex">
-            <span>Tên kết quả đánh giá</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="scriptId">
-          <div class="d-flex">
-            <span>Kịch bản (ID)</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="createBy">
-          <div class="d-flex">
-            <span>Người tạo</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="status">
-          <div class="d-flex">
-            <span>Trạng thái</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="createdAt">
-          <div class="d-flex">
-            <span>Thời gian tạo</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="updatedAt">
-          <div class="d-flex">
-            <span>Thời gian cập nhật</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col" jhiSortBy="updateBy">
-          <div class="d-flex">
-            <span>Người cập nhật</span>
-
-            <fa-icon class="p-1" icon="sort"></fa-icon>
-          </div>
-        </th>
-        <th scope="col"></th>
+<p-dialog
+  header="Thực hiện đánh giá kế hoạch"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogCheckScript"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Mã Kịch bản</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên Kịch bản</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Đối tượng kế hoạch đánh giá</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tần suất</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+  </div>
+  <p-table
+    [value]="scriptEvaluations"
+    [paginator]="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Nhóm tiêu chí</th>
+        <th class="text-center border">Tiêu chí</th>
+        <th class="text-center border">Tần suất KT</th>
+        <th class="text-center border">Kết quả đánh giá</th>
+        <th class="text-center border">Nội dung đánh giá</th>
+        <th class="text-center border">Hình ảnh đánh giá</th>
+        <th class="text-center border">Tuỳ chọn</th>
       </tr>
-    </thead>
-    <tbody>
-      @for (plan of plans; track trackId) {
-      <tr data-cy="entityTable">
-        <td>
-          <a [routerLink]="['/plan', plan.id, 'view']">{{ plan.id }}</a>
-        </td>
-        <td>{{ plan.code }}</td>
-        <td>{{ plan.name }}</td>
-        <td>{{ plan.subjectOfAssetmentPlan }}</td>
-        <td>{{ plan.frequency }}</td>
-        <td>{{ plan.timeStart | formatMediumDatetime }}</td>
-        <td>{{ plan.timeEnd | formatMediumDatetime }}</td>
-        <td>{{ plan.statusPlan }}</td>
-        <td>{{ plan.testObject }}</td>
-        <td>{{ plan.reportTypeId }}</td>
-        <td>{{ plan.reportTypeName }}</td>
-        <td>{{ plan.numberOfCheck }}</td>
-        <td>{{ plan.implementer }}</td>
-        <td>{{ plan.paticipant }}</td>
-        <td>{{ plan.checkerGroup }}</td>
-        <td>{{ plan.checkerName }}</td>
-        <td>{{ plan.checkerGroupId }}</td>
-        <td>{{ plan.checkerId }}</td>
-        <td>{{ plan.gross }}</td>
-        <td>{{ plan.timeCheck }}</td>
-        <td>{{ plan.nameResult }}</td>
-        <td>{{ plan.scriptId }}</td>
-        <td>{{ plan.createBy }}</td>
-        <td>{{ plan.status }}</td>
-        <td>{{ plan.createdAt | formatMediumDatetime }}</td>
-        <td>{{ plan.updatedAt | formatMediumDatetime }}</td>
-        <td>{{ plan.updateBy }}</td>
-        <td class="text-end">
-          <div class="btn-group">
-            <a [routerLink]="['/plan', plan.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-              <fa-icon icon="eye"></fa-icon>
-            </a>
-
-            <a [routerLink]="['/plan', plan.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
-              <fa-icon icon="pencil-alt"></fa-icon>
-            </a>
-
-            <button type="submit" (click)="delete(plan)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-              <fa-icon icon="times"></fa-icon>
-            </button>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ item.criteriaGroup }}</td>
+        <td class="text-center border">{{ item.criteria }}</td>
+        <td class="text-center border">{{ item.frequency }}</td>
+        <td class="text-center border">{{ item.evaluationResult }}</td>
+        <td class="text-center border">{{ item.evaluationContent }}</td>
+        <td class="text-center border">{{ item.evaluationImage }}</td>
+        <td class="text-center border">
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-reply"
+              aria-label="Delete"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'success'"
+              (onClick)="showDialogConclusionCretia()"
+            />
           </div>
         </td>
       </tr>
-      }
-    </tbody>
-  </table>
-</div>
-} -->
-</div>
+    </ng-template>
+  </p-table>
+  <ng-template pTemplate="footer">
+    <div class="action-buttons">
+      <p-button
+        label="Huỷ"
+        icon="pi pi-ban"
+        (onClick)="dialogCheckScript = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="danger"
+      />
+      <p-button
+        label="Lưu"
+        icon="pi pi-save"
+        (onClick)="dialogCheckScript = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="info"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Kết luận tiêu chí"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="conclusionCretia"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Nhóm tiêu chí</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên tiêu chí</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+  </div>
+
+  <p-table
+    [paginator]="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Mã BBKT</th>
+        <th class="text-center border">Đối tượng kiểm tra</th>
+        <th class="text-center border">Tần suất</th>
+        <th class="text-center border">Đánh giá</th>
+        <th class="text-center border">Nội dung đánh giá</th>
+        <th class="text-center border">Hình ảnh đánh giá</th>
+        <th class="text-center border">Trạng thái</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border"></td>
+        <td class="text-center border"></td>
+        <td class="text-center border"></td>
+        <td class="text-center border"></td>
+        <td class="text-center border"></td>
+        <td class="text-center border"></td>
+        <td class="text-center border"></td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <p-button
+    label="Huỷ"
+    icon="pi pi-times-circle"
+    aria-label="File"
+    styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+    [severity]="'danger'"
+    (onClick)="conclusionCretia = false"
+  />
+  <p-button
+    label="Lưu"
+    icon="pi pi-save"
+    aria-label="File"
+    styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+    [severity]="'info'"
+    (onClick)="conclusionCretia = false"
+  />
+</p-dialog>
+
+<p-dialog
+  header="Đánh giá kế hoạch BBKT"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogCheckPlan"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Đối tượng kiểm tra</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Quy đổi</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Mẫu BBKT</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="custom-button-apply">
+      <p-button
+        label="Apply"
+        icon="pi pi-check"
+        (onClick)="dialogCheckPlan = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        [raised]="true"
+        [severity]="'info'"
+      />
+    </div>
+  </div>
+
+  <p-table
+    [value]="planEvaluations"
+    [paginator]="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Mã kế hoạch</th>
+        <th class="text-center border">Tên kế hoạch</th>
+        <th class="text-center border">Đối tượng kế hoạch đánh giá</th>
+        <th class="text-center border">Tần suất kế hoạch</th>
+        <th class="text-center border">Mã BBKT</th>
+        <th class="text-center border">Tên mẫu BBKT</th>
+        <th class="text-center border">Đối tượng kiểm tra</th>
+        <th class="text-center border">Loại BBKT</th>
+        <th class="text-center border">Nhóm BBKT</th>
+        <th class="text-center border">Trạng thái</th>
+        <th class="text-center border">Ngày kiểm tra</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ item.planCode }}</td>
+        <td class="text-center border">{{ item.planName }}</td>
+        <td class="text-center border">{{ item.evaluationTarget }}</td>
+        <td class="text-center border">{{ item.planFrequency }}</td>
+        <td class="text-center border">{{ item.reportCode }}</td>
+        <td class="text-center border">{{ item.reportTemplateName }}</td>
+        <td class="text-center border">{{ item.checkTarget }}</td>
+        <td class="text-center border">{{ item.reportType }}</td>
+        <td class="text-center border">{{ item.reportGroup }}</td>
+        <td class="text-center border">{{ item.status }}</td>
+        <td class="text-center border"><input type="date" /></td>
+        <td class="text-center border">
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-check"
+              aria-label="Check"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'success'"
+              (onClick)="showDialogCheckPlanChild()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <ng-template pTemplate="footer">
+    <div class="action-buttons">
+      <p-button
+        label="Huỷ"
+        icon="pi pi-ban"
+        (onClick)="dialogCheckPlan = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="danger"
+      />
+      <p-button
+        label="Lưu"
+        icon="pi pi-save"
+        (onClick)="dialogCheckPlan = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="info"
+      />
+      <p-button
+        label="Apply"
+        icon="pi pi-check"
+        (onClick)="dialogCheckPlan = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="success"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Nội dung kiểm tra BB"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogCheckPlanChild"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên biên bản kiểm tra</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Mẫu biên bản kiểm tra</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Ngày kiểm tra</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+    <div class="custom-button-apply">
+      <p-button
+        label="Apply"
+        icon="pi pi-check"
+        (onClick)="dialogCheckPlanChild = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        [raised]="true"
+        [severity]="'info'"
+      />
+    </div>
+  </div>
+  <p-table
+    paginator="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Nhóm tiêu chí</th>
+        <th class="text-center border">Tên tiêu chí</th>
+        <th class="text-center border">Đối tượng kế hoạch đánh giá</th>
+        <th class="text-center border">Tần suất</th>
+        <th class="text-center border">Đánh giá</th>
+        <th class="text-center border">Nội dung đánh giá</th>
+        <th class="text-center border">Hình ảnh đánh giá</th>
+        <th class="text-center border">Trạng thái</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ item.planCode }}</td>
+        <td class="text-center border">{{ item.planName }}</td>
+        <td class="text-center border">{{ item.evaluationTarget }}</td>
+        <td class="text-center border">{{ item.planFrequency }}</td>
+        <td class="text-center border">{{ item.reportCode }}</td>
+        <td class="text-center border">{{ item.reportTemplateName }}</td>
+        <td class="text-center border">{{ item.checkTarget }}</td>
+        <td class="text-center border">{{ item.status }}</td>
+        <td class="text-center border"><input type="date" /></td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <ng-template pTemplate="footer">
+    <div class="action-buttons">
+      <p-button
+        label="Huỷ"
+        icon="pi pi-ban"
+        (onClick)="dialogCheckPlan = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="danger"
+      />
+      <p-button
+        label="Lưu"
+        icon="pi pi-save"
+        (onClick)="dialogCheckPlan = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="info"
+      />
+      <p-button
+        label="Apply"
+        icon="pi pi-check"
+        (onClick)="dialogCheckPlan = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="success"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Tổng hợp biên bản kiểm tra"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogGeneralCheckPlan"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Mã kế hoạch</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên kế hoạch</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Đối tượng kế hoạch đánh giá</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tần suất</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+  </div>
+  <p-table
+    [value]="checkPlanDetails"
+    [paginator]="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Điểm theo đợt kiểm tra</th>
+        <th class="text-center border">Tên BBKT</th>
+        <th class="text-center border">Ngày kiểm tra</th>
+        <th class="text-center border">NC</th>
+        <th class="text-center border">LY</th>
+        <th class="text-center border">Không đạt</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-detail let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ detail.score }}</td>
+        <td class="text-center border">{{ detail.reportName }}</td>
+        <td class="text-center border">{{ detail.checkDate }}</td>
+        <td class="text-center border">{{ detail.nc }}</td>
+        <td class="text-center border">{{ detail.ly }}</td>
+        <td class="text-center border">{{ detail.notPass }}</td>
+        <td class="text-center border">
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-reply"
+              aria-label="check"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'info'"
+              title="Chi tiết"
+              (onClick)="showDialogSummaryOfCriteriaConclusion()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>
+
+<p-dialog
+  header="Tổng hợp kết luận tiêu chí"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogSummaryOfCriteriaConclusion"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Ngày kiểm tra</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên BBKT</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+    </div>
+  </div>
+  <p-table [value]="criteriaSummaries">
+    <ng-template
+      pTemplate="header"
+      [paginator]="true"
+      [rows]="100"
+      [responsive]="true"
+      styleClass="p-datatable-gridlines"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [autoLayout]="true"
+    >
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Nhóm tiêu chí</th>
+        <th class="text-center border">Tên tiêu chí</th>
+        <th class="text-center border">Kết luận</th>
+        <th class="text-center border">Nội dung đánh giá</th>
+        <th class="text-center border">Hình ảnh đánh giá</th>
+        <th class="text-center border">Trạng thái</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-criteria let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ criteria.criteriaGroup }}</td>
+        <td class="text-center border">{{ criteria.criteriaName }}</td>
+        <td class="text-center border">{{ criteria.conclusion }}</td>
+        <td class="text-center border">{{ criteria.evaluationContent }}</td>
+        <td class="text-center border">{{ criteria.evaluationImage }}</td>
+        <td class="text-center border"><p-tag [value]="criteria.status" [severity]="getSeverity(criteria.status)" /></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-dialog>

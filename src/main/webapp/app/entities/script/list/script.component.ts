@@ -11,11 +11,17 @@ import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigati
 import { IScript } from '../script.model';
 import { EntityArrayResponseType, ScriptService } from '../service/script.service';
 import { ScriptDeleteDialogComponent } from '../delete/script-delete-dialog.component';
+import { TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   standalone: true,
   selector: 'jhi-script',
   templateUrl: './script.component.html',
+  styleUrls: ['../../shared.component.css'],
   imports: [
     RouterModule,
     FormsModule,
@@ -25,6 +31,11 @@ import { ScriptDeleteDialogComponent } from '../delete/script-delete-dialog.comp
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    TagModule,
+    ButtonModule,
   ],
 })
 export class ScriptComponent implements OnInit {
@@ -33,7 +44,21 @@ export class ScriptComponent implements OnInit {
   isLoading = false;
 
   sortState = sortStateSignal({});
-
+  scriptResult: any[] = [];
+  page = 1;
+  totalItems = 0;
+  selectedPageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  totalRecords: number = 0;
+  filters = {
+    scriptCode: '',
+    scriptName: '',
+    timeStart: '',
+    timeEnd: '',
+    status: '',
+    updateBy: '',
+  };
   public router = inject(Router);
   protected scriptService = inject(ScriptService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -69,11 +94,59 @@ export class ScriptComponent implements OnInit {
   }
 
   load(): void {
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //   },
+    // });
+    this.isLoading = true;
     this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
+      next: res => {
+        if (res.body) {
+          this.scripts = res.body;
+          this.scriptResult = [...this.scripts];
+          this.totalRecords = this.scripts.length;
+          this.isLoading = false;
+        }
       },
     });
+  }
+
+  searchTable(): void {
+    if (!this.scripts) {
+      return;
+    }
+    this.scriptResult = this.scripts.filter(script => {
+      const startDate = script.timeStart ? new Date(script.timeStart.toDate()).toISOString().split('T')[0] : '';
+      const endDate = script.timeEnd ? new Date(script.timeEnd.toDate()).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.timeStart ? new Date(this.filters.timeStart).toISOString().split('T')[0] : '';
+      const searchUpdatedDate = this.filters.timeEnd ? new Date(this.filters.timeEnd).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.scriptCode || script.scriptCode?.toLowerCase().includes(this.filters.scriptCode.toLowerCase())) &&
+        (!this.filters.scriptName || script.scriptName?.toString().includes(this.filters.scriptName)) &&
+        (!this.filters.timeStart || startDate === searchCreatedDate) &&
+        (!this.filters.timeEnd || endDate === searchUpdatedDate) &&
+        (!this.filters.status || script.status?.toString().includes(this.filters.status)) &&
+        (!this.filters.updateBy || script.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
+      );
+    });
+    this.totalRecords = this.scripts.length;
+  }
+  onSearch(script: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[script] = value;
+    this.searchTable();
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.load();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
   }
 
   navigateToWithComponentValues(event: SortState): void {

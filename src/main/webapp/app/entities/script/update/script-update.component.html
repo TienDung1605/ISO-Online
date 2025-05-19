@@ -1,186 +1,352 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-script-heading" data-cy="ScriptCreateUpdateHeading" jhiTranslate="isoApp.script.home.createOrEditLabel">
-        Thêm mới hoặc cập nhật Script
-      </h2>
+<div>
+  <h2 class="page-heading" id="page-haeding">Thêm mới kịch bản (Gộp kế hoạch)</h2>
 
-      <div>
-        <jhi-alert-error></jhi-alert-error>
-
-        @if (editForm.controls.id.value !== null) {
-          <div class="mb-3">
-            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-          </div>
-        }
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.scriptCode" for="field_scriptCode">Script Code</label>
-          <input
-            type="text"
-            class="form-control"
-            name="scriptCode"
-            id="field_scriptCode"
-            data-cy="scriptCode"
-            formControlName="scriptCode"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.scriptName" for="field_scriptName">Script Name</label>
-          <input
-            type="text"
-            class="form-control"
-            name="scriptName"
-            id="field_scriptName"
-            data-cy="scriptName"
-            formControlName="scriptName"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.timeStart" for="field_timeStart">Time Start</label>
-          <div class="d-flex">
-            <input
-              id="field_timeStart"
-              data-cy="timeStart"
-              type="datetime-local"
-              class="form-control"
-              name="timeStart"
-              formControlName="timeStart"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.timeEnd" for="field_timeEnd">Time End</label>
-          <div class="d-flex">
-            <input
-              id="field_timeEnd"
-              data-cy="timeEnd"
-              type="datetime-local"
-              class="form-control"
-              name="timeEnd"
-              formControlName="timeEnd"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.status" for="field_status">Status</label>
-          <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.updateBy" for="field_updateBy">Update By</label>
-          <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.frequency" for="field_frequency">Frequency</label>
-          <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.subjectOfAssetmentPlan" for="field_subjectOfAssetmentPlan"
-            >Subject Of Assetment Plan</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            name="subjectOfAssetmentPlan"
-            id="field_subjectOfAssetmentPlan"
-            data-cy="subjectOfAssetmentPlan"
-            formControlName="subjectOfAssetmentPlan"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.codePlan" for="field_codePlan">Code Plan</label>
-          <input type="text" class="form-control" name="codePlan" id="field_codePlan" data-cy="codePlan" formControlName="codePlan" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.namePlan" for="field_namePlan">Name Plan</label>
-          <input type="text" class="form-control" name="namePlan" id="field_namePlan" data-cy="namePlan" formControlName="namePlan" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.timeCheck" for="field_timeCheck">Time Check</label>
-          <div class="d-flex">
-            <input
-              id="field_timeCheck"
-              data-cy="timeCheck"
-              type="datetime-local"
-              class="form-control"
-              name="timeCheck"
-              formControlName="timeCheck"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.createdAt" for="field_createdAt">Created At</label>
-          <div class="d-flex">
-            <input
-              id="field_createdAt"
-              data-cy="createdAt"
-              type="datetime-local"
-              class="form-control"
-              name="createdAt"
-              formControlName="createdAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.updatedAt" for="field_updatedAt">Updated At</label>
-          <div class="d-flex">
-            <input
-              id="field_updatedAt"
-              data-cy="updatedAt"
-              type="datetime-local"
-              class="form-control"
-              name="updatedAt"
-              formControlName="updatedAt"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="isoApp.script.participant" for="field_participant">Participant</label>
-          <input
-            type="text"
-            class="form-control"
-            name="participant"
-            id="field_participant"
-            data-cy="participant"
-            formControlName="participant"
-          />
-        </div>
+  <div class="modal-body">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <label for="testObject">Mã kịch bản</label>
+        <select id="testObject" class="form-control" [(ngModel)]="selectedTestObject">
+          <!-- <option value=""> Chọn đối tượng </option> -->
+          <option *ngFor="let item of testObjects" [value]="item.id">
+            {{ item.name }}
+          </option>
+        </select>
       </div>
 
-      <div>
-        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
-        </button>
-
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
-        </button>
+      <div class="col-md-6">
+        <label for="conversion">Tên kịch bản</label>
+        <select id="conversion" class="form-control" [(ngModel)]="selectedConversion">
+          <!-- <option value=""> Chọn quy đổi </option> -->
+          <option *ngFor="let item of conversions" [value]="item.id">
+            {{ item.code }}
+          </option>
+        </select>
       </div>
-    </form>
+
+      <div class="col-md-6">
+        <label for="reportTemplate">Đối tượng kế hoạch đánh giá</label>
+        <select id="reportTemplate" class="form-control" [(ngModel)]="selectedTemplate">
+          <!-- <option value=""> Chọn mẫu </option> -->
+          <option *ngFor="let item of reportTemplates" [value]="item.id">
+            {{ item.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="planCode">Tần suất kiểm tra</label>
+        <select id="planCode" class="form-control" [(ngModel)]="selectedPlanCode">
+          <!-- <option value=""> Chọn mã </option> -->
+          <option *ngFor="let item of planCodes" [value]="item.id">
+            {{ item.code }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <!-- <button type="button" class="btn btn-primary">Apply</button> -->
+        <p-button
+          label="Apply"
+          icon="pi pi-check"
+          aria-label="Apply"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+          [severity]="'info'"
+        />
+      </div>
+    </div>
+  </div>
+
+  <p-table [value]="grossScripts" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>STT</th>
+        <th>Ngày kiểm tra</th>
+        <th>Mã kế hoạch</th>
+        <th>Tên kế hoạch kiểm tra</th>
+        <th>Tên mẫu BBKT</th>
+        <th>Mã BBKT</th>
+        <th>Gộp</th>
+        <!-- <th>Đối tượng kế hoạch đánh giá</th>
+        <th>Tần suất kế hoạch</th>
+        <th>Đối tượng KT</th>
+        <th>Loại BBKT</th>
+        <th>Nhóm BBKT</th>
+        <th>Trạng thái</th> -->
+      </tr>
+      <tr>
+        <th></th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+
+        <th>
+          <p-tableHeaderCheckbox />
+          <!-- <p-checkbox [(ngModel)]="selectAll" [binary]="true" (onChange)="toggleSelectAll()" inputId="selectAll">
+          </p-checkbox> -->
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-script let-index="rowIndex">
+      <tr>
+        <td>{{ index + 1 }}</td>
+        <td>{{ script.checkDate }}</td>
+        <td>{{ script.planCode }}</td>
+        <td>{{ script.planName }}</td>
+        <td>{{ script.reportName }}</td>
+        <td>{{ script.reportCode }}</td>
+        <td>
+          <p-tableCheckbox [value]="script" />
+          <!-- <p-checkbox [(ngModel)]="script.merge" binary="true"></p-checkbox> -->
+        </td>
+        <!-- <td>{{ script.evaluationObject }}</td>
+        <td>{{ script.frequency }}</td>
+        <td>{{ script.testObject }}</td>
+        <td>{{ script.reportType }}</td>
+        <td>{{ script.reportGroup }}</td>
+        <td>{{ script.status }}</td> -->
+      </tr>
+    </ng-template>
+  </p-table>
+  <div class="d-flex justify-content-end">
+    <p-button
+      label="Huỷ"
+      icon="pi pi-ban"
+      aria-label="Cancel"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+      [severity]="'danger'"
+    />
+    <p-button
+      label="Lưu"
+      icon="pi pi-save"
+      aria-label="Save"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+      [severity]="'info'"
+    />
+    <!-- <p-button label="Apply" icon="pi pi-check" aria-label="Apply"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn" [severity]="'success'" /> -->
+    <p-button
+      label="Check"
+      icon="pi pi-pencil"
+      aria-label="Check"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+      [severity]="'warning'"
+      (onClick)="showDialogCheckScript()"
+    />
   </div>
 </div>
+
+<p-dialog
+  header="Thực hiện đánh giá kế hoạch"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogCheckScript"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="col-container">
+    <div class="col-m4-25 col-container-child">
+      <label for="">Mã Kịch bản</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tên Kịch bản</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Đối tượng kế hoạch đánh giá</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+    </div>
+    <div class="col-m4-25 col-container-child">
+      <label for="">Tần suất</label>
+      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+    </div>
+  </div>
+  <p-table
+    [paginator]="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>STT</th>
+        <th>Nhóm tiêu chí</th>
+        <th>Tiêu chí</th>
+        <th>Tần suất KT</th>
+        <th>Kết quả đánh giá</th>
+        <th>Nội dung đánh giá</th>
+        <th>Hình ảnh đánh giá</th>
+        <th>Tuỳ chọn</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-index="rowIndex">
+      <tr>
+        <td>{{ index + 1 }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-reply"
+              aria-label="Delete"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'danger'"
+              (onClick)="deleteRow(index)"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <ng-template pTemplate="footer">
+    <div class="action-buttons">
+      <p-button
+        label="Huỷ"
+        icon="pi pi-ban"
+        (onClick)="dialogVisible = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="danger"
+      />
+      <p-button
+        label="Lưu"
+        icon="pi pi-save"
+        (onClick)="dialogVisible = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="info"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<ng-template #criteria let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-criteria-title">Nội dung kiểm tra</h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <p-table [value]="planData" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>STT</th>
+        <th>Nhóm tiêu chí</th>
+        <th>Tên tiêu chí</th>
+        <th>Trạng thái</th>
+        <th>Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-criteria let-index="rowIndex">
+      <tr>
+        <td>{{ index + 1 }}</td>
+        <td>{{ criteria.code }}</td>
+        <td>{{ criteria.name }}</td>
+        <td>{{ criteria.description }}</td>
+        <td class="action-buttons">
+          <p-button
+            icon="pi pi-check-square"
+            aria-label="Induce"
+            [rounded]="true"
+            styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+            [severity]="'success'"
+            (onClick)="openModalEvaluation()"
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<ng-template #evaluationResult let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-evaluation-title">Kết luận tiêu chí</h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <label for="">Nhóm tiêu chí</label>
+        <input type="text" class="form-control" />
+      </div>
+      <div class="col-md-6">
+        <label for="">Tên tiêu chí</label>
+        <input type="text" class="form-control" />
+      </div>
+    </div>
+    <p-table [value]="evaluationReports" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>STT</th>
+          <th>Mã BBKT</th>
+          <th>Đối tượng kiểm tra</th>
+          <th>Tần suất</th>
+          <th>Đánh giá</th>
+          <th>Nội dung đánh giá</th>
+          <th>Hình ảnh đánh giá</th>
+          <th>Trạng thái</th>
+        </tr>
+        <tr>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-report let-index="rowIndex">
+        <tr>
+          <td>{{ index + 1 }}</td>
+          <td>{{ report.reportCode }}</td>
+          <td>{{ report.testObject }}</td>
+          <td>{{ report.frequency }}</td>
+          <td>{{ report.evaluation }}</td>
+          <td>{{ report.evaluationContent }}</td>
+          <td>{{ report.evaluationImage }}</td>
+          <td>{{ report.status }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div class="action-buttons">
+      <p-button
+        label="Huỷ"
+        icon="pi pi-ban"
+        aria-label="Cancel"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+        [severity]="'danger'"
+      />
+      <p-button
+        label="Lưu"
+        icon="pi pi-save"
+        aria-label="Save"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+        [severity]="'info'"
+      />
+    </div>
+  </div>
+</ng-template>

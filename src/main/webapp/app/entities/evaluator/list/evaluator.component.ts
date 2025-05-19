@@ -96,11 +96,6 @@ export class EvaluatorComponent implements OnInit {
   }
 
   load(): void {
-    // this.queryBackend().subscribe({
-    //   next: (res: EntityArrayResponseType) => {
-    //     this.onResponseSuccess(res);
-    //   },
-    // });
     this.isLoading = true;
     this.queryBackend().subscribe({
       next: res => {
@@ -124,27 +119,6 @@ export class EvaluatorComponent implements OnInit {
         }
       },
     });
-    // this.evaluatorService
-    //   .query({
-    //     page: this.page - 1,
-    //     size: this.pageSize,
-    //     sort: this.sortState(),
-    //   })
-    //   .subscribe(response => {
-    //     this.filteredEvaluators = response.body ?? [];
-    //     this.evaluators = [...this.filteredEvaluators];
-    //     this.totalItems = Number(response.headers.get('X-Total-Count'));
-    //     this.checkerGroup.query().subscribe(res => {
-    //       if (res.body) {
-    //         this.evaluators?.forEach(evaluator => {
-    //           const result = res.body!.find((item: any) => item.id === evaluator.userGroupId);
-    //           if (result) {
-    //             evaluator.checkerGroup = result.name;
-    //           }
-    //         });
-    //       }
-    //     });
-    //   });
   }
 
   onPageSizeChange(event: any): void {

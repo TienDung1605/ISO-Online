@@ -12,6 +12,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CommonModule } from '@angular/common';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
 // import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
@@ -32,6 +34,8 @@ import { CommonModule } from '@angular/common';
     NgbModule,
     CheckboxModule,
     CommonModule,
+    TagModule,
+    DialogModule,
   ],
   templateUrl: './gross-script.component.html',
   styleUrls: ['../shared.component.css'],
@@ -74,14 +78,14 @@ export class GrossScriptComponent {
       id: 1,
       planCode: 'KH001',
       planName: 'Kế hoạch đánh giá Q1/2024',
-      evaluationObject: 'Phòng Kinh doanh',
+      evaluationObject: 'Ban QLCL',
       frequency: 'Hàng quý',
       reportCode: 'BBKT001',
       reportName: 'Biên bản kiểm tra định kỳ',
       testObject: 'Nhân viên',
       reportType: 'Đánh giá nội bộ',
       reportGroup: 'Nhóm A',
-      status: 'Đang thực hiện',
+      status: 'Mới tạo',
       merge: true,
       checkDate: '2024-03-15',
     },
@@ -89,14 +93,29 @@ export class GrossScriptComponent {
       id: 2,
       planCode: 'KH002',
       planName: 'Kế hoạch đánh giá Q2/2024',
-      evaluationObject: 'Phòng Kỹ thuật',
+      evaluationObject: 'SMT1',
       frequency: 'Hàng quý',
       reportCode: 'BBKT002',
       reportName: 'Biên bản kiểm tra đột xuất',
       testObject: 'Quy trình',
       reportType: 'Đánh giá chéo',
       reportGroup: 'Nhóm B',
-      status: 'Chưa thực hiện',
+      status: 'Chưa hoàn thành',
+      merge: false,
+      checkDate: '2024-06-15',
+    },
+    {
+      id: 3,
+      planCode: 'KH003',
+      planName: 'Kế hoạch đánh giá Q3/2024',
+      evaluationObject: 'Ban Hệ thống và công nghệ thông tin',
+      frequency: 'Hàng quý',
+      reportCode: 'BBKT003',
+      reportName: 'Biên bản kiểm tra định kỳ',
+      testObject: 'Quy trình',
+      reportType: 'Đánh giá chéo',
+      reportGroup: 'Nhóm B',
+      status: 'Đã hoàn thành',
       merge: false,
       checkDate: '2024-06-15',
     },
@@ -173,6 +192,8 @@ export class GrossScriptComponent {
     },
   ];
 
+  dialogVisible = false;
+
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
@@ -219,5 +240,20 @@ export class GrossScriptComponent {
           console.log('Modal dismissed');
         },
       );
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'Đã hoàn thành':
+        return 'success';
+      case 'Mới tạo':
+        return 'danger';
+      case 'Chưa hoàn thành':
+        return 'waring';
+    }
+  }
+
+  showDialogEvaluation(): void {
+    this.dialogVisible = true;
   }
 }

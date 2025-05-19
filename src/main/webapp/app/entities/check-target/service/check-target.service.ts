@@ -36,6 +36,10 @@ export class CheckTargetService {
     return this.http.get<ICheckTarget[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
   }
 
+  getAllCheckTargets(): Observable<ICheckTarget[]> {
+    return this.http.get<ICheckTarget[]>(this.resourceUrl);
+  }
+
   create(checkTarget: NewCheckTarget): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(checkTarget);
     return this.http

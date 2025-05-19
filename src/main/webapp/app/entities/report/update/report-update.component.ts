@@ -73,6 +73,11 @@ export class ReportUpdateComponent implements OnInit {
         console.log(this.listTitleBody);
       }
     });
+    this.editForm.get('name')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.generateCode(value);
+      }
+    });
   }
 
   previousState(): void {
@@ -102,6 +107,16 @@ export class ReportUpdateComponent implements OnInit {
 
       this.subscribeToSaveResponse(this.reportService.create(report));
     }
+  }
+
+  generateCode(name: string): void {
+    const currentDate = dayjs().format('DDMMYYYYHHmm');
+    const initials = name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('');
+    const code = `${initials}-${currentDate}`;
+    this.editForm.patchValue({ code });
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReport>>): void {

@@ -10,7 +10,7 @@
         [routerLink]="['/report/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="isoApp.report.home.createLabel">Thêm mới</span>
+        <span>Thêm mới</span>
       </button>
     </div>
   </h2>
@@ -295,29 +295,48 @@
         <td class="text-center border">{{ report.sampleReportId }}</td>
         <td class="text-center border">{{ report.testOfObject }}</td>
         <td class="text-center border">{{ report.checker }}</td>
-        <td class="text-center border">{{ report.status }}</td>
+        <td class="text-center border">
+          <p-tag [value]="report.status" [severity]="getSeverity(report.status)" />
+        </td>
         <td class="text-center border">{{ report.scoreScale }}</td>
         <!-- <td class="text-center border">{{ report.reportType }}</td> -->
         <!-- <td class="text-center border">{{ report.frequency }}</td> -->
         <!-- <td class="text-center border">{{ report.user }}</td> -->
         <td class="text-center border">{{ report.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ report.updatedAt | formatMediumDatetime }}</td>
-        <td class="text-center border">{{ report.createBy }}</td>
+        <td class="text-center border">{{ report.updateBy }}</td>
         <td class="text-center border">
           <div class="btn-group action-buttons">
-            <a [routerLink]="['/report', report.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+            <a
+              [routerLink]="['/report', report.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+              style="border-radius: 8px"
+            >
               <fa-icon icon="eye"></fa-icon>
             </a>
 
-            <a [routerLink]="['/report', report.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+            <a
+              [routerLink]="['/report', report.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+              style="border-radius: 8px"
+            >
               <fa-icon icon="pencil-alt"></fa-icon>
             </a>
 
-            <button type="submit" (click)="delete(report)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+            <button
+              type="submit"
+              (click)="delete(report)"
+              class="btn btn-danger btn-sm"
+              data-cy="entityDeleteButton"
+              style="border-radius: 8px"
+            >
               <fa-icon icon="times"></fa-icon>
             </button>
           </div>
-        </td></tr
-    ></ng-template>
+        </td>
+      </tr>
+    </ng-template>
   </p-table>
 </div>

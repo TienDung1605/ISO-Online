@@ -1,90 +1,123 @@
 <div class="d-flex justify-content-center">
-  <div class="col-8">
-    @if (report) {
-      <div>
-        <h2 data-cy="reportDetailsHeading"><span jhiTranslate="isoApp.report.detail.title">Report</span></h2>
+  <div class="col-15">
+    <form name="editForm" role="form" novalidate>
+      @if (report) {
+        <div>
+          <h2 data-cy="reportDetailsHeading"><span>Thông tin chi tiết Biên bản kiểm tra</span></h2>
 
-        <hr />
+          <hr />
+          <div class="mb-4">
+            <label class="form-label"><span>ID</span></label>
 
-        <jhi-alert-error></jhi-alert-error>
+            <span class="form-control">{{ report.id }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Tên BBKT</span></label>
 
-        <jhi-alert></jhi-alert>
+            <span class="form-control">{{ report.name }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Mã BBKT</span></label>
 
-        <dl class="row-md jh-entity-details">
-          <dt><span jhiTranslate="global.field.id">ID</span></dt>
-          <dd>
-            <span>{{ report.id }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.name">Name</span></dt>
-          <dd>
-            <span>{{ report.name }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.code">Code</span></dt>
-          <dd>
-            <span>{{ report.code }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.sampleReportId">Sample Report Id</span></dt>
-          <dd>
-            <span>{{ report.sampleReportId }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.testOfObject">Test Of Object</span></dt>
-          <dd>
-            <span>{{ report.testOfObject }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.checker">Checker</span></dt>
-          <dd>
-            <span>{{ report.checker }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.status">Status</span></dt>
-          <dd>
-            <span>{{ report.status }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.frequency">Frequency</span></dt>
-          <dd>
-            <span>{{ report.frequency }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.reportType">Report Type</span></dt>
-          <dd>
-            <span>{{ report.reportType }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.reportTypeId">Report Type Id</span></dt>
-          <dd>
-            <span>{{ report.reportTypeId }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.createdAt">Created At</span></dt>
-          <dd>
-            <span>{{ report.createdAt | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.updatedAt">Updated At</span></dt>
-          <dd>
-            <span>{{ report.updatedAt | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.scoreScale">Score Scale</span></dt>
-          <dd>
-            <span>{{ report.scoreScale }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.updateBy">Update By</span></dt>
-          <dd>
-            <span>{{ report.updateBy }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.planId">Plan Id</span></dt>
-          <dd>
-            <span>{{ report.planId }}</span>
-          </dd>
-          <dt><span jhiTranslate="isoApp.report.user">User</span></dt>
-          <dd>
-            <span>{{ report.user }}</span>
-          </dd>
-        </dl>
+            <span class="form-control">{{ report.code }}</span>
+          </div>
+          <!-- <div class="mb-4">
 
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
-        </button>
+             <label  class="form-label"><span>Sample Report Id</span></label>
 
-        <button type="button" [routerLink]="['/report', report.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
-        </button>
-      </div>
-    }
+               <span>{{ report.sampleReportId }}</span>
+          </div> -->
+          <div class="mb-4">
+            <label class="form-label"><span>Đối tượng kiểm tra</span></label>
+
+            <span class="form-control">{{ report.testOfObject }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Người kiểm tra</span></label>
+
+            <span class="form-control">{{ report.checker }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Trạng thái</span></label>
+
+            <span class="form-control">{{ report.status }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Tần suất</span></label>
+
+            <span class="form-control">{{ report.frequency }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Loại BBKT</span></label>
+
+            <span class="form-control">{{ report.reportType }}</span>
+          </div>
+          <!-- <div class="mb-4">
+
+          <label class="form-label"><span>Report Type Id</span></label>
+
+          <span class="form-control">{{ report.reportTypeId }}</span>
+        </div> -->
+          <div class="mb-4">
+            <label class="form-label"><span>Thời gian tạo</span></label>
+
+            <span class="form-control">{{ report.createdAt | formatMediumDatetime }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Thời gian cập nhật</span></label>
+
+            <span class="form-control">{{ report.updatedAt | formatMediumDatetime }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Thang điểm</span></label>
+
+            <span class="form-control">{{ report.scoreScale }}</span>
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><span>Người cập nhật</span></label>
+
+            <span class="form-control">{{ report.updateBy }}</span>
+          </div>
+          <!-- <div class="mb-4">
+
+          <label class="form-label"><span>Plan Id</span></label>
+
+          <span class="form-control">{{ report.planId }}</span>
+        </div> -->
+          <!-- <div class="mb-4">
+
+          <label class="form-label"><span>User</span></label>
+
+          <span class="form-control">{{ report.user }}</span>
+        </div> -->
+
+          <div class="d-flex jusstify-content-end">
+            <table>
+              <thead>
+                <tr>
+                  <th class="text-center border">STT</th>
+                  <th class="text-center border" *ngFor="let item of listTitleHeaders">{{ item.name }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of listTitleBody; let i = index">
+                  <td class="text-center border">{{ i + 1 }}</td>
+                  <td class="text-center border" *ngFor="let data of item.data">
+                    <span>{{ data.value }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+            <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Quay lại</span>
+          </button>
+
+          <button type="button" [routerLink]="['/report', report.id, 'edit']" class="btn btn-primary">
+            <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Sửa</span>
+          </button>
+        </div>
+      }
+    </form>
   </div>
 </div>

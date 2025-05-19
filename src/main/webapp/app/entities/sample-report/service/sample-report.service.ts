@@ -39,6 +39,10 @@ export class SampleReportService {
     return this.http.get<ISampleReport[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
   }
 
+  getAllCheckTargets(): Observable<ISampleReport[]> {
+    return this.http.get<ISampleReport[]>(this.resourceUrl);
+  }
+
   create(sampleReport: NewSampleReport): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(sampleReport);
     return this.http

@@ -3,11 +3,6 @@
     <span>Mẫu biên bản kiểm tra</span>
 
     <div class="d-flex justify-content-end">
-      <!-- <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span home.refreshListLabel">Refresh list</span>
-      </button> -->
-
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
@@ -19,12 +14,6 @@
       </button>
     </div>
   </h2>
-
-  <!-- @if (sampleReports?.length === 0) {
-  <div class="alert alert-warning" id="no-result">
-    <span>No Sample Reports found</span>
-  </div>
-  } -->
 
   <!-- @if (sampleReports && sampleReports.length > 0) {
     <div class="table-responsive table-entities" id="entities">
@@ -340,7 +329,7 @@
         <td class="text-center border">{{ sampleReport.code }}</td>
         <td class="text-center border">{{ sampleReport.reportType }}</td>
         <!-- <td class="text-center border">{{ sampleReport.frequency }}</td> -->
-        <td class="text-center border">{{ sampleReport.status }}</td>
+        <td class="text-center border"><p-tag [value]="sampleReport.status" [severity]="getSeverity(sampleReport.status)" /></td>
         <td class="text-center border">{{ sampleReport.createdAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ sampleReport.updatedAt | formatMediumDatetime }}</td>
         <td class="text-center border">{{ sampleReport.updateBy }}</td>

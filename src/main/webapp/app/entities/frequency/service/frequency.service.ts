@@ -36,6 +36,10 @@ export class FrequencyService {
     return this.http.get<IFrequency[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
   }
 
+  getAllCheckFrequency(): Observable<IFrequency[]> {
+    return this.http.get<IFrequency[]>(this.resourceUrl);
+  }
+
   create(frequency: NewFrequency): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(frequency);
     return this.http

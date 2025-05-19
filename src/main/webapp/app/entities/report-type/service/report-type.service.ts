@@ -32,6 +32,10 @@ export class ReportTypeService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/report-types');
 
+  getAllCheckTargets(): Observable<IReportType[]> {
+    return this.http.get<IReportType[]>(this.resourceUrl);
+  }
+
   create(reportType: NewReportType): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(reportType);
     return this.http

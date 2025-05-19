@@ -15,6 +15,7 @@ import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ConvertService } from 'app/entities/convert/service/convert.service';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   standalone: true,
@@ -33,6 +34,7 @@ import { ConvertService } from 'app/entities/convert/service/convert.service';
     TableModule,
     IconFieldModule,
     InputIconModule,
+    TagModule,
   ],
 })
 export class SampleReportComponent implements OnInit {
@@ -146,6 +148,15 @@ export class SampleReportComponent implements OnInit {
       );
     });
     this.totalRecords = this.sampleReportResult.length;
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'DEACTIVATE':
+        return 'danger';
+    }
   }
 
   onSearch(sampleReport: keyof typeof this.filters, event: Event): void {

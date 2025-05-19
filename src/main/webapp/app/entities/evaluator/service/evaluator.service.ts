@@ -36,6 +36,27 @@ export class EvaluatorService {
     return this.http.get<IEvaluator[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
   }
 
+  getUserGroupNameById(id: number): Observable<string> {
+    return this.http
+      .get<IEvaluator>(`${this.resourceUrl}/${id}`)
+      .pipe(map(evaluator => (evaluator.userGroupId != null ? String(evaluator.userGroupId) : '')));
+  }
+
+  getAllUserGroups(): Observable<{ id: number; userGroup: string }[]> {
+    return this.getAllCheckTargets().pipe(
+      map(evaluators =>
+        evaluators.map(evaluator => ({
+          id: evaluator.id,
+          userGroup: evaluator.userGroupId != null ? String(evaluator.userGroupId) : '',
+        })),
+      ),
+    );
+  }
+
+  getAllCheckTargets(): Observable<IEvaluator[]> {
+    return this.http.get<IEvaluator[]>(this.resourceUrl);
+  }
+
   create(evaluator: NewEvaluator): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(evaluator);
     return this.http

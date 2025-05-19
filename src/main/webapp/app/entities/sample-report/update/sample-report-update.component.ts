@@ -166,7 +166,7 @@ export class SampleReportUpdateComponent implements OnInit {
           position: 'top-end',
           icon: 'success',
           showConfirmButton: false,
-          timer: 1500,
+          timer: 3000,
           timerProgressBar: true,
           didOpen(toast) {
             toast.onmouseenter = Swal.stopTimer;
@@ -184,7 +184,7 @@ export class SampleReportUpdateComponent implements OnInit {
           position: 'top-end',
           icon: 'error',
           showConfirmButton: false,
-          timer: 1500,
+          timer: 3000,
           timerProgressBar: true,
           didOpen(toast) {
             toast.onmouseenter = Swal.stopTimer;
@@ -199,6 +199,7 @@ export class SampleReportUpdateComponent implements OnInit {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   generateCode(name: string): void {
     const currentDate = dayjs().format('DDMMYYYYHHmm');
     const initials = name
@@ -209,8 +210,10 @@ export class SampleReportUpdateComponent implements OnInit {
     this.editForm.patchValue({ code });
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   onReportTypeChange(): void {}
   // ------------------ Title Table ------------------
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   onTitlesChange(title: any, index: any): void {
     const result = this.listTitles.find((element: any) => element.name === title);
     if (result) {
@@ -224,17 +227,19 @@ export class SampleReportUpdateComponent implements OnInit {
     }
     console.log('change title::', this.listTitlesView);
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   addNewTitle(): void {
     const data = { id: 0, name: '', index: this.listTitlesView.length + 1, field: '', data_type: '' };
     this.listTitlesView = [...this.listTitlesView, data];
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   saveAndSortHeader(): void {
     if (this.dataOnChange === true) {
       Swal.fire({
-        title: 'Are you sure you want to save the changes?',
+        title: 'Bạn có muốn lưu lại sự thay đổi?',
         showCancelButton: true,
-        confirmButtonText: `Save`,
-        cancelButtonText: `Cancel`,
+        confirmButtonText: `Lưu`,
+        cancelButtonText: `Huỷ`,
       }).then(result => {
         if (!result.isConfirmed) {
           const data = sessionStorage.getItem('listTitlesView');
@@ -243,6 +248,14 @@ export class SampleReportUpdateComponent implements OnInit {
             this.dataOnChange = false;
             this.changeIndexBody(this.listTitleHeaders); // change index of body when header change
             this.checkDataChange(); // check body change
+            Swal.fire({
+              icon: 'success',
+              title: 'Thành công',
+              text: 'Lưu thành công!',
+              confirmButtonText: 'OK',
+            }).then(() => {
+              this.visible = false;
+            });
           }
         } else {
           sessionStorage.setItem('listTitlesView', JSON.stringify(this.listTitlesView));
@@ -263,8 +276,17 @@ export class SampleReportUpdateComponent implements OnInit {
       this.dataOnChange = false;
       this.changeIndexBody(this.listTitleHeaders); // change index of body when header change
       this.checkDataChange(); // check body change
+      Swal.fire({
+        icon: 'success',
+        title: 'Thành công',
+        text: 'Lưu thành công!',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        this.visible = false;
+      });
     }
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   deleteTitle(index: any): void {
     this.dataOnChange = true;
     this.listTitlesView.splice(index, 1);
@@ -272,6 +294,7 @@ export class SampleReportUpdateComponent implements OnInit {
       element.index = index + 1;
     });
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   checkDataChange(): void {
     this.listTitleBody.forEach((element: any) => {
       console.log('lenght ::', element.data.length, this.listTitleHeaders);
@@ -291,6 +314,7 @@ export class SampleReportUpdateComponent implements OnInit {
   }
   //---------------------------------------------------
   // --------------------------------------------------- Table Title Body ------------------------------------------
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   addNewRow(): void {
     // create body for new row
     var body: any[] = [];
@@ -300,9 +324,11 @@ export class SampleReportUpdateComponent implements OnInit {
     this.listTitleBody = [...this.listTitleBody, { data: body }];
     console.log('body::', this.listTitleBody);
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   sortBody(body: any[]): void {
     body.sort((a, b) => a.index - b.index);
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   changeIndexBody(header: any[]): void {
     // change index of body when header change
     if (header.length === 0) {
@@ -321,18 +347,20 @@ export class SampleReportUpdateComponent implements OnInit {
       });
     }
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   deleteRow(index: any): void {
     Swal.fire({
-      title: 'Are you sure you want to delete this row?',
+      title: 'Bạn có muốn xoá hàng này?',
       showCancelButton: true,
-      confirmButtonText: `Delete`,
-      cancelButtonText: `Cancel`,
+      confirmButtonText: `Xoá`,
+      cancelButtonText: `Huỷ`,
     }).then(result => {
       if (result.value) {
         this.listTitleBody.splice(index, 1);
       }
     });
   }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   checkEvent(header: string): void {
     console.log('check event', this.listTitleHeaders);
     const data = this.listTitleHeaders.find((element: any) => element.name === header);
@@ -359,6 +387,7 @@ export class SampleReportUpdateComponent implements OnInit {
       });
     });
   }
+
   protected onSaveSuccess(): void {
     this.previousState();
   }

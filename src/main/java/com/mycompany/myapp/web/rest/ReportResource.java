@@ -213,4 +213,16 @@ public class ReportResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @GetMapping("/plan/{id}")
+    public List<Report> getAllByPlanId(@PathVariable Long id) {
+        List<Report> reportList = this.reportRepository.findAllByPlanId(id);
+        return reportList;
+    }
+
+    @GetMapping("/plan/null")
+    public List<Report> getAllWherePlanIdIsNull() {
+        List<Report> reportList = this.reportRepository.getAllWherePlanIdIsNull();
+        return reportList;
+    }
 }

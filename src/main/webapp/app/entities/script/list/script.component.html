@@ -1,13 +1,8 @@
 <div>
   <h2 id="page-heading" data-cy="ScriptHeading">
-    <span jhiTranslate="isoApp.script.home.title">Scripts</span>
+    <span>Kế hoạch đánh giá gộp</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="isoApp.script.home.refreshListLabel">Refresh list</span>
-      </button>
-
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
@@ -15,176 +10,284 @@
         [routerLink]="['/script/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="isoApp.script.home.createLabel">Thêm mới một Script</span>
+        <span>Thêm mới</span>
       </button>
     </div>
   </h2>
 
-  <jhi-alert-error></jhi-alert-error>
+  <!-- @if (scripts && scripts.length > 0) {
+  <div class="table-responsive table-entities" id="entities">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>ID</span>
 
-  <jhi-alert></jhi-alert>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="scriptCode">
+            <div class="d-flex">
+              <span>Mã kịch bản</span>
 
-  @if (scripts?.length === 0) {
-    <div class="alert alert-warning" id="no-result">
-      <span jhiTranslate="isoApp.script.home.notFound">No Scripts found</span>
-    </div>
-  }
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="scriptName">
+            <div class="d-flex">
+              <span>Tên kịch bản</span>
 
-  @if (scripts && scripts.length > 0) {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped" aria-describedby="page-heading">
-        <thead>
-          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="timeStart">
+            <div class="d-flex">
+              <span>Thời gian bắt đầu</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="scriptCode">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.scriptCode">Script Code</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="timeEnd">
+            <div class="d-flex">
+              <span>Thời gian kết thúc</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="scriptName">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.scriptName">Script Name</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="status">
+            <div class="d-flex">
+              <span>Trạng thái</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="timeStart">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.timeStart">Time Start</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updateBy">
+            <div class="d-flex">
+              <span>Người cập nhật</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="timeEnd">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.timeEnd">Time End</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="frequency">
+            <div class="d-flex">
+              <span>Frequency</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="status">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.status">Status</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="subjectOfAssetmentPlan">
+            <div class="d-flex">
+              <span>Subject Of Assetment Plan</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="updateBy">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.updateBy">Update By</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="codePlan">
+            <div class="d-flex">
+              <span>Code Plan</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="frequency">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.frequency">Frequency</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="namePlan">
+            <div class="d-flex">
+              <span>Name Plan</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="subjectOfAssetmentPlan">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.subjectOfAssetmentPlan">Subject Of Assetment Plan</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="timeCheck">
+            <div class="d-flex">
+              <span>Time Check</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="codePlan">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.codePlan">Code Plan</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="createdAt">
+            <div class="d-flex">
+              <span>Created At</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="namePlan">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.namePlan">Name Plan</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="updatedAt">
+            <div class="d-flex">
+              <span>Updated At</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="timeCheck">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.timeCheck">Time Check</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="participant">
+            <div class="d-flex">
+              <span>Participant</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="createdAt">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.createdAt">Created At</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"><span>Tuỳ chọn</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (script of scripts; track trackId) {
+        <tr data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/script', script.id, 'view']">{{ script.id }}</a>
+          </td>
+          <td>{{ script.scriptCode }}</td>
+          <td>{{ script.scriptName }}</td>
+          <td>{{ script.timeStart | formatMediumDatetime }}</td>
+          <td>{{ script.timeEnd | formatMediumDatetime }}</td>
+          <td>{{ script.status }}</td>
+          <td>{{ script.updateBy }}</td>
+          <td>{{ script.frequency }}</td>
+          <td>{{ script.subjectOfAssetmentPlan }}</td>
+          <td>{{ script.codePlan }}</td>
+          <td>{{ script.namePlan }}</td>
+          <td>{{ script.timeCheck | formatMediumDatetime }}</td>
+          <td>{{ script.createdAt | formatMediumDatetime }}</td>
+          <td>{{ script.updatedAt | formatMediumDatetime }}</td>
+          <td>{{ script.participant }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <a [routerLink]="['/script', script.id, 'view']" class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+              </a>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="updatedAt">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.updatedAt">Updated At</span>
+              <a [routerLink]="['/script', script.id, 'edit']" class="btn btn-primary btn-sm"
+                data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+              </a>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="participant">
-              <div class="d-flex">
-                <span jhiTranslate="isoApp.script.participant">Participant</span>
+              <button type="submit" (click)="delete(script)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } -->
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (script of scripts; track trackId) {
-            <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/script', script.id, 'view']">{{ script.id }}</a>
-              </td>
-              <td>{{ script.scriptCode }}</td>
-              <td>{{ script.scriptName }}</td>
-              <td>{{ script.timeStart | formatMediumDatetime }}</td>
-              <td>{{ script.timeEnd | formatMediumDatetime }}</td>
-              <td>{{ script.status }}</td>
-              <td>{{ script.updateBy }}</td>
-              <td>{{ script.frequency }}</td>
-              <td>{{ script.subjectOfAssetmentPlan }}</td>
-              <td>{{ script.codePlan }}</td>
-              <td>{{ script.namePlan }}</td>
-              <td>{{ script.timeCheck | formatMediumDatetime }}</td>
-              <td>{{ script.createdAt | formatMediumDatetime }}</td>
-              <td>{{ script.updatedAt | formatMediumDatetime }}</td>
-              <td>{{ script.participant }}</td>
-              <td class="text-end">
-                <div class="btn-group">
-                  <a [routerLink]="['/script', script.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-                    <fa-icon icon="eye"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
-                  </a>
+  <p-table
+    [value]="scriptResult"
+    [paginator]="true"
+    [rows]="selectedPageSize"
+    [rowsPerPageOptions]="pageSizeOptions"
+    (onPage)="onPageSizeChange($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [responsive]="true"
+    [rowHover]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center border">STT</th>
+        <th class="text-center border">Mã kịch bản</th>
+        <th class="text-center border">Tên kịch bản</th>
+        <th class="text-center border">Ngày bắt đầu</th>
+        <th class="text-center border">Ngày kết thúc</th>
+        <th class="text-center border">Trạng thái</th>
+        <th class="text-center border">Người cập nhật</th>
+        <th class="text-center border">Tuỳ chọn</th>
+      </tr>
+      <tr>
+        <th class="text-center border"></th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('scriptCode', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('scriptName', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('timeStart', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('timeEnd', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('status', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border">
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('updateBy', $event)" />
+          </p-iconField>
+        </th>
+        <th class="text-center border"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-script let-index="rowIndex">
+      <tr>
+        <td class="text-center border">{{ index + 1 }}</td>
+        <td class="text-center border">{{ script.scriptCode }}</td>
+        <td class="text-center border">{{ script.scriptName }}</td>
+        <td class="text-center border">{{ script.timeStart | formatMediumDatetime }}</td>
+        <td class="text-center border">{{ script.timeEnd | formatMediumDatetime }}</td>
+        <td class="text-center border">{{ script.status }}</td>
+        <td class="text-center border">{{ script.updateBy }}</td>
+        <td class="text-center border">
+          <div class="btn-group action-buttons">
+            <p-button
+              [routerLink]="['/script', script.id, 'view']"
+              icon="pi pi-check"
+              aria-label="Report"
+              [severity]="'success'"
+            ></p-button>
+            <!-- <a [routerLink]="['/script', script.id, 'view']" class="btn btn-success btn-sm"
+              data-cy="entityDetailsButton" style="border-radius: 8px">
+              <fa-icon icon="check"></fa-icon>
+            </a> -->
 
-                  <a [routerLink]="['/script', script.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
-                    <fa-icon icon="pencil-alt"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
-                  </a>
+            <p-button [routerLink]="['/script', script.id, 'edit']" icon="pi pi-pencil" aria-label="Report" [severity]="'info'"></p-button>
 
-                  <button type="submit" (click)="delete(script)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                    <fa-icon icon="times"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
+            <!-- <a [routerLink]="['/script', script.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton"
+              style="border-radius: 8px">
+              <fa-icon icon="pencil-alt"></fa-icon>
+            </a> -->
+
+            <p-button icon="pi pi-wrench" aria-label="Report" [severity]="'warning'"></p-button>
+
+            <p-button icon="pi pi-folder-open" aria-label="Check Report" [severity]="'help'"></p-button>
+            <p-button icon="pi pi-trash" aria-label="Report" [severity]="'danger'" (onClick)="delete(script)"></p-button>
+
+            <!-- <button type="submit" (click)="delete(script)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton"
+              style="border-radius: 8px">
+              <fa-icon icon="times"></fa-icon>
+            </button> -->
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

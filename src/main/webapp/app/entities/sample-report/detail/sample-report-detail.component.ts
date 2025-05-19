@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import SharedModule from 'app/shared/shared.module';
@@ -11,9 +11,20 @@ import { ISampleReport } from '../sample-report.model';
   templateUrl: './sample-report-detail.component.html',
   imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
-export class SampleReportDetailComponent {
+export class SampleReportDetailComponent implements OnInit {
   @Input() sampleReport: ISampleReport | null = null;
+  listTitleHeaders: any[] = [];
+  listSuggestions: any[] = [];
+  listTitleBody: any[] = [];
 
+  ngOnInit(): void {
+    if (this.sampleReport?.detail) {
+      const data = JSON.parse(this.sampleReport.detail);
+      this.listTitleHeaders = data.header;
+      this.listSuggestions = data.body;
+      this.listTitleBody = data.body;
+    }
+  }
   previousState(): void {
     window.history.back();
   }

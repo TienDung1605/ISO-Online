@@ -31,16 +31,27 @@ export class ReportService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/reports');
+  protected resourceUrl1 = this.applicationConfigService.getEndpointFor('api/reports/plan');
+  protected resourceUrl2 = this.applicationConfigService.getEndpointFor('api/reports/plan/null');
 
   checkNameExists(name: string): Observable<boolean> {
     return this.http.get<IReport[]>(this.resourceUrl).pipe(map(converts => converts.some(convert => convert.name === name)));
   }
-
+  getAllByPlanId(id: number): Observable<any> {
+    return this.http.get<any[]>(`${this.resourceUrl1}/${id}`);
+  }
+  getAllWherePlanIdIsNull(): Observable<any> {
+    return this.http.get<any[]>(this.resourceUrl2);
+  }
   create(report: NewReport): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(report);
     return this.http
       .post<RestReport>(this.resourceUrl, copy, { observe: 'response' })
       .pipe(map(res => this.convertResponseFromServer(res)));
+  }
+
+  saveDetails(details: any[]): Observable<any> {
+    return this.http.post<any>(`${this.resourceUrl}/details`, details);
   }
 
   update(report: IReport): Observable<EntityResponseType> {

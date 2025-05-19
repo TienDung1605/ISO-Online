@@ -2,43 +2,71 @@
   <div class="col-15" style="width: 100%">
     <form name="editForm" role="form" novalidate [formGroup]="editForm">
       <h2 id="jhi-plan-heading" data-cy="PlanCreateUpdateHeading">
-        {{ isEditMode ? 'Cập nhật Kế hoạch đánh giá' : 'Thêm mới Kế hoạch đánh giá' }}
+        {{ mode === 'NEW' ? 'Thêm mới' : mode === 'COPY' ? 'Sao chép' : 'Cập nhật' }} Kế hoạch đánh giá
       </h2>
-      @if (isEditMode) {
-        <div class="col-container">
-          <label class="col-m4-25 col-container-child" for="field_id" style="width: 100px">ID</label>
-          <input type="number" class="inp-style" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-        </div>
-      }
+      <!-- @if (isEditMode) {
+      <div class="col-container">
+        <label class="col-m4-25 col-container-child" for="field_id" style="width: 100px">ID</label>
+        <input type="number" class="inp-style" name="id" id="field_id" data-cy="id" formControlName="id"
+          [readonly]="true" />
+      </div>
+      } -->
 
       <div style="display: flex; flex-direction: column">
         <div class="col-container">
           <div class="col-m4-25 col-container-child">
             <label for="field_code">Mã kế hoạch</label>
-            <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+            <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" readonly />
           </div>
 
           <div class="col-m4-25 col-container-child">
             <label for="field_name">Tên kế hoạch</label>
-            <input type="text" class="inp-style" name="name" id="field_name" data-cy="name" formControlName="name" />
+            <input
+              type="text"
+              class="inp-style"
+              name="name"
+              id="field_name"
+              data-cy="name"
+              formControlName="name"
+              [ngClass]="{ 'is-invalid': editForm.get('name')?.invalid && editForm.get('name')?.touched }"
+              required
+            />
+            <div
+              class="error-message"
+              *ngIf="editForm.get('name')?.invalid && (editForm.get('name')?.touched || editForm.get('name')?.dirty)"
+            >
+              <span *ngIf="editForm.get('name')?.errors?.['required']">Tên không được để trống </span>
+              <span *ngIf="editForm.get('name')?.errors?.['duplicate']">Tên này đã tồn tại</span>
+            </div>
           </div>
 
           <div class="col-m4-25 col-container-child">
             <label for="field_subjectOfAssetmentPlan">Đối tượng kế hoạch đánh giá</label>
-            <input
-              type="text"
+            <!-- <input type="text" class="inp-style" name="subjectOfAssetmentPlan" id="field_subjectOfAssetmentPlan"
+              data-cy="subjectOfAssetmentPlan" formControlName="subjectOfAssetmentPlan" /> -->
+            <select
               class="inp-style"
               name="subjectOfAssetmentPlan"
               id="field_subjectOfAssetmentPlan"
               data-cy="subjectOfAssetmentPlan"
               formControlName="subjectOfAssetmentPlan"
-            />
+            >
+              <option *ngFor="let data of checkTargets" [value]="data.name">
+                {{ data.name }}
+              </option>
+            </select>
           </div>
         </div>
         <div class="col-container">
           <div class="col-m4-25 col-container-child">
             <label for="field_frequency">Tần suất</label>
-            <input type="text" class="inp-style" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" />
+            <!-- <input type="text" class="inp-style" name="frequency" id="field_frequency" data-cy="frequency"
+              formControlName="frequency" /> -->
+            <select class="inp-style" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency">
+              <option *ngFor="let freq of listOfFrequency" [value]="freq.name">
+                {{ freq.name }}
+              </option>
+            </select>
           </div>
 
           <div class="col-m4-25 col-container-child">
@@ -69,203 +97,6 @@
             />
           </div>
         </div>
-
-        <!-- <div class="mb-3">
-            <label class="form-label" statusPlan" for="field_statusPlan">Status Plan</label>
-            <input
-              type="text"
-              class="form-control"
-              name="statusPlan"
-              id="field_statusPlan"
-              data-cy="statusPlan"
-              formControlName="statusPlan"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" testObject" for="field_testObject">Test Object</label>
-            <input
-              type="text"
-              class="form-control"
-              name="testObject"
-              id="field_testObject"
-              data-cy="testObject"
-              formControlName="testObject"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" reportTypeId" for="field_reportTypeId">Report Type Id</label>
-            <input
-              type="number"
-              class="form-control"
-              name="reportTypeId"
-              id="field_reportTypeId"
-              data-cy="reportTypeId"
-              formControlName="reportTypeId"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" reportTypeName" for="field_reportTypeName">Report Type Name</label>
-            <input
-              type="text"
-              class="form-control"
-              name="reportTypeName"
-              id="field_reportTypeName"
-              data-cy="reportTypeName"
-              formControlName="reportTypeName"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" numberOfCheck" for="field_numberOfCheck">Number Of Check</label>
-            <input
-              type="text"
-              class="form-control"
-              name="numberOfCheck"
-              id="field_numberOfCheck"
-              data-cy="numberOfCheck"
-              formControlName="numberOfCheck"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" implementer" for="field_implementer">Implementer</label>
-            <input
-              type="text"
-              class="form-control"
-              name="implementer"
-              id="field_implementer"
-              data-cy="implementer"
-              formControlName="implementer"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" paticipant" for="field_paticipant">Paticipant</label>
-            <input
-              type="text"
-              class="form-control"
-              name="paticipant"
-              id="field_paticipant"
-              data-cy="paticipant"
-              formControlName="paticipant"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" checkerGroup" for="field_checkerGroup">Checker Group</label>
-            <input
-              type="text"
-              class="form-control"
-              name="checkerGroup"
-              id="field_checkerGroup"
-              data-cy="checkerGroup"
-              formControlName="checkerGroup"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" checkerName" for="field_checkerName">Checker Name</label>
-            <input
-              type="text"
-              class="form-control"
-              name="checkerName"
-              id="field_checkerName"
-              data-cy="checkerName"
-              formControlName="checkerName"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" checkerGroupId" for="field_checkerGroupId">Checker Group Id</label>
-            <input
-              type="number"
-              class="form-control"
-              name="checkerGroupId"
-              id="field_checkerGroupId"
-              data-cy="checkerGroupId"
-              formControlName="checkerGroupId"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" checkerId" for="field_checkerId">Checker Id</label>
-            <input type="number" class="form-control" name="checkerId" id="field_checkerId" data-cy="checkerId" formControlName="checkerId" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" gross" for="field_gross">Gross</label>
-            <input type="text" class="form-control" name="gross" id="field_gross" data-cy="gross" formControlName="gross" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" timeCheck" for="field_timeCheck">Time Check</label>
-            <input type="text" class="form-control" name="timeCheck" id="field_timeCheck" data-cy="timeCheck" formControlName="timeCheck" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" nameResult" for="field_nameResult">Name Result</label>
-            <input
-              type="text"
-              class="form-control"
-              name="nameResult"
-              id="field_nameResult"
-              data-cy="nameResult"
-              formControlName="nameResult"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" scriptId" for="field_scriptId">Script Id</label>
-            <input type="number" class="form-control" name="scriptId" id="field_scriptId" data-cy="scriptId" formControlName="scriptId" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" createBy" for="field_createBy">Create By</label>
-            <input type="text" class="form-control" name="createBy" id="field_createBy" data-cy="createBy" formControlName="createBy" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" status" for="field_status">Status</label>
-            <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" createdAt" for="field_createdAt">Created At</label>
-            <div class="d-flex">
-              <input
-                id="field_createdAt"
-                data-cy="createdAt"
-                type="datetime-local"
-                class="form-control"
-                name="createdAt"
-                formControlName="createdAt"
-                placeholder="YYYY-MM-DD HH:mm"
-              />
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" updatedAt" for="field_updatedAt">Updated At</label>
-            <div class="d-flex">
-              <input
-                id="field_updatedAt"
-                data-cy="updatedAt"
-                type="datetime-local"
-                class="form-control"
-                name="updatedAt"
-                formControlName="updatedAt"
-                placeholder="YYYY-MM-DD HH:mm"
-              />
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" updateBy" for="field_updateBy">Update By</label>
-            <input type="text" class="form-control" name="updateBy" id="field_updateBy" data-cy="updateBy" formControlName="updateBy" />
-          </div> -->
       </div>
       <div class="d-flex justify-content-end">
         <button
@@ -281,7 +112,7 @@
       <p-table
         [value]="planDetailResults"
         [paginator]="true"
-        [rows]="10"
+        [rows]="100"
         [responsive]="true"
         styleClass="p-datatable-gridlines"
         [rowsPerPageOptions]="[5, 10, 20]"
@@ -307,60 +138,73 @@
               {{ index + 1 }}
             </td>
             <td>
-              <select [(ngModel)]="planDetailResults[index].checkerName" [ngModelOptions]="{ standalone: true }">
-                <option *ngFor="let data of planDetailResults" [value]="data.checkerName">
-                  {{ data.checkerName }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <select [(ngModel)]="planDetailResults[index].code" [ngModelOptions]="{ standalone: true }">
-                <option *ngFor="let data of planDetailResults" [value]="data.code">
-                  {{ data.code }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
-                  {{ data.createBy }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
-                  {{ data.frequency }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
-                  {{ data.implementer }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
+              <select
+                [(ngModel)]="planDetailResults[index].checkLevelId"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="updateReportCode(index)"
+              >
+                <option *ngFor="let data of checkLevels" [value]="data.id">
                   {{ data.name }}
                 </option>
               </select>
             </td>
             <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
-                  {{ data.nameResult }}
+              <select
+                [(ngModel)]="planDetailResults[index].checkTargetId"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="updateReportCode(index)"
+              >
+                <option *ngFor="let data of checkTargets" [value]="data.id">
+                  {{ data.name }}
                 </option>
               </select>
             </td>
             <td>
-              <select name="" id="">
-                <option *ngFor="let data of planDetailResults">
-                  {{ data.numberOfCheck }}
+              <select
+                [(ngModel)]="planDetailResults[index].reportTypeId"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="updateReportCode(index)"
+              >
+                <option *ngFor="let data of reportTypes" [value]="data.id">
+                  {{ data.name }}
                 </option>
               </select>
+            </td>
+            <td>
+              <select
+                [(ngModel)]="planDetailResults[index].sampleReportId"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="updateReportCode(index)"
+              >
+                <option *ngFor="let data of sampleReport" [value]="data.id">
+                  {{ data.name }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <input type="text" class="inp-style" [value]="planDetailResults[index].code" readonly />
+            </td>
+            <td>
+              <select [(ngModel)]="planDetailResults[index].testOfObject" [ngModelOptions]="{ standalone: true }">
+                <option *ngFor="let data of planDetailResults" [value]="data.testOfObject">
+                  {{ data.testOfObject }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select [(ngModel)]="listOfFrequency[index].id" [ngModelOptions]="{ standalone: true }">
+                <option *ngFor="let data of listOfFrequency" [value]="data.name">
+                  {{ data.name }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <input
+                type="text"
+                class="inp-style"
+                [(ngModel)]="planDetailResults[index].scoreScale"
+                [ngModelOptions]="{ standalone: true }"
+              />
             </td>
             <td>
               <div class="action-buttons">
@@ -370,6 +214,7 @@
                   [rounded]="true"
                   styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                   [severity]="'warning'"
+                  (onClick)="showDialogEdit()"
                 />
                 <p-button
                   icon="pi pi-user-edit"
@@ -390,7 +235,11 @@
           </tr>
         </ng-template>
       </p-table>
-
+      <div class="d-flex justify-content-end" style="margin-bottom: 10px">
+        <button class="btn btn-secondary" (click)="checkAllData()">
+          <span>Check data</span>
+        </button>
+      </div>
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
@@ -402,8 +251,9 @@
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving"
           class="btn btn-primary"
+          (click)="save()"
         >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Lưu</span>
         </button>
       </div>
     </form>
@@ -418,12 +268,20 @@
   <div class="modal-body">
     <div class="col-md-12">
       <div class="col-md-6">
-        <label for="">Nhóm người dùng</label>
-        <input type="text" class="form-control" />
+        <label for="userNameGroups">Nhóm người dùng</label>
+        <select class="inp-style" [(ngModel)]="selectedGroupId" (ngModelChange)="onGroupSelect($event)">
+          <option *ngFor="let data of userNameGroups" [value]="data.userGroupId">
+            {{ data.name }}
+          </option>
+        </select>
       </div>
       <div class="col-md-6">
         <label for="">Người dùng</label>
-        <input type="text" class="form-control" />
+        <select>
+          <option *ngFor="let data of evaluator" [value]="data.id">
+            {{ data.name }}
+          </option>
+        </select>
       </div>
     </div>
   </div>
@@ -432,3 +290,130 @@
     <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Hủy</button>
   </div>
 </ng-template>
+
+<p-dialog
+  header="Chỉnh sửa BBKT"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogVisible"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div>
+    <div>
+      <div class="col-container">
+        <div class="col-m4-25 col-container-child">
+          <label for="">Mã BBKT</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+
+        <div class="col-m4-25 col-container-child">
+          <label for="">Mã mẫu BBKT</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+
+        <div class="col-m4-25 col-container-child">
+          <label for="">Tên mẫu BBKT</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+
+        <div class="col-m4-25 col-container-child">
+          <label for="">Loại BBKT</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+      </div>
+      <div class="col-container">
+        <div class="col-m4-25 col-container-child">
+          <label for="">Đối tượng kiểm tra</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+
+        <div class="col-m4-25 col-container-child">
+          <label for="">Người kiểm tra</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+
+        <div class="col-m4-25 col-container-child">
+          <label for="">Quy đổi</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+
+        <div class="col-m4-25 col-container-child">
+          <label for="">Trạng thái</label>
+          <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" formControlName="code" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-button
+    label="Thêm mới"
+    icon="pi pi-plus"
+    (onClick)="dialogVisible = false"
+    styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+    severity="info"
+  />
+
+  <p-table
+    [paginator]="true"
+    [rows]="100"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [autoLayout]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>STT</th>
+        <th>Nhóm tiêu chí</th>
+        <th>Tiêu chí</th>
+        <th>Tần suất KT</th>
+        <th>Kết quả đánh giá</th>
+        <th>Nội dung đánh giá</th>
+        <th>Hình ảnh đánh giá</th>
+        <th>Tuỳ chọn</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-index="rowIndex">
+      <tr>
+        <td>{{ index + 1 }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-info"
+              aria-label="check"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'info'"
+              title="Chi tiết"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <ng-template pTemplate="footer">
+    <div class="action-buttons">
+      <p-button
+        label="Huỷ"
+        icon="pi pi-ban"
+        (onClick)="dialogVisible = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="danger"
+      />
+      <p-button
+        label="Lưu"
+        icon="pi pi-save"
+        (onClick)="dialogVisible = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="info"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
