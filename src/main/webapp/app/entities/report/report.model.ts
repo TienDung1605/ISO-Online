@@ -18,7 +18,7 @@ export interface IReport {
   planId?: string | null;
   user?: string | null;
   sampleReport?: string | null;
-  detail?: string | null;
+  detail?: any | null;
 }
 
 export type NewReport = Omit<IReport, 'id'> & { id: null };

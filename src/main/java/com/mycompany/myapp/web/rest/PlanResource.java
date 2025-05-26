@@ -5,18 +5,21 @@ import com.mycompany.myapp.repository.PlanRepository;
 import com.mycompany.myapp.repository.ReportRepository;
 import com.mycompany.myapp.service.dto.PlanDetailDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -31,6 +34,8 @@ public class PlanResource {
     private final Logger log = LoggerFactory.getLogger(PlanResource.class);
 
     private static final String ENTITY_NAME = "plan";
+
+    private static final String UPLOAD_DIR = "src/main/webapp/content/images/bbkt/";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -290,5 +295,34 @@ public class PlanResource {
             planDetailDTOS.add(planDetailDTO);
         }
         return planDetailDTOS;
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> upload(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = file.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            Files.write(path, file.getBytes());
+
+            String url = UPLOAD_DIR + fileName;
+
+            Map<String, String> response = new HashMap<>();
+            response.put("imagePath", url);
+
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/delete-file")
+    public ResponseEntity<String> deleteFile(@RequestParam("fileName") String fileName) {
+        try {
+            Path filePath = Paths.get(UPLOAD_DIR + fileName);
+            Files.deleteIfExists(filePath);
+            return ResponseEntity.ok("File deleted successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
+        }
     }
 }

@@ -41,7 +41,7 @@
             <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
               <span>
                 <fa-icon icon="th-list"></fa-icon>
-                <span>Quản lý</span>
+                <span class="dropdown-item-span">Quản lý</span>
               </span>
             </a>
             <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
@@ -374,7 +374,7 @@
             @if (!account()?.imageUrl) {
               <span>
                 <fa-icon icon="user"></fa-icon>
-                <span jhiTranslate="global.menu.account.main">Tài khoản</span>
+                <span jhiTranslate="global.menu.account.main" class="dropdown-item-span">Tài khoản</span>
               </span>
             } @else {
               <span>

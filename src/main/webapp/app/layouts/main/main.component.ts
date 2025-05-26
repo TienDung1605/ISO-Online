@@ -39,16 +39,15 @@ export default class MainComponent implements OnInit {
     });
   }
   closeNav(): void {
-    document.getElementById('main')!.style.marginLeft = '65px';
+    document.getElementById('main')!.style.marginLeft = '85px';
   }
 
   closeNav2(): void {
-    document.getElementById('main')!.style.marginLeft = '65px';
+    document.getElementById('main')!.style.marginLeft = '85px';
   }
 
   openNav(): void {
-    document.getElementById('main')!.style.marginLeft = '250px';
+    document.getElementById('main')!.style.marginLeft = '300px';
     // document.getElementById('main')!.style.width = '87vw';
-
   }
 }

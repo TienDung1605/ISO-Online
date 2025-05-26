@@ -96,6 +96,12 @@ export class PlanComponent implements OnInit {
   @ViewChild('dt2') dt2!: any;
   planDetailResults: any[] = [];
   sampleReportName: any[] = [];
+  planParent: any = {};
+  checkLevels: any[] = [];
+  listOfFrequency: any[] = [];
+  checkTargets: any[] = [];
+  reportTypes: any[] = [];
+  sampleReport: any[] = [];
   // userTesting: any;
   @ViewChild('userTesting') userTesting!: TemplateRef<any>;
   @ViewChild('gross') gross!: TemplateRef<any>;
@@ -344,204 +350,204 @@ export class PlanComponent implements OnInit {
     },
   ];
 
-  planEvaluations = [
-    {
-      planCode: 'KH001',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Sản xuất',
-      planFrequency: 'Hàng ngày',
-      reportCode: 'BB001',
-      reportTemplateName: 'BBKT Sản xuất',
-      checkTarget: 'Máy A1',
-      reportType: 'Định kỳ',
-      reportGroup: 'Sản xuất',
-      status: 'Mới',
-      checkDate: '2024-01-15',
-    },
-    {
-      planCode: 'KH002',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng QC',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB002',
-      reportTemplateName: 'BBKT Chất lượng',
-      checkTarget: 'Quy trình QC',
-      reportType: 'Đột xuất',
-      reportGroup: 'Chất lượng',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-16',
-    },
-    {
-      planCode: 'KH003',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Nhà xưởng 1',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB003',
-      reportTemplateName: 'BBKT An toàn',
-      checkTarget: 'PCCC',
-      reportType: 'Định kỳ',
-      reportGroup: 'An toàn',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-17',
-    },
-    {
-      planCode: 'KH004',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Kho nguyên liệu',
-      planFrequency: 'Hàng quý',
-      reportCode: 'BB004',
-      reportTemplateName: 'BBKT Kho',
-      checkTarget: 'Khu A',
-      reportType: 'Định kỳ',
-      reportGroup: 'Kho',
-      status: 'Mới',
-      checkDate: '2024-01-18',
-    },
-    {
-      planCode: 'KH005',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng R&D',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB005',
-      reportTemplateName: 'BBKT R&D',
-      checkTarget: 'Phòng Lab',
-      reportType: 'Đột xuất',
-      reportGroup: 'R&D',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-19',
-    },
-    {
-      planCode: 'KH006',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Bảo trì',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB006',
-      reportTemplateName: 'BBKT Thiết bị',
-      checkTarget: 'Máy B2',
-      reportType: 'Định kỳ',
-      reportGroup: 'Bảo trì',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-20',
-    },
-    {
-      planCode: 'KH007',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng HR',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB007',
-      reportTemplateName: 'BBKT Nhân sự',
-      checkTarget: 'Đào tạo',
-      reportType: 'Định kỳ',
-      reportGroup: 'HR',
-      status: 'Mới',
-      checkDate: '2024-01-21',
-    },
-    {
-      planCode: 'KH008',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng IT',
-      planFrequency: 'Hàng quý',
-      reportCode: 'BB008',
-      reportTemplateName: 'BBKT CNTT',
-      checkTarget: 'Hệ thống',
-      reportType: 'Đột xuất',
-      reportGroup: 'IT',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-22',
-    },
-    {
-      planCode: 'KH009',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Nhà xưởng 2',
-      planFrequency: 'Hàng ngày',
-      reportCode: 'BB009',
-      reportTemplateName: 'BBKT 5S',
-      checkTarget: 'Khu B',
-      reportType: 'Định kỳ',
-      reportGroup: '5S',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-23',
-    },
-    {
-      planCode: 'KH010',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Marketing',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB010',
-      reportTemplateName: 'BBKT Marketing',
-      checkTarget: 'Chiến dịch',
-      reportType: 'Định kỳ',
-      reportGroup: 'Marketing',
-      status: 'Mới',
-      checkDate: '2024-01-24',
-    },
-    {
-      planCode: 'KH011',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Kế toán',
-      planFrequency: 'Hàng quý',
-      reportCode: 'BB011',
-      reportTemplateName: 'BBKT Tài chính',
-      checkTarget: 'Sổ sách',
-      reportType: 'Định kỳ',
-      reportGroup: 'Kế toán',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-25',
-    },
-    {
-      planCode: 'KH012',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Mua hàng',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB012',
-      reportTemplateName: 'BBKT Mua hàng',
-      checkTarget: 'Nhà cung cấp',
-      reportType: 'Đột xuất',
-      reportGroup: 'Mua hàng',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-26',
-    },
-    {
-      planCode: 'KH013',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng KCS',
-      planFrequency: 'Hàng ngày',
-      reportCode: 'BB013',
-      reportTemplateName: 'BBKT KCS',
-      checkTarget: 'QC Line',
-      reportType: 'Định kỳ',
-      reportGroup: 'KCS',
-      status: 'Mới',
-      checkDate: '2024-01-27',
-    },
-    {
-      planCode: 'KH014',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng ISO',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB014',
-      reportTemplateName: 'BBKT ISO',
-      checkTarget: 'Quy trình',
-      reportType: 'Định kỳ',
-      reportGroup: 'ISO',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-28',
-    },
-    {
-      planCode: 'KH015',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng CSKH',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB015',
-      reportTemplateName: 'BBKT CSKH',
-      checkTarget: 'Khiếu nại',
-      reportType: 'Đột xuất',
-      reportGroup: 'CSKH',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-29',
-    },
-  ];
-
+  // planEvaluations = [
+  //   {
+  //     planCode: 'KH001',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng Sản xuất',
+  //     planFrequency: 'Hàng ngày',
+  //     reportCode: 'BB001',
+  //     reportTemplateName: 'BBKT Sản xuất',
+  //     checkTarget: 'Máy A1',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'Sản xuất',
+  //     status: 'Mới',
+  //     checkDate: '2024-01-15',
+  //   },
+  //   {
+  //     planCode: 'KH002',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng QC',
+  //     planFrequency: 'Hàng tuần',
+  //     reportCode: 'BB002',
+  //     reportTemplateName: 'BBKT Chất lượng',
+  //     checkTarget: 'Quy trình QC',
+  //     reportType: 'Đột xuất',
+  //     reportGroup: 'Chất lượng',
+  //     status: 'Đang thực hiện',
+  //     checkDate: '2024-01-16',
+  //   },
+  //   {
+  //     planCode: 'KH003',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Nhà xưởng 1',
+  //     planFrequency: 'Hàng tháng',
+  //     reportCode: 'BB003',
+  //     reportTemplateName: 'BBKT An toàn',
+  //     checkTarget: 'PCCC',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'An toàn',
+  //     status: 'Hoàn thành',
+  //     checkDate: '2024-01-17',
+  //   },
+  //   {
+  //     planCode: 'KH004',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Kho nguyên liệu',
+  //     planFrequency: 'Hàng quý',
+  //     reportCode: 'BB004',
+  //     reportTemplateName: 'BBKT Kho',
+  //     checkTarget: 'Khu A',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'Kho',
+  //     status: 'Mới',
+  //     checkDate: '2024-01-18',
+  //   },
+  //   {
+  //     planCode: 'KH005',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng R&D',
+  //     planFrequency: 'Hàng tháng',
+  //     reportCode: 'BB005',
+  //     reportTemplateName: 'BBKT R&D',
+  //     checkTarget: 'Phòng Lab',
+  //     reportType: 'Đột xuất',
+  //     reportGroup: 'R&D',
+  //     status: 'Đang thực hiện',
+  //     checkDate: '2024-01-19',
+  //   },
+  //   {
+  //     planCode: 'KH006',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng Bảo trì',
+  //     planFrequency: 'Hàng tuần',
+  //     reportCode: 'BB006',
+  //     reportTemplateName: 'BBKT Thiết bị',
+  //     checkTarget: 'Máy B2',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'Bảo trì',
+  //     status: 'Hoàn thành',
+  //     checkDate: '2024-01-20',
+  //   },
+  //   {
+  //     planCode: 'KH007',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng HR',
+  //     planFrequency: 'Hàng tháng',
+  //     reportCode: 'BB007',
+  //     reportTemplateName: 'BBKT Nhân sự',
+  //     checkTarget: 'Đào tạo',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'HR',
+  //     status: 'Mới',
+  //     checkDate: '2024-01-21',
+  //   },
+  //   {
+  //     planCode: 'KH008',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng IT',
+  //     planFrequency: 'Hàng quý',
+  //     reportCode: 'BB008',
+  //     reportTemplateName: 'BBKT CNTT',
+  //     checkTarget: 'Hệ thống',
+  //     reportType: 'Đột xuất',
+  //     reportGroup: 'IT',
+  //     status: 'Đang thực hiện',
+  //     checkDate: '2024-01-22',
+  //   },
+  //   {
+  //     planCode: 'KH009',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Nhà xưởng 2',
+  //     planFrequency: 'Hàng ngày',
+  //     reportCode: 'BB009',
+  //     reportTemplateName: 'BBKT 5S',
+  //     checkTarget: 'Khu B',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: '5S',
+  //     status: 'Hoàn thành',
+  //     checkDate: '2024-01-23',
+  //   },
+  //   {
+  //     planCode: 'KH010',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng Marketing',
+  //     planFrequency: 'Hàng tháng',
+  //     reportCode: 'BB010',
+  //     reportTemplateName: 'BBKT Marketing',
+  //     checkTarget: 'Chiến dịch',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'Marketing',
+  //     status: 'Mới',
+  //     checkDate: '2024-01-24',
+  //   },
+  //   {
+  //     planCode: 'KH011',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng Kế toán',
+  //     planFrequency: 'Hàng quý',
+  //     reportCode: 'BB011',
+  //     reportTemplateName: 'BBKT Tài chính',
+  //     checkTarget: 'Sổ sách',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'Kế toán',
+  //     status: 'Đang thực hiện',
+  //     checkDate: '2024-01-25',
+  //   },
+  //   {
+  //     planCode: 'KH012',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng Mua hàng',
+  //     planFrequency: 'Hàng tuần',
+  //     reportCode: 'BB012',
+  //     reportTemplateName: 'BBKT Mua hàng',
+  //     checkTarget: 'Nhà cung cấp',
+  //     reportType: 'Đột xuất',
+  //     reportGroup: 'Mua hàng',
+  //     status: 'Hoàn thành',
+  //     checkDate: '2024-01-26',
+  //   },
+  //   {
+  //     planCode: 'KH013',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng KCS',
+  //     planFrequency: 'Hàng ngày',
+  //     reportCode: 'BB013',
+  //     reportTemplateName: 'BBKT KCS',
+  //     checkTarget: 'QC Line',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'KCS',
+  //     status: 'Mới',
+  //     checkDate: '2024-01-27',
+  //   },
+  //   {
+  //     planCode: 'KH014',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng ISO',
+  //     planFrequency: 'Hàng tháng',
+  //     reportCode: 'BB014',
+  //     reportTemplateName: 'BBKT ISO',
+  //     checkTarget: 'Quy trình',
+  //     reportType: 'Định kỳ',
+  //     reportGroup: 'ISO',
+  //     status: 'Đang thực hiện',
+  //     checkDate: '2024-01-28',
+  //   },
+  //   {
+  //     planCode: 'KH015',
+  //     planName: 'Kế hoạch Q1/2024',
+  //     evaluationTarget: 'Phòng CSKH',
+  //     planFrequency: 'Hàng tuần',
+  //     reportCode: 'BB015',
+  //     reportTemplateName: 'BBKT CSKH',
+  //     checkTarget: 'Khiếu nại',
+  //     reportType: 'Đột xuất',
+  //     reportGroup: 'CSKH',
+  //     status: 'Hoàn thành',
+  //     checkDate: '2024-01-29',
+  //   },
+  // ];
+  planEvaluations: any[] = [];
   checkPlanDetails: CheckPlanDetail[] = [
     { id: 1, score: 85, reportName: 'BBKT-2024-001', checkDate: '2024-03-01', nc: 2, ly: 1, notPass: 3 },
     { id: 2, score: 92, reportName: 'BBKT-2024-002', checkDate: '2024-03-02', nc: 1, ly: 0, notPass: 1 },
@@ -740,7 +746,7 @@ export class PlanComponent implements OnInit {
     this.planService.getPlanDetail().subscribe(res => {
       this.planDetailResults = res;
       this.loadTreeNodes();
-      console.log('db trả về', res);
+      // console.log('db trả về', res);
     });
     // this.loadTreeNodes();
     // console.log('plans', this.plans);
@@ -769,7 +775,6 @@ export class PlanComponent implements OnInit {
   // }
 
   onPageSizeChange(event: any): void {
-    console.log('event', event);
     this.selectedPageSize = event.rows;
     this.first = event.first;
     // this.load();
@@ -794,13 +799,24 @@ export class PlanComponent implements OnInit {
   // }
 
   load(): void {
+    // this.queryBackend().subscribe({
+    //   next: (res: EntityArrayResponseType) => {
+    //     this.onResponseSuccess(res);
+    //     this.loadTreeNodes();
+    //     this.totalRecords = this.planDetailResults.length;
+    //     console.log('res ', res);
+    //     console.log('tree node', this.loadTreeNodes);
+    //   },
+    // });
+
+    this.isLoading = true;
     this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-        this.loadTreeNodes();
-        this.totalRecords = this.planDetailResults.length;
-        console.log('res ', res);
-        console.log('tree node', this.loadTreeNodes);
+      next: res => {
+        if (res.body) {
+          this.planDetailResults = res.body;
+          this.totalRecords = this.planDetailResults.length;
+          this.isLoading = false;
+        }
       },
     });
   }
@@ -824,10 +840,10 @@ export class PlanComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log('Modal closed');
+          // console.log('Modal closed');
         },
         reason => {
-          console.log('Modal dismissed');
+          // console.log('Modal dismissed');
         },
       );
   }
@@ -845,10 +861,10 @@ export class PlanComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log('Modal closed');
+          // console.log('Modal closed');
         },
         reason => {
-          console.log('Modal dismissed');
+          // console.log('Modal dismissed');
         },
       );
   }
@@ -879,10 +895,10 @@ export class PlanComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log('Modal closed');
+          // console.log('Modal closed');
         },
         reason => {
-          console.log('Modal dismissed');
+          // console.log('Modal dismissed');
         },
       );
   }
@@ -896,10 +912,10 @@ export class PlanComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log('Modal closed');
+          // console.log('Modal closed');
         },
         reason => {
-          console.log('Modal dismissed');
+          // console.log('Modal dismissed');
         },
       );
   }
@@ -976,7 +992,7 @@ export class PlanComponent implements OnInit {
     const rowData = event.data;
     this.expandedRows[rowData.id] = true;
     this.loadPlanDetails(rowData.id);
-    console.log('rowData', rowData);
+    // console.log('rowData', rowData);
   }
 
   loadPlanDetails(planId: number): void {
@@ -1044,7 +1060,14 @@ export class PlanComponent implements OnInit {
     this.dialogCheckScript = true;
   }
 
-  showDialogCheckPlan(): void {
+  showDialogCheckPlan(data: any): void {
+    this.planParent = {
+      codePlan: data.code,
+      namePlan: data.name,
+      checker: data.subjectOfAssetmentPlan,
+      frequency: data.frequency,
+    };
+    this.planEvaluations = JSON.parse(JSON.stringify(data.planDetail));
     this.dialogCheckPlan = true;
   }
 
@@ -1058,7 +1081,6 @@ export class PlanComponent implements OnInit {
 
   showSummarizeDialog(): void {
     this.summarizePlanDiaglog.dialogGeneralCheckPlan = true;
-    console.log('click open modal');
   }
 
   showDialogGeneralCheckPlan(): void {
@@ -1079,26 +1101,6 @@ export class PlanComponent implements OnInit {
         return 'warning';
     }
   }
-
-  // deleteRow(index: number): void {
-  //   this.planDetailResults = this.planDetailResults.filter((_, i) => i !== index);
-  //   const Toast = Swal.mixin({
-  //     toast: true,
-  //     position: 'top-end',
-  //     showConfirmButton: false,
-  //     timer: 3000,
-  //     timerProgressBar: true,
-  //     didOpen: toast => {
-  //       toast.onmouseenter = Swal.stopTimer;
-  //       toast.onmouseleave = Swal.resumeTimer;
-  //     },
-  //   });
-  //   Toast.fire({
-  //     icon: 'success',
-  //     title: 'Xóa thành công',
-  //   });
-  //   console.log('Row deleted at index:', index);
-  // }
 
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {
     this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data[DEFAULT_SORT_DATA]));
@@ -1160,5 +1162,22 @@ export class PlanComponent implements OnInit {
       data: plan,
       children: [],
     }));
+  }
+
+  addRowPlanEvaluation(): void {
+    if (this.planEvaluations.length === 0) return;
+    const firstRow = this.planEvaluations[0];
+    const newRow = {
+      ...firstRow,
+      checkDate: new Date().toISOString().split('T')[0],
+    };
+
+    this.planEvaluations.push(newRow);
+  }
+
+  deletePlanChild(data: any, index: number): void {
+    if (data && data.length > 0) {
+      data.splice(index, 1);
+    }
   }
 }

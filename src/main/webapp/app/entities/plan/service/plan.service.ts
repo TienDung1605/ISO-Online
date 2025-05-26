@@ -134,4 +134,20 @@ export class PlanService {
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
   }
+
+  upLoadFile(file: File): Observable<any> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+    return this.http.post<any>(`${this.resourceUrl}/upload`, formData, {
+      reportProgress: true,
+      observe: 'events',
+    });
+  }
+
+  deleteFile(fileName: string): Observable<any> {
+    return this.http.delete(`${this.resourceUrl}/delete-file`, {
+      params: { fileName: fileName },
+      responseType: 'text',
+    });
+  }
 }

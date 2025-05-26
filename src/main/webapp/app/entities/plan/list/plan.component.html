@@ -181,6 +181,7 @@
               aria-label="Delete"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'danger'"
+              (onClick)="delete(rowNode)"
               title="Xoá"
             />
           </div>
@@ -296,7 +297,7 @@
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                         [severity]="'success'"
                         title="Đánh giá"
-                        (onClick)="showDialogCheckPlan()"
+                        (onClick)="showDialogCheckPlan(rowNode)"
                       />
                       <p-button
                         icon="pi pi-eye"
@@ -1200,24 +1201,12 @@
   [style]="{ width: '80vw' }"
   [contentStyle]="{ height: '70vh' }"
 >
-  <div class="col-container">
-    <div class="col-m4-25 col-container-child">
-      <label for="">Đối tượng kiểm tra</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="col-m4-25 col-container-child">
-      <label for="">Quy đổi</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="col-m4-25 col-container-child">
-      <label for="">Mẫu BBKT</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="custom-button-apply">
+  <div class="d-flex" style="justify-content: flex-end !important">
+    <div class="custom-button-apply ms-3">
       <p-button
-        label="Apply"
+        label="Thêm dữ liệu"
         icon="pi pi-check"
-        (onClick)="dialogCheckPlan = false"
+        (onClick)="addRowPlanEvaluation()"
         styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
         [raised]="true"
         [severity]="'info'"
@@ -1245,7 +1234,6 @@
         <th class="text-center border">Tên mẫu BBKT</th>
         <th class="text-center border">Đối tượng kiểm tra</th>
         <th class="text-center border">Loại BBKT</th>
-        <th class="text-center border">Nhóm BBKT</th>
         <th class="text-center border">Trạng thái</th>
         <th class="text-center border">Ngày kiểm tra</th>
         <th class="text-center border">Tuỳ chọn</th>
@@ -1254,25 +1242,36 @@
     <ng-template pTemplate="body" let-item let-index="rowIndex">
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
-        <td class="text-center border">{{ item.planCode }}</td>
-        <td class="text-center border">{{ item.planName }}</td>
-        <td class="text-center border">{{ item.evaluationTarget }}</td>
-        <td class="text-center border">{{ item.planFrequency }}</td>
-        <td class="text-center border">{{ item.reportCode }}</td>
-        <td class="text-center border">{{ item.reportTemplateName }}</td>
-        <td class="text-center border">{{ item.checkTarget }}</td>
+        <td class="text-center border">{{ planParent.codePlan }}</td>
+        <td class="text-center border">{{ planParent.namePlan }}</td>
+        <td class="text-center border">{{ planParent.checker }}</td>
+        <td class="text-center border">{{ planParent.frequency }}</td>
+        <td class="text-center border">{{ item.code }}</td>
+        <td class="text-center border">{{ item.name }}</td>
+        <td class="text-center border">{{ item.testOfObject }}</td>
         <td class="text-center border">{{ item.reportType }}</td>
-        <td class="text-center border">{{ item.reportGroup }}</td>
         <td class="text-center border">{{ item.status }}</td>
-        <td class="text-center border"><input type="date" /></td>
         <td class="text-center border">
-          <div class="action-buttons">
+          <input type="date" />
+        </td>
+        <td class="text-center border d-flex">
+          <div class="action-buttons mx-1">
             <p-button
               icon="pi pi-check"
               aria-label="Check"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'success'"
               (onClick)="showDialogCheckPlanChild()"
+            />
+          </div>
+          <div class="action-buttons mx-1">
+            <p-button
+              icon="pi pi-trash"
+              aria-label="Delete"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'danger'"
+              title="Xoá"
+              (onClick)="deletePlanChild(planEvaluations, index)"
             />
           </div>
         </td>
