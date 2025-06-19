@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Report;
 import com.mycompany.myapp.repository.ReportRepository;
+import com.mycompany.myapp.service.dto.PlanStatisticalResponse;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -152,6 +153,9 @@ public class ReportResource {
                 if (report.getUpdatedAt() != null) {
                     existingReport.setUpdatedAt(report.getUpdatedAt());
                 }
+                if (report.getCheckTime() != null) {
+                    existingReport.setCheckTime(report.getCheckTime());
+                }
                 if (report.getScoreScale() != null) {
                     existingReport.setScoreScale(report.getScoreScale());
                 }
@@ -163,6 +167,14 @@ public class ReportResource {
                 }
                 if (report.getUser() != null) {
                     existingReport.setUser(report.getUser());
+                }
+
+                if (report.getGroupReport() != null) {
+                    existingReport.setGroupReport(report.getGroupReport());
+                }
+
+                if (report.getConvertScore() != null) {
+                    existingReport.setConvertScore(report.getConvertScore());
                 }
 
                 return existingReport;
@@ -224,5 +236,10 @@ public class ReportResource {
     public List<Report> getAllWherePlanIdIsNull() {
         List<Report> reportList = this.reportRepository.getAllWherePlanIdIsNull();
         return reportList;
+    }
+
+    @GetMapping("/statistical/plan/{id}/report/{id2}")
+    public List<PlanStatisticalResponse> getAllStatisticalByReportId(@PathVariable Long id, @PathVariable Long id2) {
+        return this.reportRepository.getAllStatisticalByReportId(id, id2);
     }
 }

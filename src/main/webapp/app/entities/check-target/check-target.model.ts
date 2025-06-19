@@ -5,6 +5,7 @@ export interface ICheckTarget {
   name?: string | null;
   inspectionTarget?: string | null;
   evaluationLevelId?: number | null;
+  checkGroupId?: number | null;
   status?: string | null;
   createdAt?: dayjs.Dayjs | null;
   updatedAt?: dayjs.Dayjs | null;

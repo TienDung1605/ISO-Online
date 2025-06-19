@@ -4,6 +4,8 @@ import com.mycompany.myapp.domain.Plan;
 import com.mycompany.myapp.repository.PlanRepository;
 import com.mycompany.myapp.repository.ReportRepository;
 import com.mycompany.myapp.service.dto.PlanDetailDTO;
+import com.mycompany.myapp.service.dto.PlanStatisticalResponse;
+import com.mycompany.myapp.service.dto.ReportResponse;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.io.IOException;
 import java.net.URI;
@@ -291,7 +293,9 @@ public class PlanResource {
             planDetailDTO.setCreatedAt(plan.getCreatedAt());
             planDetailDTO.setUpdatedAt(plan.getUpdatedAt());
             planDetailDTO.setUpdateBy(plan.getUpdateBy());
-            planDetailDTO.setPlanDetail(this.reportRepository.findAllByPlanId(plan.getId()));
+            List<ReportResponse> response = this.reportRepository.getDetailByPlanId(plan.getId());
+            planDetailDTO.setPlanDetail(response);
+            System.out.println("check plan id :: " + response.toArray().length);
             planDetailDTOS.add(planDetailDTO);
         }
         return planDetailDTOS;
@@ -319,10 +323,28 @@ public class PlanResource {
     public ResponseEntity<String> deleteFile(@RequestParam("fileName") String fileName) {
         try {
             Path filePath = Paths.get(UPLOAD_DIR + fileName);
-            Files.deleteIfExists(filePath);
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
+            }
+            Files.delete(filePath);
             return ResponseEntity.ok("File deleted successfully");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
         }
+    }
+
+    @PostMapping("/statistical/{id}")
+    public List<PlanStatisticalResponse> getAllPlanStatistical(@PathVariable Long id) {
+        return this.planRepository.getAllPlanStatistical(id);
+    }
+
+    @PostMapping("/statistical/plan/{id}/report")
+    public List<PlanStatisticalResponse> getAllPlanStatistical(@PathVariable Long id, @RequestBody Long reportId) {
+        return this.planRepository.getPlanStatisticalByReportId(id, reportId);
+    }
+
+    @GetMapping("plan-detail-summarize/{planId}")
+    public List<ReportResponse> getPlanDetailByPlanId(@PathVariable Long planId) {
+        return reportRepository.getDetailByPlanId(planId);
     }
 }

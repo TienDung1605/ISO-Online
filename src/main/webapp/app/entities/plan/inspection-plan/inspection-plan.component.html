@@ -1,0 +1,547 @@
+<div>
+  <h2>
+    <span>Thống kê kết quả kế hoạch kiểm tra</span>
+  </h2>
+
+  <div class="modal-body">
+    <div style="display: flex; flex-direction: column">
+      <div class="col-container">
+        <div class="col-m4-25 col-container-child">
+          <label for="field_code">Mã kế hoạch</label>
+          <input type="text" class="inp-style" readonly [(ngModel)]="plan.code" />
+        </div>
+        <div class="col-m4-25 col-container-child">
+          <label for="field_name">Tên kế hoạch</label>
+          <input type="text" class="inp-style" readonly [(ngModel)]="plan.name" />
+        </div>
+        <div class="col-m4-25 col-container-child">
+          <label for="field_subjectOfAssetmentPlan">Đối tượng kế hoạch đánh giá</label>
+          <input type="text" class="inp-style" readonly [(ngModel)]="plan.subjectOfAssetmentPlan" />
+        </div>
+      </div>
+      <div class="col-container">
+        <div class="col-m4-25 col-container-child">
+          <label for="field_frequency">Tần suất</label>
+          <input type="text" class="inp-style" readonly [(ngModel)]="plan.frequency" />
+        </div>
+        <div class="col-m4-25 col-container-child">
+          <label for="field_timeStart">Thời gian bắt đầu</label>
+          <input type="text" class="inp-style" readonly [value]="plan?.timeStart | date: 'yyyy-MM-dd HH:mm'" />
+        </div>
+        <div class="col-m4-25 col-container-child">
+          <label for="field_timeEnd">Thời gian kết thúc</label>
+          <input type="text" class="inp-style" readonly [value]="plan?.timeEnd | date: 'yyyy-MM-dd HH:mm'" />
+        </div>
+      </div>
+    </div>
+    <div class="my-4">
+      <p-table [value]="processedReportData" [scrollable]="true" scrollHeight="600px">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center border">Mã BBKT</th>
+            <th class="text-center border">Tên BBKT</th>
+            <th class="text-center border">Nhóm tiêu chí</th>
+            <th class="text-center border">Tên tiêu chí</th>
+            <th class="text-center border">Loại tính điểm</th>
+            <th class="text-center border">Tần suất</th>
+            <th class="text-center border">Kết quả</th>
+            <th class="text-center border">Thời gian kiểm tra</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td class="text-center border">{{ row.reportId }}</td>
+            <td class="text-center border">{{ row.reportName }}</td>
+            <td class="text-center border">{{ row.criterialGroupName }}</td>
+            <td class="text-center border">{{ row.criterialName }}</td>
+            <td class="text-center border">{{ row.convertScore }}</td>
+            <td class="text-center border">{{ row.frequency }}</td>
+            <td class="text-center border">{{ row.result }}</td>
+            <td class="text-center border">
+              <ng-container *ngFor="let date of row.createdDates"> {{ formatDate(date) }}<br /> </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="action-buttons">
+      <p-button
+        label="Xuất dữ liệu"
+        icon="pi pi-file-excel"
+        aria-label="Excel"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+        [severity]="'success'"
+      />
+      <p-button
+        label="Khắc phục"
+        icon="pi pi-sync"
+        aria-label="Complete"
+        (onClick)="dialogUpdateRemePlan = true"
+        styleClass="complete-button p-button-rounded p-button-info p-button-sm mr-2 "
+      />
+    </div>
+  </div>
+
+  <p-dialog
+    header="Cập nhật kế hoạch khắc phục"
+    [(visible)]="dialogUpdateRemePlan"
+    [modal]="true"
+    [style]="{ width: '80vw' }"
+    [baseZIndex]="1100"
+  >
+    <div class="modal-body">
+      <div class="row">
+        <div class="col">
+          <label for="userNameGroups">Tên kế hoạch khắc phục</label>
+          <input type="text" name="name" [(ngModel)]="groupCriterialError.name" required class="form-control w-100" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="checkDate">Ngày tạo</label>
+          <input type="date" name="checkDate" [(ngModel)]="groupCriterialError.repairDate" required class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="createdBy">Người kiểm tra</label>
+          <select
+            name="createdBy"
+            [(ngModel)]="groupCriterialError.createdBy"
+            required
+            class="form-control"
+            (ngModelChange)="onCreatedByChange($event)"
+          >
+            <option *ngFor="let data of evaluator" [value]="data.name">
+              {{ data.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-3" style="overflow-x: auto; width: 100%">
+        <p-table [value]="processedReportData" [scrollable]="true" scrollHeight="500px" [(selection)]="selectedRows">
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center border">Mã BBKT</th>
+              <th class="text-center border">Tên BBKT</th>
+              <th class="text-center border">Nhóm tiêu chí</th>
+              <th class="text-center border">Tên tiêu chí</th>
+              <th class="text-center border">Loại tính điểm</th>
+              <th class="text-center border">Kết quả</th>
+              <th class="text-center border">Thời gian kiểm tra</th>
+              <th class="text-center border">Giải pháp</th>
+              <th class="text-center border">Ghi chú</th>
+              <th class="text-center border">Người xử lý</th>
+              <th class="text-center border">Thời gian xử lý</th>
+              <th class="text-center border">
+                <p-tableHeaderCheckbox />
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td class="text-center border">{{ row.reportId }}</td>
+              <td class="text-center border">{{ row.reportName }}</td>
+              <td class="text-center border">{{ row.criterialGroupName }}</td>
+              <td class="text-center border">{{ row.criterialName }}</td>
+              <td class="text-center border">{{ row.convertScore }}</td>
+              <td class="text-center border">{{ row.result }}</td>
+              <td class="text-center border">
+                <ng-container *ngFor="let date of row.createdDates"> {{ formatDate(date) }}<br /> </ng-container>
+              </td>
+              <td class="text-center border">
+                <input type="text" [(ngModel)]="row.solution" />
+              </td>
+              <td class="text-center border">
+                <input type="text" [(ngModel)]="row.note" />
+              </td>
+              <td class="text-center border">
+                <select name="userHandle" class="form-control" [(ngModel)]="row.userHandle">
+                  <option value="" disabled selected>-- Chọn người đánh giá --</option>
+                  <option *ngFor="let data of evaluator" [value]="data.name">
+                    {{ data.name }}
+                  </option>
+                </select>
+              </td>
+              <td class="text-center border">
+                <input type="date" [(ngModel)]="row.planTimeComplete" />
+              </td>
+              <td class="text-center border">
+                <p-tableCheckbox [value]="row" />
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p-button
+        data-dismiss="modal"
+        type="button"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+        [severity]="'success'"
+        [disabled]="!groupCriterialError.name || !groupCriterialError.createdBy || !groupCriterialError.repairDate"
+        (onClick)="saveRemediationPlan(groupCriterialError)"
+        >Gộp</p-button
+      >
+    </div>
+  </p-dialog>
+</div>
+
+<!-- Kế hoạch khắc phục -->
+<div class="mt-5">
+  <h2>
+    <span>Kế hoạch khắc phục sai phạm trong quá trình kiểm tra</span>
+  </h2>
+
+  <div class="modal-body">
+    <p-table [value]="listRemediationPlan" selectionMode="multiple" [responsive]="true" styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="text-center border">STT</th>
+          <th class="text-center border">Mã kế hoạch</th>
+          <th class="text-center border">Tên kế hoạch</th>
+          <th class="text-center border">Thời gian khắc phục</th>
+          <th class="text-center border">Người tham gia</th>
+          <th class="text-center border">Trạng thái</th>
+          <th class="text-center border">Tuỳ chọn</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-reme let-i="rowIndex">
+        <tr>
+          <td class="text-center border">{{ i + 1 }}</td>
+          <td class="text-center border">{{ reme.code }}</td>
+          <td class="text-center border">{{ reme.name }}</td>
+          <td class="text-center border">{{ reme.repairDate }}</td>
+          <td class="text-center border">{{ reme.createdBy }}</td>
+          <td class="text-center border">
+            <p-tag [value]="reme.status" [severity]="reme.status == 'Đã hoàn thành' ? 'success' : 'danger'" />
+          </td>
+          <td class="text-center border">
+            <p-button
+              icon="pi pi-wrench"
+              aria-label="Check"
+              (onClick)="showDialogListCriterialRepair(reme)"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'success'"
+            />
+            <p-button
+              icon="pi pi-trash"
+              aria-label="Delete"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'danger'"
+              (onClick)="deletePlanRepair(reme)"
+              title="Xoá"
+            />
+            <p-button
+              icon="pi pi-check"
+              aria-label="Delete"
+              *ngIf="reme.status != 'Đã hoàn thành'"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'success'"
+              (onClick)="completePlanRepair(reme)"
+              title="Hoàn thành"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <p-dialog
+    header="Các tiêu chí cần khắc phục"
+    [(visible)]="dialogRepairCriterial"
+    [modal]="true"
+    [style]="{ width: '90%' }"
+    [baseZIndex]="1100"
+  >
+    <div class="modal-body">
+      <p-table [value]="listCriterialRepair" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center border">STT</th>
+            <th class="text-center border">Nhóm tiêu chí</th>
+            <th class="text-center border">Tên tiêu chí</th>
+            <th class="text-center border">Người xử lý</th>
+            <th class="text-center border">Giải pháp xử lý</th>
+            <th class="text-center border">Thời gian sử lý</th>
+            <th class="text-center border">Kết luận</th>
+            <th class="text-center border">Nội dung đánh giá</th>
+            <th class="text-center border">Lý do</th>
+            <th class="text-center border">Hình ảnh</th>
+            <th class="text-center border">Tùy chọn</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-criterial let-index="rowIndex">
+          <tr>
+            <td class="text-center border">{{ index + 1 }}</td>
+            <td class="text-center border">{{ criterial.criterialGroupName }}</td>
+            <td class="text-center border">{{ criterial.criterialName }}</td>
+            <td class="text-center border">{{ criterial.userHandle }}</td>
+            <td class="text-center border">{{ criterial.solution }}</td>
+            <td class="text-center border">{{ criterial.planTimeComplete }}</td>
+            <td class="text-center border">
+              <select [(ngModel)]="criterial.result" name="recheck.result" required>
+                <option value="Đạt">Đạt</option>
+                <option value="Không đạt">Không đạt</option>
+              </select>
+            </td>
+            <td class="text-center border">
+              <input type="text" [(ngModel)]="criterial.content" required />
+            </td>
+            <td class="text-center border">
+              <input type="text" [(ngModel)]="criterial.reason" required />
+            </td>
+            <td class="text-center border">
+              <p-button (click)="showDialogUpLoad(criterial, index)" label="Attach files" />
+              <p-dialog
+                header="Upload Files"
+                [modal]="true"
+                [(visible)]="dialogVisibility[index]"
+                [style]="{ width: '50rem' }"
+                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+                [maximizable]="true"
+              >
+                <ng-container *ngIf="selectedData">
+                  <p-fileUpload
+                    name="files"
+                    [url]="''"
+                    [multiple]="true"
+                    accept="image/*"
+                    maxFileSize="1000000"
+                    mode="advanced"
+                    [auto]="false"
+                    [customUpload]="true"
+                    preview="true"
+                    (onSelect)="onFileSelect($event, selectedData, index)"
+                    (onClear)="onClear(selectedData)"
+                    (onRemove)="removeImg($event, selectedData)"
+                    [showUploadButton]="false"
+                  >
+                    <ng-template pTemplate="empty">
+                      <div>Drag and drop files to here to upload.</div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                      <div *ngFor="let fileName of selectedData.image">
+                        <div
+                          *ngIf="!imageLoadErrors.has(fileName)"
+                          style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; align-items: center"
+                        >
+                          <div style="grid-column: span 4">
+                            <img
+                              [src]="'content/images/bbkt/' + fileName"
+                              (error)="onImageError(fileName)"
+                              alt="Image thumbnail"
+                              style="width: 100%"
+                              class="thumbnail-image"
+                            />
+                          </div>
+                          <div style="grid-column: span 4">
+                            <div class="file-name">{{ fileName }}</div>
+                          </div>
+                          <div style="grid-column: span 4">
+                            <button
+                              type="button"
+                              (click)="deleteFile(fileName, selectedData)"
+                              class="p-button p-button-icon-only p-button-text p-button-danger p-button-sm"
+                            >
+                              <span class="pi pi-times"></span>
+                            </button>
+                          </div>
+                          <br />
+                        </div>
+                      </div>
+                    </ng-template>
+                  </p-fileUpload>
+                </ng-container>
+                <ng-template pTemplate="footer">
+                  <div class="flex justify-content-end">
+                    <p-button
+                      label="Xong"
+                      icon="pi pi-check"
+                      styleClass="p-button-text"
+                      (click)="dialogVisibility[index] = false"
+                    ></p-button>
+                  </div>
+                </ng-template>
+              </p-dialog>
+            </td>
+            <td class="text-center border">
+              <p-button
+                icon="pi pi-check"
+                aria-label="Check"
+                styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                [severity]="'success'"
+                (onClick)="showDialogCheckCriterial(criterial)"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="modal-footer">
+      <div class="d-flex" style="justify-content: flex-end !important">
+        <div class="custom-button-apply ms-3">
+          <p-button
+            icon="pi pi-save"
+            styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+            [raised]="true"
+            severity="success"
+            (onClick)="saveRemediationPlanDetail(listCriterialRepair)"
+            label="Lưu"
+          />
+        </div>
+      </div>
+    </div>
+  </p-dialog>
+
+  <p-dialog header="Đợt khắc phục" [(visible)]="dialogCheckCriterial" [modal]="true" [style]="{ width: '70vw' }" [baseZIndex]="1100">
+    <div class="col-container">
+      <div class="col-m4-25 col-container-child">
+        <label for="">Nhóm tiêu chí</label>
+        <input type="text" class="inp-style" [(ngModel)]="criterialSelected.criterialGroupName" readonly />
+      </div>
+      <div class="col-m4-25 col-container-child">
+        <label for="">Tên tiêu chí</label>
+        <input type="text" class="inp-style" [(ngModel)]="criterialSelected.criterialName" readonly />
+      </div>
+    </div>
+    <div class="d-flex" style="justify-content: flex-end !important">
+      <div class="custom-button-apply ms-3">
+        <p-button
+          label="Thêm dữ liệu"
+          icon="pi pi-check"
+          (onClick)="addRowListReCheck()"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+          [raised]="true"
+          [severity]="'info'"
+        />
+      </div>
+    </div>
+    <div class="modal-body">
+      <p-table [value]="listReCheckRemediationPlan" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center border">STT</th>
+            <th class="text-center border">Kết luận</th>
+            <th class="text-center border">Nội dung đánh giá</th>
+            <th class="text-center border">Lý do</th>
+            <th class="text-center border">Hình ảnh đánh giá</th>
+            <th class="text-center border">Tùy chọn</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-recheck let-index="rowIndex">
+          <tr>
+            <td class="text-center border">{{ index + 1 }}</td>
+            <td class="text-center border">
+              <select [(ngModel)]="recheck.result" name="recheck.result" required>
+                <option value="Đạt">Đạt</option>
+                <option value="Không đạt">Không đạt</option>
+              </select>
+            </td>
+            <td class="text-center border">
+              <input type="text" [(ngModel)]="recheck.note" required />
+            </td>
+            <td class="text-center border">
+              <input type="text" [(ngModel)]="recheck.reason" required />
+            </td>
+            <td class="text-center border">
+              <p-button (click)="showDialogUpLoad(recheck, index)" label="Attach files" />
+              <p-dialog
+                header="Upload Files"
+                [modal]="true"
+                [(visible)]="dialogVisibility[index]"
+                [style]="{ width: '50rem' }"
+                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+                [maximizable]="true"
+              >
+                <ng-container *ngIf="selectedData">
+                  <p-fileUpload
+                    name="files"
+                    [url]="''"
+                    [multiple]="true"
+                    accept="image/*"
+                    maxFileSize="1000000"
+                    mode="advanced"
+                    [auto]="false"
+                    [customUpload]="true"
+                    preview="true"
+                    (onSelect)="onFileSelect($event, selectedData, index)"
+                    (onClear)="onClear(selectedData)"
+                    (onRemove)="removeImg($event, selectedData)"
+                    [showUploadButton]="false"
+                  >
+                    <ng-template pTemplate="empty">
+                      <div>Drag and drop files to here to upload.</div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                      <div *ngFor="let fileName of selectedData.image">
+                        <div
+                          *ngIf="!imageLoadErrors.has(fileName)"
+                          style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; align-items: center"
+                        >
+                          <div style="grid-column: span 4">
+                            <img
+                              [src]="'content/images/bbkt/' + fileName"
+                              (error)="onImageError(fileName)"
+                              alt="Image thumbnail"
+                              style="width: 100%"
+                              class="thumbnail-image"
+                            />
+                          </div>
+                          <div style="grid-column: span 4">
+                            <div class="file-name">{{ fileName }}</div>
+                          </div>
+                          <div style="grid-column: span 4">
+                            <button
+                              type="button"
+                              (click)="deleteFile(fileName, selectedData)"
+                              class="p-button p-button-icon-only p-button-text p-button-danger p-button-sm"
+                            >
+                              <span class="pi pi-times"></span>
+                            </button>
+                          </div>
+                          <br />
+                        </div>
+                      </div>
+                    </ng-template>
+                  </p-fileUpload>
+                </ng-container>
+                <ng-template pTemplate="footer">
+                  <div class="flex justify-content-end">
+                    <p-button
+                      label="Xong"
+                      icon="pi pi-check"
+                      styleClass="p-button-text"
+                      (click)="dialogVisibility[index] = false"
+                    ></p-button>
+                  </div>
+                </ng-template>
+              </p-dialog>
+            </td>
+            <td class="text-center border">
+              <p-button
+                icon="pi pi-trash"
+                aria-label="Delete"
+                styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                [severity]="'danger'"
+                (onClick)="deleteRow(listReCheckRemediationPlan, index)"
+                title="Xoá"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="d-flex" style="justify-content: flex-end !important">
+      <div class="custom-button-apply ms-3">
+        <p-button
+          label="Lưu"
+          icon="pi pi-save"
+          (onClick)="saveReCheckRemePlan()"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+          [raised]="true"
+          severity="success"
+        />
+      </div>
+    </div>
+  </p-dialog>
+</div>

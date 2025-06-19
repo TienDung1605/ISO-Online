@@ -2073,6 +2073,22 @@ label {
   }
 }
 
+/* Sticky cột chức năng */
+:host ::ng-deep .sticky-right {
+  position: sticky;
+  right: 0;
+  background: white;
+  z-index: 2;
+}
+
+:host ::ng-deep th.sticky-right {
+  z-index: 3;
+}
+
+:host ::ng-deep .sticky-right {
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
 :host ::ng-deep .gross-btn.p-button {
   min-width: 100px;
   height: 36px;

@@ -77,6 +77,11 @@ const routes: Routes = [
     loadChildren: () => import('./plan/plan.routes'),
   },
   {
+    path: 'plan-group',
+    data: { pageTitle: 'isoApp.planGroup.home.title' },
+    loadChildren: () => import('./plan-group/plan-group.routes'),
+  },
+  {
     path: 'report',
     data: { pageTitle: 'isoApp.report.home.title' },
     loadChildren: () => import('./report/report.routes'),

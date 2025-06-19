@@ -11,9 +11,12 @@ export interface IReport {
   frequency?: string | null;
   reportType?: string | null;
   reportTypeId?: number | null;
+  groupReport?: number | 0;
   createdAt?: dayjs.Dayjs | null;
   updatedAt?: dayjs.Dayjs | null;
+  checkTime?: dayjs.Dayjs | null;
   scoreScale?: string | null;
+  convertScore?: string | null;
   updateBy?: string | null;
   planId?: string | null;
   user?: string | null;

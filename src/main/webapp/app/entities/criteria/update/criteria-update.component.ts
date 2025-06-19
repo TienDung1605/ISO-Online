@@ -71,6 +71,9 @@ export class CriteriaUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.criteria && this.criteria.name === control.value) {
+      return of(null);
+    }
     return this.criteriaService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),
@@ -174,7 +177,8 @@ export class CriteriaUpdateComponent implements OnInit {
     this.isSaving = false;
   }
   protected loadCriateriaGroups(): void {
-    this.criteriaService.getAllCriteriaGroups().subscribe(data => {
+    this.criteriaGroupService.getAllCriteriaGroups().subscribe(data => {
+      console.log('criteria groups', data);
       this.criteriaGroups = data;
     });
   }

@@ -47,14 +47,23 @@ public class Report implements Serializable {
     @Column(name = "report_type_id")
     private Long reportTypeId;
 
+    @Column(name = "group_report")
+    private Integer groupReport;
+
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
 
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
+    @Column(name = "check_time")
+    private ZonedDateTime checkTime;
+
     @Column(name = "score_scale")
     private String scoreScale;
+
+    @Column(name = "convert_score")
+    private String convertScore;
 
     @Column(name = "update_by")
     private String updateBy;
@@ -67,6 +76,30 @@ public class Report implements Serializable {
 
     @Column(name = "detail")
     private String detail;
+
+    public Integer getGroupReport() {
+        return groupReport;
+    }
+
+    public void setGroupReport(Integer groupReport) {
+        this.groupReport = groupReport;
+    }
+
+    public ZonedDateTime getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(ZonedDateTime checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public String getConvertScore() {
+        return convertScore;
+    }
+
+    public void setConvertScore(String convertScore) {
+        this.convertScore = convertScore;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

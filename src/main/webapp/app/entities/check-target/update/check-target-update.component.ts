@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
@@ -15,6 +15,7 @@ import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs/esm';
+import { CheckerGroupService } from 'app/entities/checker-group/service/checker-group.service';
 
 @Component({
   standalone: true,
@@ -25,14 +26,18 @@ import dayjs from 'dayjs/esm';
 export class CheckTargetUpdateComponent implements OnInit {
   isSaving = false;
   checkTarget: ICheckTarget | null = null;
+  checkGroups: any[] = [];
   account: Account | null = null;
   checkLevels: any[] = [];
   name = '';
+  check = '';
   protected checkTargetService = inject(CheckTargetService);
   protected checkTargetFormService = inject(CheckTargetFormService);
   protected activatedRoute = inject(ActivatedRoute);
   protected accountService = inject(AccountService);
   protected checkLevelService = inject(CheckLevelService);
+  protected checkGroupService = inject(CheckerGroupService);
+  protected cdr = inject(ChangeDetectorRef);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: CheckTargetFormGroup = this.checkTargetFormService.createCheckTargetFormGroup();
@@ -61,6 +66,7 @@ export class CheckTargetUpdateComponent implements OnInit {
     this.editForm.get('name')?.setAsyncValidators([this.duplicateNameValidator.bind(this)]);
     this.editForm.get('name')?.updateValueAndValidity();
     this.loadCheckLevels();
+    this.loadCheckGroups();
   }
 
   previousState(): void {
@@ -69,6 +75,9 @@ export class CheckTargetUpdateComponent implements OnInit {
 
   duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
     if (!control.value) {
+      return of(null);
+    }
+    if (this.checkTarget && this.checkTarget.name === control.value) {
       return of(null);
     }
     return this.checkTargetService.checkNameExists(control.value).pipe(
@@ -180,6 +189,12 @@ export class CheckTargetUpdateComponent implements OnInit {
     });
   }
 
+  protected loadCheckGroups(): void {
+    this.checkGroupService.getAllCheckerGroups().subscribe(data => {
+      this.checkGroups = data;
+    });
+  }
+
   protected updateCheckLevel(): void {
     const checkLevel = this.checkLevels.find((s: any) => s.name === this.name);
     if (checkLevel) {
@@ -187,18 +202,28 @@ export class CheckTargetUpdateComponent implements OnInit {
     }
   }
 
+  protected updateCheckGroup(): void {
+    const checkGroup = this.checkGroups.find((s: any) => s.name === this.check);
+    if (checkGroup) {
+      this.editForm.patchValue({ checkGroupId: checkGroup.id });
+    }
+  }
+
   protected updateForm(checkTarget: ICheckTarget): void {
     this.checkTarget = checkTarget;
-    this.checkTargetFormService.resetForm(this.editForm, checkTarget);
-    this.checkLevelService.query().subscribe((res: any) => {
-      if (res.body) {
-        this.checkLevels = res.body;
-        const checkLevel = res.body.find((s: any) => s.id === this.checkTarget?.evaluationLevelId);
-        if (checkLevel) {
-          this.name = checkLevel.name;
-          console.log('check form', checkLevel.namne);
-        }
-      }
+
+    forkJoin({
+      levels: this.checkLevelService.query(),
+      groups: this.checkGroupService.query(),
+    }).subscribe(({ levels, groups }) => {
+      if (levels.body) this.checkLevels = levels.body;
+      if (groups.body) this.checkGroups = groups.body;
+
+      setTimeout(() => {
+        this.checkTargetFormService.resetForm(this.editForm, checkTarget);
+        this.editForm.get('id')?.disable();
+      }, 0);
+      this.cdr.detectChanges();
     });
   }
 }

@@ -94,6 +94,9 @@ export class TitleUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.title && this.title.name === control.value) {
+      return of(null);
+    }
     return this.titleService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),

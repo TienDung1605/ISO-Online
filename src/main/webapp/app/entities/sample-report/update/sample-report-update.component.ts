@@ -24,12 +24,24 @@ import { Account } from 'app/core/auth/account.model';
 import dayjs from 'dayjs/esm';
 import { SourceService } from 'app/entities/source/service/source.service';
 import { ConvertService } from 'app/entities/convert/service/convert.service';
+import { FrequencyService } from 'app/entities/frequency/service/frequency.service';
+import { DragDropModule } from 'primeng/dragdrop';
 
 @Component({
   standalone: true,
   selector: 'jhi-sample-report-update',
   templateUrl: './sample-report-update.component.html',
-  imports: [SharedModule, FormsModule, ReactiveFormsModule, TableModule, IconFieldModule, InputIconModule, TagModule, DialogModule],
+  imports: [
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    TagModule,
+    DialogModule,
+    DragDropModule,
+  ],
 })
 export class SampleReportUpdateComponent implements OnInit {
   isSaving = false;
@@ -43,7 +55,9 @@ export class SampleReportUpdateComponent implements OnInit {
   dataOnChange = false;
   listSuggestions: any[] = [];
   account: Account | null = null;
-  types: string[] = [];
+  listOfFrequency: any[] = [];
+  draggedItemIndex: number | null = null;
+  lastRowIndex = 0;
   protected sampleReportService = inject(SampleReportService);
   protected sampleReportFormService = inject(SampleReportFormService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -52,6 +66,8 @@ export class SampleReportUpdateComponent implements OnInit {
   protected accountService = inject(AccountService);
   protected sourceService = inject(SourceService);
   protected convertService = inject(ConvertService);
+  protected frequencyService = inject(FrequencyService);
+
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: SampleReportFormGroup = this.sampleReportFormService.createSampleReportFormGroup();
 
@@ -77,6 +93,16 @@ export class SampleReportUpdateComponent implements OnInit {
         this.listTitlesView = data.header;
         this.listTitleHeaders = data.header;
         this.listTitleBody = data.body;
+        let maxRowIndex = -1;
+        this.listTitleBody.forEach((row, index) => {
+          if (row.rowIndex === undefined) {
+            row.rowIndex = index;
+          }
+          if (row.rowIndex > maxRowIndex) {
+            maxRowIndex = row.rowIndex;
+          }
+        });
+        this.lastRowIndex = maxRowIndex;
         sessionStorage.setItem('listTitlesView', JSON.stringify(data.header));
       }
       this.editForm.get('name')?.valueChanges.subscribe(value => {
@@ -92,8 +118,11 @@ export class SampleReportUpdateComponent implements OnInit {
   }
 
   loadTypes(): void {
-    this.convertService.getTypes().subscribe(types => {
-      this.types = types;
+    // this.convertService.getTypes().subscribe(types => {
+    //   this.types = types;
+    // });
+    this.frequencyService.getAllCheckFrequency().subscribe(res => {
+      this.listOfFrequency = res;
     });
   }
 
@@ -103,6 +132,9 @@ export class SampleReportUpdateComponent implements OnInit {
 
   duplicateNameValidator(control: AbstractControl): Observable<ValidationErrors | null> {
     if (!control.value) {
+      return of(null);
+    }
+    if (this.sampleReport && this.sampleReport.name === control.value) {
       return of(null);
     }
     return this.sampleReportService.checkNameExists(control.value).pipe(
@@ -317,11 +349,13 @@ export class SampleReportUpdateComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   addNewRow(): void {
     // create body for new row
+    this.lastRowIndex = this.lastRowIndex + 1;
+    const newRowIndex = this.lastRowIndex;
     var body: any[] = [];
     this.listTitleHeaders.forEach((element: any) => {
       body.push({ header: element.name, index: element.index, value: '' });
     });
-    this.listTitleBody = [...this.listTitleBody, { data: body }];
+    this.listTitleBody = [...this.listTitleBody, { data: body, rowIndex: newRowIndex }];
     console.log('body::', this.listTitleBody);
   }
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -403,5 +437,21 @@ export class SampleReportUpdateComponent implements OnInit {
   protected updateForm(sampleReport: ISampleReport): void {
     this.sampleReport = sampleReport;
     this.sampleReportFormService.resetForm(this.editForm, sampleReport);
+  }
+
+  drop(targetIndex: number) {
+    if (this.draggedItemIndex !== null) {
+      const draggedRowIndex = this.listTitleBody[this.draggedItemIndex].rowIndex;
+      const targetRowIndex = this.listTitleBody[targetIndex].rowIndex;
+      this.listTitleBody[this.draggedItemIndex].rowIndex = targetRowIndex;
+      this.listTitleBody[targetIndex].rowIndex = draggedRowIndex;
+      const temp = this.listTitleBody[this.draggedItemIndex];
+      this.listTitleBody[this.draggedItemIndex] = this.listTitleBody[targetIndex];
+      this.listTitleBody[targetIndex] = temp;
+      this.draggedItemIndex = null;
+    }
+  }
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
   }
 }

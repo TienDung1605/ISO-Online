@@ -91,6 +91,9 @@ export class ConvertUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.convert && this.convert.name === control.value) {
+      return of(null);
+    }
     return this.convertService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),

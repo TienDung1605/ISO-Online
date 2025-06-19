@@ -68,6 +68,9 @@ export class CheckerGroupUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.checkerGroup && this.checkerGroup.name === control.value) {
+      return of(null);
+    }
     return this.checkerGroupService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),

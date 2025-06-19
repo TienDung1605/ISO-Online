@@ -55,6 +55,9 @@ export class CheckLevelUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.checkLevel && this.checkLevel.name === control.value) {
+      return of(null);
+    }
     return this.checkLevelService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),

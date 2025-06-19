@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, NgZone, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { finalize, switchMap } from 'rxjs/operators';
 
@@ -37,9 +37,7 @@ import { SourceService } from 'app/entities/source/service/source.service';
 import { FileUploadModule } from 'primeng/fileupload';
 import { NewReport } from 'app/entities/report/report.model';
 import { ImageModule } from 'primeng/image';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { BrowserModule } from '@angular/platform-browser';
-
+import { ConvertService } from 'app/entities/convert/service/convert.service';
 interface PlanDetail {
   id?: number | null;
   checkerName: string;
@@ -52,32 +50,6 @@ interface PlanDetail {
   numberOfCheck: string;
   paticipant: string;
   planId?: number;
-}
-
-export interface ReportDetail {
-  id?: number | null;
-  name?: string;
-  code?: string;
-  sampleReportId?: number | null;
-  testOfObject?: string;
-  checker?: string;
-  status?: string;
-  frequency?: string;
-  reportType?: string;
-  reportTypeId?: number | null;
-  createdAt: string;
-  updatedAt: string;
-  updateBy?: string;
-  scoreScale?: string;
-  planId?: number | null;
-  user?: string;
-  detail?: any;
-}
-
-interface UserGroup {
-  id: number;
-  userGroupId: number;
-  name: string;
 }
 
 @Component({
@@ -142,16 +114,8 @@ export class PlanUpdateComponent implements OnInit {
   listTitleHeaders: any[] = [];
   listTitleBody: any[] = [];
   listSuggestions: any[] = [];
-  headerDefault = [
-    { id: null, name: 'Kết quả đánh giá', field: null, data_type: null, source_table: 'Quy đổi', field_name: 'Loại quy đổi', index: 0 },
-    { id: null, name: 'Nội dung đánh giá', field: null, data_type: null, source_table: null, field_name: null, index: 0 },
-    { id: null, name: 'Hình ảnh đánh giá', field: null, data_type: null, source_table: null, field_name: null, index: 0 },
-  ];
-  bodyDefault: { header: string; index: number; value: any; type: string }[] = [
-    { header: 'Kết quả đánh giá', index: 0, value: '', type: '' },
-    { header: 'Nội dung đánh giá', index: 0, value: '', type: 'text' },
-    { header: 'Hình ảnh đánh giá', index: 0, value: '', type: 'img' },
-  ];
+  listStatusReport: any[] = ['Chưa kiểm tra', 'Mới tạo', 'Đã kiểm tra'];
+  listConvert: any[] = [];
   listReports: NewReport[] = [];
   helpDialogVisible = false;
   selectedIndex: number = 0;
@@ -162,6 +126,8 @@ export class PlanUpdateComponent implements OnInit {
   dialogVisibility: { [key: string]: boolean } = {};
   selectedFiles: { dataKey: string; files: File[] }[] = [];
   imageLoadErrors = new Set<string>();
+  currentReport: any = {};
+  selectedUserId: number | null = null;
   protected planService = inject(PlanService);
   protected planFormService = inject(PlanFormService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -178,6 +144,8 @@ export class PlanUpdateComponent implements OnInit {
   protected evaluatorService = inject(EvaluatorService);
   protected checkerGroupService = inject(CheckerGroupService);
   protected sourceService = inject(SourceService);
+  protected convertService = inject(ConvertService);
+  protected router = inject(Router);
   editForm: PlanFormGroup = this.planFormService.createPlanFormGroup();
 
   constructor() {
@@ -217,6 +185,10 @@ export class PlanUpdateComponent implements OnInit {
       this.sampleReport = res;
     });
 
+    this.convertService.getTypes().subscribe((converts: any) => {
+      this.listConvert = converts;
+    });
+
     this.evaluatorService
       .getAllCheckTargets()
       .pipe(
@@ -248,6 +220,15 @@ export class PlanUpdateComponent implements OnInit {
         this.editForm.patchValue({ code }, { emitEvent: false });
       }
     });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+
+      if (account) {
+        this.editForm.patchValue({
+          updateBy: account.login,
+        });
+      }
+    });
   }
 
   onGroupSelect(groupId: number): void {
@@ -259,12 +240,10 @@ export class PlanUpdateComponent implements OnInit {
   }
 
   previousState(): void {
-    // window.history.back();
-    window.location.href = '/plan';
+    this.router.navigate(['/plan']);
   }
 
   loadReports(): void {
-    // window.location.reload();
     this.reportService
       .getAllWherePlanIdIsNull()
       .pipe(take(1))
@@ -301,10 +280,12 @@ export class PlanUpdateComponent implements OnInit {
       const newPlan = { ...plan, id: null };
       plan.updatedAt = dayjs(new Date());
       plan.updateBy = this.account?.login;
+      plan.createBy = this.account?.login;
       this.planService.create(newPlan).subscribe(response => {
         const savedPlan = response.body;
         plan.updatedAt = dayjs(new Date());
         plan.updateBy = this.account?.login;
+        plan.createBy = this.account?.login;
         if (savedPlan) {
           this.saveChildRecords(savedPlan.id);
         } else {
@@ -313,6 +294,7 @@ export class PlanUpdateComponent implements OnInit {
       });
     } else {
       // Update mode
+      plan.updateBy = this.account?.login;
       this.planService.update(plan).subscribe(response => {
         const savedPlan = response.body;
         if (savedPlan) {
@@ -356,14 +338,16 @@ export class PlanUpdateComponent implements OnInit {
       sampleReportId: null,
       testOfObject: '',
       checker: '',
-      status: '',
+      status: 'Mới tạo',
       frequency: '',
       reportType: '',
       reportTypeId: null,
+      groupReport: 0,
       createdAt: dayjs(),
       updatedAt: dayjs(),
       updateBy: this.account?.login,
       scoreScale: '',
+      convertScore: '',
       planId: null,
       user: '',
       detail: '',
@@ -412,7 +396,8 @@ export class PlanUpdateComponent implements OnInit {
     });
   }
 
-  openModalUser(): void {
+  openModalUser(data: any): void {
+    this.currentReport = data;
     this.modalService
       .open(this.userTesting, {
         ariaLabelledBy: 'modal-basic-title',
@@ -420,9 +405,19 @@ export class PlanUpdateComponent implements OnInit {
         backdrop: 'static',
       })
       .result.then(
-        result => {},
+        result => {
+          console.log(`Closed with: ${result}`);
+        },
         reason => {},
       );
+  }
+
+  saveUserSelection(modal: any): void {
+    const selectedUser = this.evaluator.find(user => user.id === Number(this.selectedUserId));
+    if (selectedUser) {
+      this.currentReport.user = selectedUser.name;
+    }
+    modal.close();
   }
 
   showDialogEdit(index: number): void {
@@ -433,29 +428,34 @@ export class PlanUpdateComponent implements OnInit {
     }
   }
 
+  removeVietnameseAndSpaces(str: string) {
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D')
+      .replace(/\s+/g, '')
+      .trim();
+  }
+
   updateReportCode(data: any, index: number): void {
     const selectedId = +data.target.value;
-    this.listReports[index].code = `${this.sampleReport.find(r => r.id === selectedId).code}-${dayjs().format('DDMMYYYYHHmm')}`;
+    this.listReports[index].code = `${this.sampleReport.find(r => r.id === selectedId).code}-${dayjs().format('DDMMYYYYHHmmssSSS')}`;
+    this.listReports[index].name = `${this.removeVietnameseAndSpaces(this.evaluator[index].name)}-${this.listReports[index].code}`;
     this.listReports[index].frequency = this.sampleReport.find(r => r.id === selectedId).frequency;
     this.listReports[index].reportType = this.sampleReport.find(r => r.id === selectedId).reportType;
     this.listReports[index].checker = this.evaluator[index].name;
     this.listReports[index].detail = this.sampleReport.find(r => r.id === selectedId).detail;
     this.listTitleBody = JSON.parse(this.listReports[index].detail).body;
     this.listTitleHeaders = JSON.parse(this.listReports[index].detail).header;
-    this.headerDefault.forEach(x => {
-      x.index = this.listTitleHeaders.length + 1;
-      this.listTitleHeaders.push(x);
-    });
-    this.listTitleBody.forEach(element => {
-      this.bodyDefault.forEach(x => {
-        x.index = element.data.lenght + 1;
-        element.data.push(JSON.parse(JSON.stringify(x)));
-      });
-    });
     this.listReports[index].detail = {
       header: this.listTitleHeaders,
       body: this.listTitleBody,
     };
+  }
+
+  updateReportName(index: number) {
+    this.listReports[index].name = `${this.listReports[index].checker}-${this.listReports[index].code}`;
   }
 
   addNewRowBBKT(data: any): void {
@@ -593,6 +593,7 @@ export class PlanUpdateComponent implements OnInit {
     };
     this.reportService.getAllByPlanId(plan.id).subscribe(res => {
       this.listReports = res;
+      console.log(this.listReports);
     });
     this.editForm.patchValue(formValues);
   }
@@ -613,8 +614,9 @@ export class PlanUpdateComponent implements OnInit {
       return;
     }
     this.listReports.forEach((report: any) => {
-      report.detail = JSON.stringify(report.detail);
+      report.detail = typeof report.detail === 'string' ? report.detail : JSON.stringify(report.detail);
       report.planId = planId.toString();
+      // report.group = 0;
 
       const formData = new FormData();
       this.selectedFiles.forEach(fileGroup => {

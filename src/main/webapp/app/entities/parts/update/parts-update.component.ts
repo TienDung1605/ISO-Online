@@ -68,6 +68,9 @@ export class PartsUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.parts && this.parts.name === control.value) {
+      return of(null);
+    }
     return this.partsService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),

@@ -1,0 +1,393 @@
+<div>
+  <h2 class="page-heading" id="page-haeding">Gộp Biên bản kiểm tra</h2>
+
+  <div class="modal-body">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <label for="testObject">Đối tượng kiểm tra</label>
+        <select id="testObject" class="form-control" [(ngModel)]="selectedTestObject">
+          <option *ngFor="let item of testObjects" [value]="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="conversion">Quy đổi</label>
+        <select id="conversion" class="form-control" [(ngModel)]="selectedConversion">
+          <option *ngFor="let item of conversions" [value]="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="reportTemplate">Mẫu BBKT</label>
+        <select id="reportTemplate" class="form-control" [(ngModel)]="selectedTemplate">
+          <option *ngFor="let item of reportTemplates" [value]="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="reportTemplate">&nbsp;</label>
+        <p-button
+          label="Apply"
+          icon="pi pi-check"
+          aria-label="Apply"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+          [severity]="'info'"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="reportTemplate">&nbsp;</label>
+
+        <p-button
+          label="Danh sách kế hoạch đã gộp"
+          size="large"
+          aria-label="Gross"
+          styleClass="p-button-rounded p-button-info "
+          [severity]="'help'"
+          [routerLink]="['/plan-group', plan.id, 'list']"
+        />
+      </div>
+    </div>
+  </div>
+
+  <p-table [value]="grossScripts" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>STT</th>
+        <th>Mã kế hoạch</th>
+        <th>Tên kế hoạch kiểm tra</th>
+        <th>Đối tượng kế hoạch đánh giá</th>
+        <th>Tần suất kế hoạch</th>
+        <th>Mã BBKT</th>
+        <th>Tên BBKT</th>
+        <th>Đối tượng KT</th>
+        <th>Loại BBKT</th>
+        <th>Trạng thái</th>
+        <th>Gộp</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
+        </th>
+        <th>
+          <p-tableHeaderCheckbox />
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-script let-index="rowIndex">
+      <tr>
+        <td>{{ index + 1 }}</td>
+        <td>{{ plan.code }}</td>
+        <td>{{ plan.name }}</td>
+        <td>{{ plan.subjectOfAssetmentPlan }}</td>
+        <td>{{ plan.frequency }}</td>
+        <td>{{ script.code }}</td>
+        <td>{{ script.name }}</td>
+        <td>{{ script.testOfObject }}</td>
+        <td>{{ script.reportType }}</td>
+        <td><p-tag [value]="script.status" [severity]="getSeverity(script.status)"></p-tag></td>
+        <td>
+          <p-checkbox
+            [(ngModel)]="script.groupReport"
+            [binary]="true"
+            [trueValue]="1"
+            [falseValue]="0"
+            (onChange)="checkGroupSelected()"
+          ></p-checkbox>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <div class="d-flex justify-content-end">
+    <p-button
+      label="Huỷ"
+      icon="pi pi-ban"
+      aria-label="Cancel"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+      [severity]="'danger'"
+    />
+    <p-button
+      label="Lưu"
+      icon="pi pi-save"
+      aria-label="Save"
+      [disabled]="!disableSaveGroupReport"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+      [severity]="'info'"
+      (onClick)="openGroupReportModal()"
+    />
+    <p-button
+      label="Apply"
+      icon="pi pi-check"
+      aria-label="Apply"
+      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+      [severity]="'success'"
+    />
+  </div>
+</div>
+
+<ng-template #criteria let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-criteria-title">Nội dung kiểm tra</h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p-table [value]="criterialData" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="text-center border">STT</th>
+          <th class="text-center border">Nhóm tiêu chí</th>
+          <th class="text-center border">Tên tiêu chí</th>
+          <th class="text-center border">Tần suất</th>
+          <th class="text-center border">Tùy chọn</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+        <tr>
+          <td class="text-center border">{{ rowIndex + 1 }}</td>
+          <td
+            class="text-center border"
+            *ngIf="rowIndex == 0 || this.criterialData[rowIndex].criterialGroupName !== this.criterialData[rowIndex - 1].criterialGroupName"
+            [attr.rowspan]="getRowSpan(row.criterialGroupName)"
+          >
+            {{ row.criterialGroupName }}
+          </td>
+          <td class="text-center border">{{ row.criterialName }}</td>
+          <td class="text-center border">{{ row.frequency }}</td>
+          <td class="text-center border">
+            <p-button
+              label="Chọn"
+              icon="pi pi-pen-to-square"
+              (onClick)="showDialogEvaluation(row)"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+              [severity]="'success'"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="finaEval()">Xong</button>
+  </div>
+</ng-template>
+
+<p-dialog
+  header="Kết luận tiêu chí"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="dialogVisible"
+  [style]="{ width: '80vw' }"
+  [contentStyle]="{ height: '70vh' }"
+>
+  <div class="modal-body">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <label for="">Nhóm tiêu chí</label>
+        <input type="text" class="form-control" [(ngModel)]="selectedCritical.criterialGroupName" readonly />
+      </div>
+      <div class="col-md-6">
+        <label for="">Tên tiêu chí</label>
+        <input type="text" class="form-control" [(ngModel)]="selectedCritical.criterialName" readonly />
+      </div>
+      <div class="col-md-6">
+        <label for="">Tần suất đánh giá</label>
+        <input type="text" class="form-control" [(ngModel)]="selectedCritical.frequency" readonly />
+      </div>
+    </div>
+    <p-table [value]="planGrEvals" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="text-center border">STT</th>
+          <th class="text-center border">Mã BBKT</th>
+          <th class="text-center border">Tên BBKT</th>
+          <th class="text-center border">Người đánh giá</th>
+          <th class="text-center border">Loại đánh giá</th>
+          <th class="text-center border">Đánh giá</th>
+          <th class="text-center border">Nội dung đánh giá</th>
+          <th class="text-center border">Hình ảnh đánh giá</th>
+        </tr>
+        <tr>
+          <th class="text-center border"></th>
+          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-report let-index="rowIndex">
+        <tr>
+          <td class="text-center border">{{ index + 1 }}</td>
+          <td class="text-center border">{{ report.reportId }}</td>
+          <td class="text-center border">{{ report.reportName }}</td>
+          <td class="text-center border">{{ report.createdBy }}</td>
+          <td class="text-center border">{{ report.convertScore }}</td>
+          <td class="text-center border">
+            <select [(ngModel)]="report.result" name="report.result">
+              <option
+                *ngFor="let item1 of listEvalReports[index]"
+                [value]="item1.name"
+                [selected]="!report.result && item1.name === (report.convertScore == 'Tính điểm' ? 'PASS' : 'Đạt')"
+              >
+                {{ item1.name }}
+              </option>
+            </select>
+          </td>
+          <td class="text-center border">
+            <input type="text" [(ngModel)]="report.note" />
+          </td>
+          <td class="text-center border">
+            <p-button (click)="showDialogUpLoad(report, index)" label="Show" />
+            <p-dialog
+              header="Upload Files"
+              [modal]="true"
+              [(visible)]="dialogVisibility[index]"
+              [style]="{ width: '50rem' }"
+              [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+              [maximizable]="true"
+            >
+              <ng-container *ngIf="selectedData">
+                <p-fileUpload
+                  name="files"
+                  [url]="''"
+                  [multiple]="true"
+                  accept="image/*"
+                  maxFileSize="1000000"
+                  mode="advanced"
+                  [auto]="false"
+                  [customUpload]="true"
+                  preview="true"
+                  (onSelect)="onFileSelect($event, selectedData, index)"
+                  (onClear)="onClear(selectedData)"
+                  (onRemove)="removeImg($event, selectedData)"
+                  [showUploadButton]="false"
+                >
+                  <ng-template pTemplate="empty">
+                    <div>Drag and drop files to here to upload.</div>
+                  </ng-template>
+                  <ng-template pTemplate="content">
+                    <div *ngFor="let fileName of selectedData.image">
+                      <div
+                        *ngIf="!imageLoadErrors.has(fileName)"
+                        style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; align-items: center"
+                      >
+                        <div style="grid-column: span 4">
+                          <img
+                            [src]="'content/images/bbkt/' + fileName"
+                            (error)="onImageError(fileName)"
+                            alt="Image thumbnail"
+                            style="width: 100%"
+                            class="thumbnail-image"
+                          />
+                        </div>
+                        <div style="grid-column: span 4">
+                          <div class="file-name">{{ fileName }}</div>
+                        </div>
+                        <div style="grid-column: span 4">
+                          <button
+                            type="button"
+                            (click)="deleteFile(fileName, selectedData)"
+                            class="p-button p-button-icon-only p-button-text p-button-danger p-button-sm"
+                          >
+                            <span class="pi pi-times"></span>
+                          </button>
+                        </div>
+                        <br />
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-fileUpload>
+              </ng-container>
+              <ng-template pTemplate="footer">
+                <div class="flex justify-content-end">
+                  <p-button label="Xong" icon="pi pi-check" styleClass="p-button-text" (click)="dialogVisibility[index] = false"></p-button>
+                </div>
+              </ng-template>
+            </p-dialog>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="action-buttons">
+      <p-button
+        label="Huỷ"
+        icon="pi pi-ban"
+        (onClick)="dialogVisible = false"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="danger"
+      />
+      <p-button
+        label="Lưu"
+        icon="pi pi-save"
+        (onClick)="saveEvalReport()"
+        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+        severity="info"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<ng-template #groupReport let-modal>
+  <form #form="ngForm">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col">
+          <label for="userNameGroups">Tên kế hoạch gộp</label>
+          <input type="text" name="name" [(ngModel)]="groupReportData.name" required class="form-control" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="checkDate">Ngày tạo</label>
+          <input type="date" name="checkDate" [(ngModel)]="groupReportData.checkDate" required class="form-control" />
+        </div>
+        <div class="col-md-6">
+          <label for="createdBy">Người kiểm tra</label>
+          <select name="createdBy" [(ngModel)]="groupReportData.createdBy" required class="form-control">
+            <option *ngFor="let data of evaluator" [value]="data.name">
+              {{ data.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid" (click)="saveGroupReport(groupReportData)">Lưu</button>
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Hủy</button>
+    </div>
+  </form>
+</ng-template>

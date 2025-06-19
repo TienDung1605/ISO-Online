@@ -16,6 +16,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { CheckLevelService } from 'app/entities/check-level/service/check-level.service';
+import { CheckerGroupService } from 'app/entities/checker-group/service/checker-group.service';
 @Component({
   standalone: true,
   selector: 'jhi-check-target',
@@ -55,6 +56,7 @@ export class CheckTargetComponent implements OnInit {
     createdAt: '',
     updatedAt: '',
     evaluationLevelId: '',
+    checkGroupId: '',
     status: '',
     updateBy: '',
   };
@@ -66,6 +68,7 @@ export class CheckTargetComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
   protected checkLevelService = inject(CheckLevelService);
+  protected checkGroupService = inject(CheckerGroupService);
   trackId = (_index: number, item: ICheckTarget): number => this.checkTargetService.getCheckTargetIdentifier(item);
 
   ngOnInit(): void {
@@ -112,6 +115,13 @@ export class CheckTargetComponent implements OnInit {
               });
             }
           });
+          this.checkGroupService.query().subscribe(res1 => {
+            if (res1.body) {
+              this.checkTargetResult?.forEach(checkTarget => {
+                checkTarget.evalCheckGroup = res1.body!.find(checkGroup => checkGroup.id === checkTarget.checkGroupId)?.name;
+              });
+            }
+          });
           this.totalRecords = this.checkTargets.length;
           this.isLoading = false;
         }
@@ -141,6 +151,7 @@ export class CheckTargetComponent implements OnInit {
         (!this.filters.createdAt || createdDate === searchCreatedDate) &&
         (!this.filters.updatedAt || updatedDate === searchUpdatedDate) &&
         (!this.filters.evaluationLevelId || checkTarget.evaluationLevelId?.toString().includes(this.filters.evaluationLevelId)) &&
+        (!this.filters.checkGroupId || checkTarget.checkGroupId?.toString().includes(this.filters.checkGroupId)) &&
         (!this.filters.status || checkTarget.status?.toString().includes(this.filters.status)) &&
         (!this.filters.updateBy || checkTarget.updateBy?.toLowerCase().includes(this.filters.updateBy.toLowerCase()))
       );

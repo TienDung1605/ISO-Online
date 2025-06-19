@@ -60,7 +60,7 @@ public class PlanDetailDTO {
     private ZonedDateTime updatedAt;
 
     private String updateBy;
-    private List<Report> planDetail;
+    private List<ReportResponse> planDetail;
 
     public PlanDetailDTO() {}
 
@@ -280,11 +280,11 @@ public class PlanDetailDTO {
         this.updateBy = updateBy;
     }
 
-    public List<Report> getPlanDetail() {
+    public List<ReportResponse> getPlanDetail() {
         return planDetail;
     }
 
-    public void setPlanDetail(List<Report> planDetail) {
+    public void setPlanDetail(List<ReportResponse> planDetail) {
         this.planDetail = planDetail;
     }
 }

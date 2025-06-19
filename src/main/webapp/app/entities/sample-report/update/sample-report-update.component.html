@@ -83,11 +83,11 @@
         </div> -->
 
         <div class="mb-8">
-          <label class="form-label" for="field_frequency">Loại đánh giá</label>
+          <label class="form-label" for="field_frequency">Tần suất</label>
           <!-- <input type="text" class="form-control" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency" /> -->
           <select class="form-control form-select" name="frequency" id="field_frequency" data-cy="frequency" formControlName="frequency">
-            <option [value]="">-- Chọn loại đánh giá --</option>
-            <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+            <option [value]="">-- Chọn Tần suất --</option>
+            <option *ngFor="let frequency of listOfFrequency" [value]="frequency.name">{{ frequency.name }}</option>
           </select>
         </div>
         <div class="mb-8">
@@ -107,35 +107,38 @@
       </div>
 
       <div class="d-flex justify-content-end">
-        <table>
-          <thead>
+        <p-table [value]="listTitleBody" reorderableRows="true" tableStyleClass="p-datatable-gridlines" class="w-100">
+          <ng-template pTemplate="header">
             <tr>
               <th class="text-center border">STT</th>
               <th class="text-center border" *ngFor="let item of listTitleHeaders">{{ item.name }}</th>
-              <!-- <th class="text-center border">Hình ảnh đánh giá</th> -->
+              <th class="text-center border">Tần suất</th>
               <th class="text-center border">Tuỳ chọn</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of listTitleBody; let i = index">
-              <td class="text-center border">{{ i + 1 }}</td>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-index="rowIndex">
+            <tr pDraggable="item" (onDragStart)="draggedItemIndex = index" (dragover)="onDragOver($event)" (drop)="drop(index)">
+              <td class="text-center border">{{ index + 1 }}</td>
               <td class="text-center border" *ngFor="let data of item.data">
                 <select [(ngModel)]="data.value" [ngModelOptions]="{ standalone: true }" (click)="checkEvent(data.header)">
                   <option>{{ data.value }}</option>
-                  <option *ngFor="let item1 of listSuggestions" [value]="item1">{{ item1 }}</option>
+                  <option *ngFor="let item1 of listSuggestions" [value]="item1">
+                    {{ item1 }}
+                  </option>
                 </select>
               </td>
-              <!-- <td class="text-center border"><input type="image" /></td> -->
               <td class="text-center border">
-                <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-danger" (click)="deleteRow(i)">
-                  <fa-icon icon="ban"></fa-icon>&nbsp;<span>Xoá</span>
-                </button>
+                <select [(ngModel)]="item.frequency" [ngModelOptions]="{ standalone: true }">
+                  <option *ngFor="let frequency of listOfFrequency" [value]="frequency.name">{{ frequency.name }}</option>
+                </select>
+              </td>
+              <td class="text-center border">
+                <button class="btn btn-danger" (click)="deleteRow(index)"><fa-icon icon="ban"></fa-icon> Xoá</button>
               </td>
             </tr>
-          </tbody>
-        </table>
+          </ng-template>
+        </p-table>
       </div>
-
       <div class="d-flex justify-content-end">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span>Hủy</span>
@@ -145,7 +148,7 @@
           type="submit"
           id="save-entity"
           data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
+          [disabled]="isSaving"
           class="btn btn-primary"
           (click)="save()"
         >

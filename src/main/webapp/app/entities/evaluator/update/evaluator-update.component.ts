@@ -72,6 +72,9 @@ export class EvaluatorUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.evaluator && this.evaluator.name === control.value) {
+      return of(null);
+    }
     return this.evaluatorService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),

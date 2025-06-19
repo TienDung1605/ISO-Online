@@ -105,6 +105,7 @@
         [paginator]="true"
         [rows]="100"
         [responsive]="true"
+        [scrollable]="true"
         styleClass="p-datatable-gridlines"
         [rowsPerPageOptions]="[5, 10, 20]"
         [autoLayout]="true"
@@ -112,21 +113,35 @@
         <ng-template pTemplate="header">
           <tr>
             <th>STT</th>
-            <th>Đối tượng kiểm tra</th>
-            <th>Loại BBKT</th>
-            <th>Mẫu BBKT</th>
-            <th>Mã BBKT</th>
-            <th>Tần suất kiểm tra</th>
-            <th>Thang điểm</th>
-            <th>Tuỳ chọn</th>
+            <th style="min-width: 400px; width: 400px">Tên BBKT</th>
+            <th style="min-width: 200px; width: 200px">Đối tượng đánh giá</th>
+            <th style="min-width: 200px; width: 200px">Người kiểm tra</th>
+            <th style="min-width: 180px; width: 180px">Loại BBKT</th>
+            <th style="min-width: 300px; width: 300px">Mẫu BBKT</th>
+            <th style="min-width: 180px; width: 180px">Mã BBKT</th>
+            <th style="min-width: 200px; width: 200px">Tần suất kiểm tra</th>
+            <th style="min-width: 150px; width: 150px">Kiểu quy đổi</th>
+            <th style="min-width: 150px; width: 150px">Thang điểm</th>
+            <th style="min-width: 150px; width: 150px">Trạng thái</th>
+            <th style="min-width: 200px; width: 200px">Tuỳ chọn</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-index="rowIndex" let-report>
           <tr>
             <td>{{ index + 1 }}</td>
             <td>
+              <input type="text" [(ngModel)]="report.name" [ngModelOptions]="{ standalone: true }" />
+            </td>
+            <td>
               <select [(ngModel)]="report.testOfObject" [ngModelOptions]="{ standalone: true }">
                 <option *ngFor="let data of checkTargets" [value]="data.name">
+                  {{ data.name }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select [(ngModel)]="report.checker" [ngModelOptions]="{ standalone: true }" (change)="updateReportName(index)">
+                <option *ngFor="let data of evaluator" [value]="data.name">
                   {{ data.name }}
                 </option>
               </select>
@@ -154,13 +169,23 @@
             </td>
             <td>
               <select [(ngModel)]="report.frequency" [ngModelOptions]="{ standalone: true }">
-                <option *ngFor="let data of listOfFrequency" [value]="data.id">
+                <option *ngFor="let data of listOfFrequency" [value]="data.name">
                   {{ data.name }}
                 </option>
               </select>
             </td>
             <td>
+              <select [(ngModel)]="report.convertScore" name="report.convert" [ngModelOptions]="{ standalone: true }">
+                <option *ngFor="let item1 of listConvert" [value]="item1">{{ item1 }}</option>
+              </select>
+            </td>
+            <td>
               <input type="text" class="inp-style" [(ngModel)]="report.scoreScale" [ngModelOptions]="{ standalone: true }" />
+            </td>
+            <td>
+              <select [(ngModel)]="report.status" name="report.status" [ngModelOptions]="{ standalone: true }">
+                <option *ngFor="let item1 of listStatusReport" [value]="item1">{{ item1 }}</option>
+              </select>
             </td>
             <td>
               <div class="action-buttons">
@@ -177,7 +202,7 @@
                   aria-label="Gross"
                   styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                   [severity]="'help'"
-                  (onClick)="openModalUser()"
+                  (onClick)="openModalUser(report)"
                 />
                 <p-button
                   icon="pi pi-trash"
@@ -226,7 +251,7 @@
       </div>
       <div class="col-md-6">
         <label for="">Người dùng</label>
-        <select>
+        <select class="inp-style" [(ngModel)]="selectedUserId">
           <option *ngFor="let data of evaluator" [value]="data.id">
             {{ data.name }}
           </option>
@@ -235,7 +260,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="save()">Lưu</button>
+    <button type="button" class="btn btn-primary" (click)="saveUserSelection(modal)">Lưu</button>
     <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Hủy</button>
   </div>
 </ng-template>
@@ -277,7 +302,7 @@
       </div>
       <div class="col-container">
         <div class="col-m4-25 col-container-child">
-          <label for="">Đối tượng kiểm tra</label>
+          <label for="">Đối tượng đánh giá</label>
           <input type="text" class="inp-style" name="code" id="field_code" [(ngModel)]="listReports[selectedIndex].testOfObject" />
         </div>
 
@@ -287,13 +312,19 @@
         </div>
 
         <div class="col-m4-25 col-container-child">
-          <label for="">Thang điểm</label>
-          <input type="text" class="inp-style" name="code" id="field_code" [(ngModel)]="listReports[selectedIndex].frequency" />
+          <label for="">Quy đổi</label>
+          <select [(ngModel)]="listReports[selectedIndex].convertScore" name="listReports[selectedIndex].convert">
+            <option>{{ listReports[selectedIndex].convertScore }}</option>
+            <option *ngFor="let item1 of listConvert" [value]="item1">{{ item1 }}</option>
+          </select>
         </div>
 
         <div class="col-m4-25 col-container-child">
           <label for="">Trạng thái</label>
-          <input type="text" class="inp-style" name="code" id="field_code" [(ngModel)]="listReports[selectedIndex].status" />
+          <select [(ngModel)]="listReports[selectedIndex].status" name="listReports[selectedIndex].status">
+            <option>{{ listReports[selectedIndex].status }}</option>
+            <option *ngFor="let item1 of listStatusReport" [value]="item1">{{ item1 }}</option>
+          </select>
         </div>
       </div>
     </div>
@@ -310,6 +341,7 @@
         <tr>
           <th class="text-center border">STT</th>
           <th class="text-center border" *ngFor="let item of listReports[selectedIndex]?.detail?.header">{{ item.name }}</th>
+          <th class="text-center border">Tần suất</th>
           <th class="text-center border">Tuỳ chọn</th>
         </tr>
       </thead>
@@ -317,99 +349,20 @@
         <tr *ngFor="let item of listReports[selectedIndex]?.detail?.body; let i = index">
           <td class="text-center border">{{ i + 1 }}</td>
           <td class="text-center border" *ngFor="let data of item.data; let j = index">
-            <ng-container [ngSwitch]="data.type">
-              <input
-                *ngSwitchCase="'text'"
-                type="text"
-                class="inp-style"
-                [(ngModel)]="data.value"
-                name="data.value-{{ i }}-{{ j }}"
-                [ngModelOptions]="{ standalone: true }"
-              />
-              <ng-container *ngSwitchCase="'img'">
-                <p-button (click)="showDialogUpLoad(data, i, j)" label="Show" />
-                <p-dialog
-                  header="Upload Files"
-                  [modal]="true"
-                  [(visible)]="dialogVisibility[i + '-' + j]"
-                  [style]="{ width: '50rem' }"
-                  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-                  [maximizable]="true"
-                >
-                  <ng-container *ngIf="selectedData">
-                    <p-fileUpload
-                      name="files"
-                      [url]="''"
-                      [multiple]="true"
-                      accept="image/*"
-                      maxFileSize="1000000"
-                      mode="advanced"
-                      [auto]="false"
-                      [customUpload]="true"
-                      preview="true"
-                      (onSelect)="onFileSelect($event, selectedData, i)"
-                      (onClear)="onClear(selectedData)"
-                      (onRemove)="removeImg($event, selectedData)"
-                    >
-                      <ng-template pTemplate="empty">
-                        <div>Drag and drop files to here to upload.</div>
-                      </ng-template>
-                      <ng-template pTemplate="content">
-                        <div *ngFor="let fileName of selectedData.value">
-                          <div
-                            *ngIf="!imageLoadErrors.has(fileName)"
-                            style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; align-items: center"
-                          >
-                            <div style="grid-column: span 4">
-                              <img
-                                [src]="'content/images/bbkt/' + fileName"
-                                (error)="onImageError(fileName)"
-                                alt="Image thumbnail"
-                                style="width: 100%"
-                                class="thumbnail-image"
-                              />
-                            </div>
-                            <div style="grid-column: span 4">
-                              <div class="file-name">{{ fileName }}</div>
-                            </div>
-                            <div style="grid-column: span 4">
-                              <button
-                                type="button"
-                                (click)="deleteFile(fileName, selectedData)"
-                                class="p-button p-button-icon-only p-button-text p-button-danger p-button-sm"
-                              >
-                                <span class="pi pi-times"></span>
-                              </button>
-                            </div>
-                            <br />
-                          </div>
-                        </div>
-                      </ng-template>
-                    </p-fileUpload>
-                  </ng-container>
-                  <ng-template pTemplate="footer">
-                    <div class="flex justify-content-end">
-                      <p-button
-                        label="Xong"
-                        icon="pi pi-check"
-                        styleClass="p-button-text"
-                        (click)="dialogVisibility[i + '-' + j] = false"
-                      ></p-button>
-                    </div>
-                  </ng-template>
-                </p-dialog>
-              </ng-container>
-              <select
-                *ngSwitchDefault
-                [(ngModel)]="data.value"
-                name="data.value-{{ j }}"
-                [ngModelOptions]="{ standalone: true }"
-                (click)="checkEvent(data.header, selectedIndex)"
-              >
-                <option>{{ data.value }}</option>
-                <option *ngFor="let item1 of listSuggestions" [value]="item1">{{ item1 }}</option>
-              </select>
-            </ng-container>
+            <select
+              [(ngModel)]="data.value"
+              name="data.value-{{ j }}"
+              [ngModelOptions]="{ standalone: true }"
+              (click)="checkEvent(data.header, selectedIndex)"
+            >
+              <option>{{ data.value }}</option>
+              <option *ngFor="let item1 of listSuggestions" [value]="item1">{{ item1 }}</option>
+            </select>
+          </td>
+          <td class="text-center border">
+            <select [(ngModel)]="item.frequency" [ngModelOptions]="{ standalone: true }">
+              <option *ngFor="let frequency of listOfFrequency" [value]="frequency.name">{{ frequency.name }}</option>
+            </select>
           </td>
           <td class="text-center border">
             <button

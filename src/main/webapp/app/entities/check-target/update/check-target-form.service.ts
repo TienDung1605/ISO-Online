@@ -35,6 +35,7 @@ type CheckTargetFormGroupContent = {
   name: FormControl<CheckTargetFormRawValue['name']>;
   inspectionTarget: FormControl<CheckTargetFormRawValue['inspectionTarget']>;
   evaluationLevelId: FormControl<CheckTargetFormRawValue['evaluationLevelId']>;
+  checkGroupId: FormControl<CheckTargetFormRawValue['checkGroupId']>;
   status: FormControl<CheckTargetFormRawValue['status']>;
   createdAt: FormControl<CheckTargetFormRawValue['createdAt']>;
   updatedAt: FormControl<CheckTargetFormRawValue['updatedAt']>;
@@ -45,12 +46,13 @@ export type CheckTargetFormGroup = FormGroup<CheckTargetFormGroupContent>;
 
 @Injectable({ providedIn: 'root' })
 export class CheckTargetFormService {
-  createCheckTargetFormGroup(checkTarget: CheckTargetFormGroupInput = { id: null }): CheckTargetFormGroup {
+  createCheckTargetFormGroup(checkTarget?: CheckTargetFormGroupInput): CheckTargetFormGroup {
     const checkTargetRawValue = this.convertCheckTargetToCheckTargetRawValue({
       ...this.getFormDefaults(),
       ...checkTarget,
     });
-    return new FormGroup<CheckTargetFormGroupContent>({
+
+    return new FormGroup({
       id: new FormControl(
         { value: checkTargetRawValue.id, disabled: true },
         {
@@ -58,14 +60,17 @@ export class CheckTargetFormService {
           validators: [Validators.required],
         },
       ),
-      name: new FormControl(checkTargetRawValue.name),
+      name: new FormControl(checkTargetRawValue.name, {
+        validators: [Validators.required],
+      }),
       inspectionTarget: new FormControl(checkTargetRawValue.inspectionTarget),
-      evaluationLevelId: new FormControl(checkTargetRawValue.evaluationLevelId),
-      status: new FormControl(checkTargetRawValue.status),
+      evaluationLevelId: new FormControl(checkTargetRawValue.evaluationLevelId), // ✅ kiểu number
+      checkGroupId: new FormControl(checkTargetRawValue.checkGroupId), // ✅ kiểu number
+      status: new FormControl(checkTargetRawValue.status ?? 'ACTIVE'),
       createdAt: new FormControl(checkTargetRawValue.createdAt),
       updatedAt: new FormControl(checkTargetRawValue.updatedAt),
       updateBy: new FormControl(checkTargetRawValue.updateBy),
-    });
+    }) as CheckTargetFormGroup;
   }
 
   getCheckTarget(form: CheckTargetFormGroup): ICheckTarget | NewCheckTarget {
@@ -73,13 +78,13 @@ export class CheckTargetFormService {
   }
 
   resetForm(form: CheckTargetFormGroup, checkTarget: CheckTargetFormGroupInput): void {
-    const checkTargetRawValue = this.convertCheckTargetToCheckTargetRawValue({ ...this.getFormDefaults(), ...checkTarget });
-    form.reset(
-      {
-        ...checkTargetRawValue,
-        id: { value: checkTargetRawValue.id, disabled: true },
-      } as any /* cast to workaround https://github.com/angular/angular/issues/46458 */,
-    );
+    const checkTargetRawValue = this.convertCheckTargetToCheckTargetRawValue({
+      ...this.getFormDefaults(),
+      ...checkTarget,
+    });
+
+    form.reset(checkTargetRawValue);
+    form.get('id')?.disable(); // 👈 Đặt disabled riêng sau
   }
 
   private getFormDefaults(): CheckTargetFormDefaults {
@@ -107,6 +112,8 @@ export class CheckTargetFormService {
   ): CheckTargetFormRawValue | PartialWithRequiredKeyOf<NewCheckTargetFormRawValue> {
     return {
       ...checkTarget,
+      evaluationLevelId: checkTarget.evaluationLevelId != null ? +checkTarget.evaluationLevelId : null,
+      checkGroupId: checkTarget.checkGroupId != null ? +checkTarget.checkGroupId : null,
       createdAt: checkTarget.createdAt ? checkTarget.createdAt.format(DATE_TIME_FORMAT) : undefined,
       updatedAt: checkTarget.updatedAt ? checkTarget.updatedAt.format(DATE_TIME_FORMAT) : undefined,
     };

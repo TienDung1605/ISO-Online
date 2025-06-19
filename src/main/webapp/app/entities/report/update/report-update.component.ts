@@ -88,6 +88,9 @@ export class ReportUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.report && this.report.name === control.value) {
+      return of(null);
+    }
     return this.reportService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),

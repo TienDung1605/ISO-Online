@@ -131,4 +131,8 @@ export class CriteriaGroupService {
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
   }
+
+  getAllCriteriaGroups(): Observable<ICriteriaGroup[]> {
+    return this.http.get<ICriteriaGroup[]>(this.resourceUrl);
+  }
 }

@@ -17,7 +17,7 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <!-- <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a
             class="dropdown-item"
             routerLink="/plan"
@@ -28,6 +28,46 @@
             <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
             <span class="dropdown-item-span">Kế hoạch</span>
           </a>
+        </li> -->
+        <li
+          ngbDropdown
+          class="nav-item dropdown pointer"
+          display="dynamic"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
+            <span>
+              <fa-icon icon="asterisk"></fa-icon>
+              <span class="dropdown-item-span">Kế hoạch</span>
+            </span>
+          </a>
+          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="/plan"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span class="dropdown-item-span">Quản lý kế hoạch</span>
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="/plan-group"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="plus" [fixedWidth]="true"></fa-icon>
+                <span class="dropdown-item-span">Quản lý kế hoạch gộp</span>
+              </a>
+            </li>
+          </ul>
         </li>
 
         @if (account() !== null) {

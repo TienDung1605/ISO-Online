@@ -34,6 +34,8 @@ export class PlanService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/plans');
   protected planDetailUrl = this.applicationConfigService.getEndpointFor('api/plans/plan-detail');
+  protected planGroupHistoryUrl = this.applicationConfigService.getEndpointFor('/api/plan-group-history');
+  protected planGroupHistoryDetailUrl = this.applicationConfigService.getEndpointFor('/api/plan-group-history-detail');
   create(plan: NewPlan): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(plan);
     return this.http.post<RestPlan>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));
@@ -103,6 +105,12 @@ export class PlanService {
     return planCollection;
   }
 
+  getAllStatisReportByPlanId(planId: number): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<any[]>(`${this.resourceUrl}/plan-detail-summarize/${planId}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
+  }
+
   protected convertDateFromClient<T extends IPlan | NewPlan | PartialUpdatePlan>(plan: T): RestOf<T> {
     return {
       ...plan,
@@ -149,5 +157,21 @@ export class PlanService {
       params: { fileName: fileName },
       responseType: 'text',
     });
+  }
+
+  getAllByPlainId(id: number): Observable<HttpResponse<{}>> {
+    return this.http.get(`${this.planGroupHistoryUrl}/${id}`, { observe: 'response' });
+  }
+
+  createGroupHistory(data: any): Observable<any> {
+    return this.http.post<any>(this.planGroupHistoryUrl, data, { observe: 'response' });
+  }
+
+  createGroupHistoryDetail(data: any): Observable<EntityResponseType> {
+    return this.http.post<any>(this.planGroupHistoryDetailUrl, data, { observe: 'response' });
+  }
+
+  getAllPlanGroupHistoryDetailsByPlanId(planId: number): Observable<any> {
+    return this.http.get<any[]>(`${this.planGroupHistoryDetailUrl}/by-plan-id/${planId}`, { observe: 'response' });
   }
 }

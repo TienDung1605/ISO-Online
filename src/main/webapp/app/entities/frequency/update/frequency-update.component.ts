@@ -59,6 +59,9 @@ export class FrequencyUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.frequency && this.frequency.name === control.value) {
+      return of(null);
+    }
     return this.frequencyService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),
