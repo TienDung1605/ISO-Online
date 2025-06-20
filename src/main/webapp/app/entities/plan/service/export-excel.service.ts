@@ -387,8 +387,8 @@ export class ExportExcelService {
         PassRowData.push('');
       }
       dataForExport.push(failRowData);
-      dataForExport.push(['Tổng số lượng không đạt', '', '', totalFail]);
       dataForExport.push(PassRowData);
+      dataForExport.push(['Tổng số lượng không đạt', '', '', totalFail]);
       dataForExport.push(['Tổng số lượng đạt', '', '', totalPass]);
     } else {
       const ncRowData: any[] = ['NC', '', ''];
@@ -396,8 +396,8 @@ export class ExportExcelService {
       const scoreRowData: any[] = ['ĐIỂM', '', ''];
 
       for (let i = 0; i < numberOfDataColumns; i++) {
-        ncRowData.push(ncCountsPerColumn[i] * markNC.mark);
-        lyRowData.push(lyCountsPerColumn[i] * markLY.mark);
+        ncRowData.push(ncCountsPerColumn[i]);
+        lyRowData.push(lyCountsPerColumn[i]);
         scoreRowData.push(ncCountsPerColumn[i] * markNC.mark + lyCountsPerColumn[i] * markLY.mark);
       }
       for (let i = 0; i < numberOfNewFixedColumns; i++) {

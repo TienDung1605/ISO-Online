@@ -295,7 +295,6 @@ public class PlanResource {
             planDetailDTO.setUpdateBy(plan.getUpdateBy());
             List<ReportResponse> response = this.reportRepository.getDetailByPlanId(plan.getId());
             planDetailDTO.setPlanDetail(response);
-            System.out.println("check plan id :: " + response.toArray().length);
             planDetailDTOS.add(planDetailDTO);
         }
         return planDetailDTOS;

@@ -1,28 +1,31 @@
 package com.mycompany.myapp.service.dto;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
 public interface ReportResponse {
-    Integer getId();
+    Long getId();
     String getName();
     String getCode();
-    Integer getSampleReportId();
+    Long getSampleReportId();
     String getTestOfObject();
     String getChecker();
     String getStatus();
     String getFrequency();
     String getReportType();
-    Integer getReportTypeId();
+    Long getReportTypeId();
     Integer getGroupReport();
-    String getCreatedAt();
-    String getUpdatedAt();
-    String getCheckTime();
-    Integer getScoreScale();
+    LocalDateTime getCreatedAt();
+    LocalDateTime getUpdatedAt();
+    LocalDateTime getCheckTime();
+    String getScoreScale();
     String getConvertScore();
     String getUpdateBy();
-    Integer getPlanId();
+    Long getPlanId();
     String getUser();
     String getDetail();
-    Integer getSumOfAudit();
-    Integer getSumOfNc();
-    Integer getSumOfLy();
-    Integer getSumOfFail();
+    Long getSumOfAudit();
+    Long getSumOfNc();
+    Long getSumOfLy();
+    Long getSumOfFail();
 }
