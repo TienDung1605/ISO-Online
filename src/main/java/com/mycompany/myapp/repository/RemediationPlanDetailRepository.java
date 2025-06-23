@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 public interface RemediationPlanDetailRepository extends JpaRepository<RemediationPlanDetail, Long> {
     public List<RemediationPlanDetail> findAllByRemediationPlanId(Long id);
 
+    public List<RemediationPlanDetail> findByRemediationPlanId(Long remediationPlanId);
+
     @Query(
         value = """
         SELECT rpd.*

@@ -10,6 +10,7 @@
         <th>Người kiểm tra</th>
         <th>Loại</th>
         <th>Ngày kiểm tra</th>
+        <th style="min-width: 150px">Trạng thái</th>
         <th>Tùy chọn</th>
       </tr>
       <tr>
@@ -30,6 +31,7 @@
           <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
         </th>
         <th></th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-group let-index="rowIndex">
@@ -41,13 +43,24 @@
         <td>{{ group.type }}</td>
         <td>{{ group.checkDate | formatMediumDatetime }}</td>
         <td>
+          <p-tag [value]="group.status" [severity]="getSeverity(group.status)" />
+        </td>
+        <td>
           <div class="action-buttons">
             <p-button
               icon="pi pi-file-edit"
               aria-label="Đánh giá"
+              *ngIf="group.status != 'Đã hoàn thành'"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
               [severity]="'warning'"
-              (onClick)="openModalCriteria(group.id)"
+              (onClick)="openModalCriteria(group)"
+            />
+            <p-button
+              icon="pi pi-check"
+              (onClick)="completeEvalReport(group)"
+              *ngIf="group.status != 'Đã hoàn thành'"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+              severity="success"
             />
             <p-button
               icon="pi pi-trash"
@@ -150,6 +163,7 @@
           <th class="text-center border">Đánh giá</th>
           <th class="text-center border">Nội dung đánh giá</th>
           <th class="text-center border">Hình ảnh đánh giá</th>
+          <th class="text-center border">Không đánh giá</th>
         </tr>
         <tr>
           <th class="text-center border"></th>
@@ -159,6 +173,8 @@
           <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
           <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
           <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
+          <th class="text-center border"></th>
+          <th class="text-center border"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-report let-index="rowIndex">
@@ -169,16 +185,16 @@
           <td class="text-center border">{{ report.createdBy }}</td>
           <td class="text-center border">{{ report.convertScore }}</td>
           <td class="text-center border">
-            <select [(ngModel)]="report.result" name="report.result">
+            <select [(ngModel)]="report.result" name="report.result" [disabled]="report.hasEvaluation == 0">
               <option>Chọn kết quả</option>
               <option *ngFor="let item1 of listEvalReports[index]" [value]="item1.name">{{ item1.name }}</option>
             </select>
           </td>
           <td class="text-center border">
-            <input type="text" [(ngModel)]="report.note" />
+            <input type="text" [(ngModel)]="report.note" [disabled]="report.hasEvaluation == 0" />
           </td>
           <td class="text-center border">
-            <p-button (click)="showDialogUpLoad(report, index)" label="Attach files" />
+            <p-button (click)="showDialogUpLoad(report, index)" label="Attach files" [disabled]="report.hasEvaluation == 0" />
             <p-dialog
               header="Upload Files"
               [modal]="true"
@@ -246,6 +262,9 @@
               </ng-template>
             </p-dialog>
           </td>
+          <td class="text-center border">
+            <p-checkbox [binary]="true" [(ngModel)]="report.hasEvaluation" [trueValue]="0" [falseValue]="1"></p-checkbox>
+          </td>
         </tr>
       </ng-template>
     </p-table>
@@ -269,3 +288,4 @@
     </div>
   </ng-template>
 </p-dialog>
+<p-confirmDialog />

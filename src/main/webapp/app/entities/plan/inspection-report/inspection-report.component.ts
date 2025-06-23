@@ -26,6 +26,7 @@ import { TagModule } from 'primeng/tag';
 import { CheckTargetService } from 'app/entities/check-target/service/check-target.service';
 import { CheckerGroupService } from 'app/entities/checker-group/service/checker-group.service';
 import { ExportExcelService } from '../service/export-excel.service';
+import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
 
 @Component({
   selector: 'jhi-inspection-report',
@@ -48,6 +49,7 @@ import { ExportExcelService } from '../service/export-excel.service';
     DialogModule,
     FileUploadModule,
     TagModule,
+    HasAnyAuthorityDirective,
   ],
   templateUrl: './inspection-report.component.html',
   styleUrl: './inspection-report.component.scss',
@@ -85,6 +87,10 @@ export class InspectionReportComponent implements OnInit {
   dialogVisibility: { [key: string]: boolean } = {};
   remediationPlanSelected: any = {};
   selectedlistCriterialError: any[] = [];
+  completeRemeDialog: boolean = false;
+  completeRemePlan: any[] = [];
+  selectedRecheckCriterial: any[] = [];
+  remediationPlanInfo: any = {};
 
   constructor(
     protected modalService: NgbModal,
@@ -259,6 +265,8 @@ export class InspectionReportComponent implements OnInit {
           planTimeComplete: dayjs(item.planTimeComplete).toISOString(),
           createdAt: dayjs(),
           createdBy: data.createdBy,
+          note: item.description,
+          status: 'Đang xử lý',
         };
       });
       this.remediationPlanService.createRemediationPlanDetail(arrCriterialErr).subscribe(repo => {
@@ -441,11 +449,52 @@ export class InspectionReportComponent implements OnInit {
     this.dialogRepairCriterial = false;
   }
 
-  completePlanRepair(data: any) {
-    data.status = 'Đã hoàn thành';
-    this.remediationPlanService.create(data).subscribe(res => {
-      this.reloadRemediationTableData(this.report.id);
+  showDialogComplete(data: any) {
+    this.remediationPlanInfo = data;
+    this.remediationPlanService.getRemediationPlanWithFullDetails(data.id).subscribe(res => {
+      this.completeRemePlan = res.body.details || [];
+      this.completeRemeDialog = true;
     });
+  }
+
+  completePlanRepair() {
+    // console.log(this.selectedRecheckCriterial);
+    if (this.selectedRecheckCriterial.length === 0) {
+      return;
+    }
+    const updateRequests: any[] = this.selectedRecheckCriterial.map(cpl => {
+      const { detail, ...rest } = cpl;
+      return {
+        ...rest,
+        status: 'Đã hoàn thành',
+        repairDate: dayjs(cpl.repairDate).toISOString(),
+      };
+    });
+    console.log(updateRequests);
+    this.remediationPlanService.createRemediationPlanDetail(updateRequests).subscribe(repo => {
+      this.selectedRecheckCriterial.forEach(selectedCpl => {
+        const index = this.completeRemePlan.findIndex(cpl => cpl.id === selectedCpl.id);
+        if (index !== -1) {
+          this.completeRemePlan[index].status = 'Đã hoàn thành';
+        }
+      });
+      this.selectedRecheckCriterial = [];
+      this.checkAndUpdateParentRemediationPlanStatus();
+      this.completeRemeDialog = false;
+    });
+  }
+
+  checkAndUpdateParentRemediationPlanStatus(): void {
+    if (!this.remediationPlanInfo || !this.completeRemePlan || this.completeRemePlan.length === 0) {
+      return;
+    }
+    const pendingDetails = this.completeRemePlan.filter(cpl => cpl.status !== 'Đã hoàn thành');
+    if (pendingDetails.length === 0) {
+      this.remediationPlanInfo.status = 'Đã hoàn thành';
+      this.remediationPlanService.create(this.remediationPlanInfo).subscribe(res => {
+        this.reloadRemediationTableData(this.report.id);
+      });
+    }
   }
 
   exportToExcel() {

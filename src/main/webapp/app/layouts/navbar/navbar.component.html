@@ -30,6 +30,13 @@
           </a>
         </li> -->
         <li
+          *jhiHasAnyAuthority="[
+            'ROLE_ISO_ADMIN',
+            'ROLE_ISO_CREATE_PLAN',
+            'ROLE_ISO_CHECK',
+            'ROLE_ISO_CREATE_FIX_PLAN',
+            'ROLE_ISO_VIEW_PLAN'
+          ]"
           ngbDropdown
           class="nav-item dropdown pointer"
           display="dynamic"
@@ -43,7 +50,15 @@
             </span>
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
-            <li>
+            <li
+              *jhiHasAnyAuthority="[
+                'ROLE_ISO_ADMIN',
+                'ROLE_ISO_CREATE_PLAN',
+                'ROLE_ISO_CHECK',
+                'ROLE_ISO_CREATE_FIX_PLAN',
+                'ROLE_ISO_VIEW_PLAN'
+              ]"
+            >
               <a
                 class="dropdown-item"
                 routerLink="/plan"
@@ -55,7 +70,7 @@
                 <span class="dropdown-item-span">Quản lý kế hoạch</span>
               </a>
             </li>
-            <li>
+            <li *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_FIX_PLAN', 'ROLE_ISO_CHECK']">
               <a
                 class="dropdown-item"
                 routerLink="/plan-group"
@@ -72,6 +87,7 @@
 
         @if (account() !== null) {
           <li
+            *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_PLAN', 'ROLE_ISO_VIEW_ITEM']"
             ngbDropdown
             class="nav-item dropdown pointer"
             display="dynamic"
@@ -331,7 +347,7 @@
           </li>
         }
         <li
-          *jhiHasAnyAuthority="'ROLE_ADMIN'"
+          *jhiHasAnyAuthority="'ROLE_ISO_ADMIN'"
           ngbDropdown
           class="nav-item dropdown pointer"
           display="dynamic"

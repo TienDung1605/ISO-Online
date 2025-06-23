@@ -59,4 +59,8 @@ export class RemediationPlanService {
   getRecheckByReportId(reportId: number): Observable<HttpResponse<any>> {
     return this.http.get<any>(`${this.resourceRecheckDetailUrl}/by-report/${reportId}`, { observe: 'response' });
   }
+
+  getRemediationPlanWithFullDetails(id: number): Observable<HttpResponse<any>> {
+    return this.http.get<any>(`${this.resourceUrl}/remediation-plans/${id}/details`, { observe: 'response' });
+  }
 }

@@ -32,6 +32,9 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { HttpResponse } from '@angular/common/http';
 import { ExportExcelService } from '../service/export-excel.service';
+import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
+import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 interface CheckPlanDetail {
   id: number;
@@ -75,6 +78,9 @@ interface CriteriaSummary {
     DialogModule,
     TagModule,
     FileUploadModule,
+    HasAnyAuthorityDirective,
+    CalendarModule,
+    CheckboxModule,
   ],
   providers: [SummarizePlanComponent],
 })
@@ -99,113 +105,16 @@ export class PlanComponent implements OnInit {
   // userTesting: any;
   @ViewChild('userTesting') userTesting!: TemplateRef<any>;
   @ViewChild('gross') gross!: TemplateRef<any>;
-  @ViewChild('criteria') criteria!: TemplateRef<any>;
   @ViewChild('evaluationResult') evaluationResult!: TemplateRef<any>;
   @ViewChild('inspectionData') inspectionData!: TemplateRef<any>;
   @ViewChild('detailInspectionData') detailInspectionData!: TemplateRef<any>;
   @ViewChild('criteriaConclusion') criteriaConclusion!: TemplateRef<any>;
-  @ViewChild('evaluationPlan') evaluationPlan!: TemplateRef<any>;
   protected reportService = inject(ReportService);
-  planData = [
-    {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
-      orders: [
-        {
-          id: '1000-0',
-          productCode: 'f230fh0g3',
-          date: '2020-09-13',
-          amount: 65,
-          quantity: 1,
-          customer: 'David James',
-          status: 'PENDING',
-        },
-        {
-          id: '1000-1',
-          productCode: 'f230fh0g3',
-          date: '2020-05-14',
-          amount: 130,
-          quantity: 2,
-          customer: 'Leon Rodrigues',
-          status: 'DELIVERED',
-        },
-        {
-          id: '1000-2',
-          productCode: 'f230fh0g3',
-          date: '2019-01-04',
-          amount: 65,
-          quantity: 1,
-          customer: 'Juan Alejandro',
-          status: 'RETURNED',
-        },
-        {
-          id: '1000-3',
-          productCode: 'f230fh0g3',
-          date: '2020-09-13',
-          amount: 195,
-          quantity: 3,
-          customer: 'Claire Morrow',
-          status: 'CANCELLED',
-        },
-      ],
-    },
-  ];
-
-  planDetails = [
-    {
-      id: 1,
-      level: 'Cấp 1',
-      checkTarget: 'Đối tượng 1',
-      reportType: 'Loại 1',
-      reportTemplate: 'Mẫu 1',
-      reportCode: 'BBKT001',
-      reportGroup: 'Nhóm 1',
-      frequency: 'Hàng ngày',
-      scoreScale: '10',
-    },
-    {
-      id: 2,
-      level: 'Cấp 2',
-      checkTarget: 'Đối tượng 2',
-      reportType: 'Loại 2',
-      reportTemplate: 'Mẫu 2',
-      reportCode: 'BBKT002',
-      reportGroup: 'Nhóm 2',
-      frequency: 'Hàng tuần',
-      scoreScale: '10',
-    },
-    {
-      id: 3,
-      level: 'Cấp 2',
-      checkTarget: 'Đối tượng 3',
-      reportType: 'Loại 2',
-      reportTemplate: 'Mẫu 2',
-      reportCode: 'BBKT003',
-      reportGroup: 'Nhóm 2',
-      frequency: 'Hàng tháng',
-      scoreScale: '10',
-    },
-  ];
 
   columnWidths = {
     'min-width': '960px',
     width: '100%',
   };
-
-  options = [
-    { label: 5, value: 5 },
-    { label: 10, value: 10 },
-    { label: 20, value: 20 },
-    { label: 120, value: 120 },
-  ];
 
   scriptEvaluations = [
     {
@@ -376,6 +285,8 @@ export class PlanComponent implements OnInit {
   report: any = {};
   reportSelected: any = {};
   currentPage: number = 0;
+  minSelectableDate!: Date;
+  maxSelectableDate!: Date;
 
   trackId = (_index: number, item: IPlan): number => this.planService.getPlanIdentifier(item);
 
@@ -422,7 +333,7 @@ export class PlanComponent implements OnInit {
       this.planEvaluations = this.planEvaluations
         .filter((item: any) => item.type === 'single')
         .map((item: any) => {
-          const dateOnly = item.checkDate ? item.checkDate.split('T')[0] : '';
+          const dateOnly = item.checkDate ? new Date(item.checkDate) : '';
           return {
             ...item,
             checkDate: dateOnly,
@@ -528,23 +439,6 @@ export class PlanComponent implements OnInit {
     this.router.navigate(['summarize-plan']);
   }
 
-  openModalCriteria(): void {
-    this.modalService
-      .open(this.criteria, {
-        ariaLabelledBy: 'modal-criteria-title',
-        size: 'xl',
-        backdrop: 'static',
-      })
-      .result.then(
-        result => {
-          // console.log('Modal closed');
-        },
-        reason => {
-          // console.log('Modal dismissed');
-        },
-      );
-  }
-
   openModalEvaluation(): void {
     this.modalService
       .open(this.evaluationResult, {
@@ -600,23 +494,6 @@ export class PlanComponent implements OnInit {
     this.modalService
       .open(this.criteriaConclusion, {
         ariaDescribedBy: 'modal-criteria-conclusion-title',
-        size: 'xl',
-        backdrop: 'static',
-      })
-      .result.then(
-        result => {
-          console.log('Modal closed');
-        },
-        reason => {
-          console.log('Modal dismissed');
-        },
-      );
-  }
-
-  openModalEvaluationPlan(): void {
-    this.modalService
-      .open(this.evaluationPlan, {
-        ariaDescribedBy: 'modal-evaluation-plan-title',
         size: 'xl',
         backdrop: 'static',
       })
@@ -727,6 +604,10 @@ export class PlanComponent implements OnInit {
     this.planParent = data;
     this.report = data.planDetail[index];
     this.loadEvalTable(data.planDetail[index].id);
+    this.minSelectableDate = new Date(this.planParent.timeStart);
+    this.maxSelectableDate = new Date(this.planParent.timeEnd);
+    this.minSelectableDate.setHours(0, 0, 0, 0);
+    this.maxSelectableDate.setHours(23, 59, 59, 999);
     this.dialogCheckPlan = true;
   }
 
@@ -871,30 +752,6 @@ export class PlanComponent implements OnInit {
     }
   }
 
-  checkEvent(data: any, index: number): void {
-    const isDuplicate = data.some((item: any, i: number) => i !== index && item.checkDate === data[index].checkDate);
-    if (isDuplicate) {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'center-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen(toast) {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        },
-      });
-      Toast.fire({
-        icon: 'error',
-        title: 'Dữ liệu ngày kiểm tra đã tồn tại',
-      });
-      this.disableSaveCheckDate[index] = true;
-    } else {
-      this.disableSaveCheckDate[index] = false;
-    }
-  }
-
   // region
   // xử lý uploda file
   showDialogUpLoad(data: any, rowIndex: number): void {
@@ -967,8 +824,10 @@ export class PlanComponent implements OnInit {
       this.planGroup.checkDate = dayjs(this.planGroup.checkDate).toISOString();
       this.planGroup.type = 'single';
       this.planGroup.createdAt = dayjs();
+      this.planGroup.status = 'Mới tạo';
     } else {
       this.planGroup.checkDate = dayjs(this.planGroup.checkDate).toISOString();
+      this.planGroup.status = 'Đang đánh giá';
     }
     try {
       const res = await this.planService.createGroupHistory(this.planGroup).toPromise();
@@ -987,6 +846,9 @@ export class PlanComponent implements OnInit {
         fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
       );
       await Promise.all(uploadPromises);
+      this.planGroup.id = res.body;
+      this.planGroup.status = 'Đang đánh giá';
+      await this.planService.createGroupHistory(this.planGroup).toPromise();
       await this.planService.createGroupHistoryDetail(arrRptGrDetail).toPromise();
       const Toast = Swal.mixin({
         toast: true,

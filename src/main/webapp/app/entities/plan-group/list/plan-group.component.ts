@@ -1,10 +1,10 @@
-import { Component, inject, NgZone, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, NgZone, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormatMediumDatetimePipe } from 'app/shared/date';
 import { SortByDirective, SortDirective } from 'app/shared/sort';
-import { SharedModule } from 'primeng/api';
+import { SharedModule, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -20,6 +20,7 @@ import { ConvertService } from 'app/entities/convert/service/convert.service';
 import { FileUploadModule } from 'primeng/fileupload';
 import { PlanService } from 'app/entities/plan/service/plan.service';
 import Swal from 'sweetalert2';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 // import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
@@ -43,16 +44,18 @@ import Swal from 'sweetalert2';
     TagModule,
     DialogModule,
     FileUploadModule,
+    ConfirmDialogModule,
   ],
   templateUrl: './plan-group.component.html',
   styleUrls: ['../../shared.component.css'],
+  providers: [ConfirmationService],
 })
-export class PlanGroupComponent {
+export class PlanGroupComponent implements OnInit {
   @ViewChild('criteria') criteria!: TemplateRef<any>;
   @ViewChild('evaluationResult') evaluationResult!: TemplateRef<any>;
   @ViewChild('inspectionData') inspectionData!: TemplateRef<any>;
   selectAll = false;
-  selectedPlanCode: any;
+  selectedPlan: any = {};
   dialogVisible = false;
   listPlanGroups: any[] = [];
   criterialData: any[] = [];
@@ -73,6 +76,7 @@ export class PlanGroupComponent {
     protected activatedRoute: ActivatedRoute,
     protected convertService: ConvertService,
     private planService: PlanService,
+    private confirmationService: ConfirmationService,
   ) {}
 
   ngOnInit(): void {
@@ -93,8 +97,9 @@ export class PlanGroupComponent {
   }
 
   // mở dialog tiêu chí và call các detail từ id kế hoạch nhóm để lấy danh sách tiêu trí
-  openModalCriteria(id: number): void {
-    this.planGroupService.findAllDetail(id).subscribe(res => {
+  openModalCriteria(data: any): void {
+    this.selectedPlan = data;
+    this.planGroupService.findAllDetail(data.id).subscribe(res => {
       this.planGrDetails = res.body;
       const seen = new Set<string>();
       this.criterialData = this.planGrDetails
@@ -155,7 +160,7 @@ export class PlanGroupComponent {
         return 'success';
       case 'Mới tạo':
         return 'danger';
-      case 'Chưa hoàn thành':
+      case 'Đang đánh giá':
         return 'waring';
     }
   }
@@ -247,7 +252,9 @@ export class PlanGroupComponent {
         fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
       );
       const createGroupDetailPromise = this.planService.createGroupHistoryDetail(this.planGrEvals).toPromise();
-      await Promise.all([...uploadPromises, createGroupDetailPromise]);
+      this.selectedPlan.status = 'Đang đánh giá';
+      const updateStatusPlanGroup = this.planService.createGroupHistory(this.selectedPlan).toPromise();
+      await Promise.all([...uploadPromises, createGroupDetailPromise, updateStatusPlanGroup]);
     } catch (err) {
       console.log(err);
     } finally {
@@ -273,6 +280,24 @@ export class PlanGroupComponent {
         title: 'Xóa thành công',
       });
       this.listPlanGroups.splice(index, 1);
+    });
+  }
+
+  completeEvalReport(data: any) {
+    console.log(data);
+    this.confirmationService.confirm({
+      message: 'Bạn có muốn hoành thành bản đánh giá này ?',
+      header: 'Hoàn thành đánh giá',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      accept: () => {
+        data.status = 'Đã hoàn thành';
+        this.planService.createGroupHistory(data).subscribe(res => {});
+      },
+      reject: () => {},
     });
   }
 }

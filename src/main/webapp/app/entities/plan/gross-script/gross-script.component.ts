@@ -23,6 +23,8 @@ import { ConvertService } from 'app/entities/convert/service/convert.service';
 import { EvaluatorService } from 'app/entities/evaluator/service/evaluator.service';
 import Swal from 'sweetalert2';
 import { PlanGroupService } from 'app/entities/plan-group/service/plan-group.service';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
 
 interface GroupReport {
   code: string | null;
@@ -56,9 +58,11 @@ interface GroupReport {
     TagModule,
     DialogModule,
     FileUploadModule,
+    CalendarModule,
+    DropdownModule,
   ],
   templateUrl: './gross-script.component.html',
-  styleUrls: ['../../shared.component.css'],
+  styleUrls: ['./gross-script.component.scss'],
 })
 export class GrossScriptComponent {
   @ViewChild('criteria') criteria!: TemplateRef<any>;
@@ -97,6 +101,9 @@ export class GrossScriptComponent {
   planGrDetails: any[] = [];
   planGrEvals: any[] = [];
   selectedCritical: any = {};
+  selectedPlan: any = {};
+  minSelectableDate!: Date;
+  maxSelectableDate!: Date;
 
   constructor(
     protected modalService: NgbModal,
@@ -117,6 +124,10 @@ export class GrossScriptComponent {
       this.reportService.getAllByPlanId(plan.id).subscribe(grossScripts => {
         this.grossScripts = grossScripts.map((s: any) => ({ ...s, detail: JSON.parse(s.detail) }));
       });
+      this.minSelectableDate = new Date(this.plan.timeStart);
+      this.maxSelectableDate = new Date(this.plan.timeEnd);
+      this.minSelectableDate.setHours(0, 0, 0, 0);
+      this.maxSelectableDate.setHours(23, 59, 59, 999);
     });
     this.sampleReportService.getListSuggestions({ field_name: 'type', source_table: 'jhi_convert' }).subscribe((res: any) => {
       this.conversions = Array.from(new Set(res.body));
@@ -258,7 +269,10 @@ export class GrossScriptComponent {
     data.planId = this.plan.id;
     data.type = arrReportGroups.length > 1 ? 'mutilple' : 'single';
     data.checkDate = dayjs(data.checkDate).toISOString();
+    data.status = 'Mới tạo';
+    this.selectedPlan = { ...data };
     this.planService.createGroupHistory(data).subscribe(res => {
+      this.selectedPlan.id = res.body;
       const result: any[] = [];
       arrReportGroups.forEach(item => {
         const groupNames: string[] = [];
@@ -285,11 +299,22 @@ export class GrossScriptComponent {
             planGroupHistoryId: res.body,
             reportId: item.id,
             reportName: item.name,
+            hasEvaluation: 1,
             status: item.status,
             convertScore: item.convertScore,
           });
         }
       });
+      this.groupReportData = {
+        code: null,
+        name: null,
+        planId: null,
+        checkDate: null,
+        type: null,
+        createdAt: dayjs(),
+        updatedAt: null,
+        createdBy: null,
+      };
       this.planService.createGroupHistoryDetail(result).subscribe({
         next: responsive => {
           Swal.fire({
@@ -374,7 +399,9 @@ export class GrossScriptComponent {
         fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
       );
       const createGroupDetailPromise = this.planService.createGroupHistoryDetail(this.planGrEvals).toPromise();
-      await Promise.all([...uploadPromises, createGroupDetailPromise]);
+      this.selectedPlan.status = 'Đang đánh giá';
+      const updateStatusPlanGroup = this.planService.createGroupHistory(this.selectedPlan).toPromise();
+      await Promise.all([...uploadPromises, createGroupDetailPromise, updateStatusPlanGroup]);
     } catch (err) {
       console.log(err);
     } finally {

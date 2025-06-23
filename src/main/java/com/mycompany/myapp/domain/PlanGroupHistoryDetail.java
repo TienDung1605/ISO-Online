@@ -44,6 +44,9 @@ public class PlanGroupHistoryDetail implements Serializable {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "has_evaluation")
+    private Integer hasEvaluation;
+
     @Column(name = "status")
     private String status;
 
@@ -118,6 +121,14 @@ public class PlanGroupHistoryDetail implements Serializable {
 
     public void setConvertScore(String convertScore) {
         this.convertScore = convertScore;
+    }
+
+    public Integer getHasEvaluation() {
+        return hasEvaluation;
+    }
+
+    public void setHasEvaluation(Integer hasEvaluation) {
+        this.hasEvaluation = hasEvaluation;
     }
 
     public String getStatus() {

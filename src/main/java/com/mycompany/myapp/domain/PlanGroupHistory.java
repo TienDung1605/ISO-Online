@@ -37,6 +37,9 @@ public class PlanGroupHistory implements Serializable {
     @Column(name = "created_by")
     private String createdBy;
 
+    @Column(name = "status")
+    private String status;
+
     public Long getId() {
         return id;
     }
@@ -107,5 +110,13 @@ public class PlanGroupHistory implements Serializable {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

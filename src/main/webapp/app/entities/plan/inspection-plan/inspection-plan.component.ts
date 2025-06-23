@@ -24,6 +24,7 @@ import dayjs from 'dayjs/esm';
 import { RemediationPlanService } from '../service/remediationPlan.service';
 import Swal from 'sweetalert2';
 import { TagModule } from 'primeng/tag';
+import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
 
 @Component({
   selector: 'jhi-inspection-report',
@@ -46,6 +47,7 @@ import { TagModule } from 'primeng/tag';
     DialogModule,
     FileUploadModule,
     TagModule,
+    HasAnyAuthorityDirective,
   ],
   templateUrl: './inspection-plan.component.html',
   styleUrl: './inspection-plan.component.scss',

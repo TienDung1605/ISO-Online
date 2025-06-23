@@ -73,6 +73,7 @@
         [severity]="'success'"
       />
       <p-button
+        *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_FIX_PLAN']"
         label="Khắc phục"
         icon="pi pi-sync"
         aria-label="Complete"
@@ -216,29 +217,33 @@
             <p-tag [value]="reme.status" [severity]="reme.status == 'Đã hoàn thành' ? 'success' : 'danger'" />
           </td>
           <td class="text-center border">
-            <p-button
-              icon="pi pi-wrench"
-              aria-label="Check"
-              (onClick)="showDialogListCriterialRepair(reme)"
-              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-              [severity]="'success'"
-            />
+            <ng-container *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CHECK']">
+              <p-button
+                icon="pi pi-wrench"
+                aria-label="Check"
+                *ngIf="reme.status != 'Đã hoàn thành'"
+                styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                (onClick)="showDialogListCriterialRepair(reme)"
+                [severity]="'success'"
+              />
+              <p-button
+                *ngIf="reme.status != 'Đã hoàn thành'"
+                icon="pi pi-check"
+                aria-label="complete"
+                styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+                [severity]="'success'"
+                (onClick)="completePlanRepair(reme)"
+                title="Hoàn thành"
+              />
+            </ng-container>
             <p-button
               icon="pi pi-trash"
               aria-label="Delete"
+              *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_FIX_PLAN']"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'danger'"
               (onClick)="deletePlanRepair(reme)"
               title="Xoá"
-            />
-            <p-button
-              icon="pi pi-check"
-              aria-label="Delete"
-              *ngIf="reme.status != 'Đã hoàn thành'"
-              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-              [severity]="'success'"
-              (onClick)="completePlanRepair(reme)"
-              title="Hoàn thành"
             />
           </td>
         </tr>
