@@ -1,7 +1,8 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Plan;
-import com.mycompany.myapp.service.dto.PlanStatisticalResponse;
+import com.mycompany.myapp.domain.PlanAutoUpdateResponse;
+import com.mycompany.myapp.domain.PlanStatisticalResponse;
 import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -88,4 +89,19 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
         nativeQuery = true
     )
     public List<PlanStatisticalResponse> getAllPlanStatistical(Long planId);
+
+    @Query(
+        value = " SELECT" +
+        " b.id as id, \n" +
+        " case when SUM(case when a.status ='Đã hoàn thành' then 0 ELSE 1 END) =0 then 'Đã hoàn thành'ELSE 'Chưa hoàn thành'END  AS status FROM iso.plan_group_history a\n" +
+        " INNER JOIN iso.plan_group_history_detail c ON c.plan_group_history_id = a.id\n" +
+        " INNER JOIN iso.report b ON b.id = c.report_id WHERE a.plan_id = ?1\n" +
+        " GROUP BY b.id\n" +
+        " ORDER BY b.id ;",
+        nativeQuery = true
+    )
+    public List<PlanAutoUpdateResponse> getReportStatusByPlanId(Long planId);
+
+    @Query(value = "select * from iso.plan where time_end like ?1 ;", nativeQuery = true)
+    public List<Plan> getPlanByTimeEnd(String timeEnd);
 }

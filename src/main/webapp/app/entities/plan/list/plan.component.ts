@@ -748,7 +748,19 @@ export class PlanComponent implements OnInit {
 
   deletePlanChild(data: any, index: number): void {
     if (data && data.length > 0) {
-      data.splice(index, 1);
+      if (data[index].id) {
+        this.planGrService.delete(data[index].id).subscribe({
+          next: () => {
+            console.log('Xóa thành công kế hoạch con');
+            data.splice(index, 1);
+          },
+          error: error => {
+            console.error('Lỗi khi xóa kế hoạch con:', error);
+          },
+        });
+      } else {
+        data.splice(index, 1);
+      }
     }
   }
 
@@ -812,12 +824,23 @@ export class PlanComponent implements OnInit {
   }
 
   generateCode(planId: number): string {
-    const uid = crypto.randomUUID();
+    const uid = window.crypto?.randomUUID?.() || this.fallbackUUID();
     const currentDate = dayjs().format('DDMMYYYYHHmmssSSS');
     return `PG-${planId}-${uid}-${currentDate}`;
   }
 
+  private fallbackUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      // eslint-disable-next-line no-bitwise
+      const r = (Math.random() * 16) | 0;
+      // eslint-disable-next-line no-bitwise
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
   async savePlanGrAndDetail() {
+    // Gán các giá trị khởi tạo nếu là tạo mới
     if (this.planGroup.id === undefined || this.planGroup.id === null) {
       this.planGroup.code = this.generateCode(this.planParent.id);
       this.planGroup.planId = this.planParent.id;
@@ -827,7 +850,9 @@ export class PlanComponent implements OnInit {
       this.planGroup.status = 'Mới tạo';
     } else {
       this.planGroup.checkDate = dayjs(this.planGroup.checkDate).toISOString();
-      this.planGroup.status = 'Đang đánh giá';
+      if (this.planGroup.status !== 'Đang thực hiện') {
+        this.planGroup.status = 'Đang thực hiện';
+      }
     }
     try {
       const res = await this.planService.createGroupHistory(this.planGroup).toPromise();
@@ -847,9 +872,27 @@ export class PlanComponent implements OnInit {
       );
       await Promise.all(uploadPromises);
       this.planGroup.id = res.body;
-      this.planGroup.status = 'Đang đánh giá';
-      await this.planService.createGroupHistory(this.planGroup).toPromise();
-      await this.planService.createGroupHistoryDetail(arrRptGrDetail).toPromise();
+      if (this.planGroup.status !== 'Đang thực hiện') {
+        this.planGroup.status = 'Đang thực hiện';
+      }
+      if (arrRptGrDetail.length > 0) {
+        await this.planService.createGroupHistoryDetail(arrRptGrDetail).toPromise();
+      }
+      if (this.report.status == 'Mới tạo') {
+        this.report.detail = typeof this.report.detail === 'string' ? this.report.detail : JSON.stringify(this.report.detail);
+        this.report.status = 'Đang thực hiện';
+        this.report.createdAt = dayjs(this.report.createdAt);
+        this.report.updatedAt = dayjs();
+        await this.reportService.update(this.report).toPromise();
+      }
+      if (this.planParent.status == 'Mới tạo') {
+        this.planParent.status = 'Đang thực hiện';
+        this.planParent.timeStart = dayjs(this.planParent.timeStart);
+        this.planParent.timeEnd = dayjs(this.planParent.timeEnd);
+        this.planParent.createdAt = dayjs(this.planParent.createdAt);
+        this.planParent.updatedAt = dayjs();
+        await this.planService.update(this.planParent).toPromise();
+      }
       const Toast = Swal.mixin({
         toast: true,
         position: 'center-end',
@@ -869,6 +912,7 @@ export class PlanComponent implements OnInit {
       this.dialogCheckPlanChild = false;
     } catch (error) {
       console.error('Lỗi khi lưu dữ liệu:', error);
+      Swal.fire('Lỗi', 'Đã xảy ra lỗi khi lưu dữ liệu.', 'error');
     }
   }
 

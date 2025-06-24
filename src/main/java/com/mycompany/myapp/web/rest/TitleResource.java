@@ -1,8 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Title;
+import com.mycompany.myapp.domain.TitleResponse;
 import com.mycompany.myapp.repository.TitleRepository;
-import com.mycompany.myapp.service.dto.TitleResponse;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;

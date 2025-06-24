@@ -6,8 +6,8 @@
       <div class="col-md-6">
         <label for="testObject">Đối tượng kiểm tra</label>
         <select id="testObject" class="form-control" [(ngModel)]="selectedTestObject">
-          <option *ngFor="let item of testObjects" [value]="item">
-            {{ item }}
+          <option *ngFor="let item of testObjects" [value]="item.name">
+            {{ item.name }}
           </option>
         </select>
       </div>
@@ -31,11 +31,23 @@
       <div class="col-md-6">
         <label for="reportTemplate">&nbsp;</label>
         <p-button
-          label="Apply"
+          label="Lọc"
           icon="pi pi-check"
           aria-label="Apply"
           styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
           [severity]="'info'"
+          (onClick)="filterGrossScripts()"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="reportTemplate">&nbsp;</label>
+        <p-button
+          label="Hủy lọc"
+          icon="pi pi-trash"
+          aria-label="Hủy lọc"
+          styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
+          [severity]="'danger'"
+          (onClick)="resetFilter()"
         />
       </div>
       <div class="col-md-6">
@@ -53,7 +65,14 @@
     </div>
   </div>
 
-  <p-table [value]="grossScripts" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+  <p-table
+    [value]="grossScripts"
+    [paginator]="true"
+    [rows]="10"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines"
+    [(selection)]="selectedReports"
+  >
     <ng-template pTemplate="header">
       <tr>
         <th>STT</th>
@@ -115,13 +134,14 @@
         <td>{{ script.reportType }}</td>
         <td><p-tag [value]="script.status" [severity]="getSeverity(script.status)"></p-tag></td>
         <td>
-          <p-checkbox
+          <!-- <p-checkbox
             [(ngModel)]="script.groupReport"
             [binary]="true"
             [trueValue]="1"
             [falseValue]="0"
             (onChange)="checkGroupSelected()"
-          ></p-checkbox>
+          ></p-checkbox> -->
+          <p-tableCheckbox [value]="script" />
         </td>
       </tr>
     </ng-template>
@@ -138,17 +158,10 @@
       label="Lưu"
       icon="pi pi-save"
       aria-label="Save"
-      [disabled]="!disableSaveGroupReport"
+      [disabled]="selectedReports.length === 0"
       styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
       [severity]="'info'"
       (onClick)="openGroupReportModal()"
-    />
-    <p-button
-      label="Apply"
-      icon="pi pi-check"
-      aria-label="Apply"
-      styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
-      [severity]="'success'"
     />
   </div>
 </div>

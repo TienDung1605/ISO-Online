@@ -79,7 +79,6 @@ interface PlanDetail {
 })
 export class PlanUpdateComponent implements OnInit {
   mode: 'NEW' | 'EDIT' | 'COPY' = 'NEW';
-  selectedGroupId: number | null = null;
   isSaving = false;
   isEditMode = false;
   copiedPlan = false;
@@ -104,11 +103,12 @@ export class PlanUpdateComponent implements OnInit {
   checkLevels: any[] = [];
   listOfFrequency: any[] = [];
   checkTargets: any[] = [];
+  checkTargetBases: any[] = [];
+  checkerGroups: any[] = [];
   reportTypes: any[] = [];
   sampleReport: any[] = [];
   evaluator: any[] = [];
-  userNameGroups: any[] = [];
-  evaluators?: IEvaluator[];
+  evaluators: any[] = [];
   detailReport: any = {};
   account: Account | null = null;
   listTitleHeaders: any[] = [];
@@ -126,8 +126,8 @@ export class PlanUpdateComponent implements OnInit {
   dialogVisibility: { [key: string]: boolean } = {};
   selectedFiles: { dataKey: string; files: File[] }[] = [];
   imageLoadErrors = new Set<string>();
-  currentReport: any = {};
-  selectedUserId: number | null = null;
+  userTester: any = {};
+
   protected planService = inject(PlanService);
   protected planFormService = inject(PlanFormService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -146,6 +146,7 @@ export class PlanUpdateComponent implements OnInit {
   protected sourceService = inject(SourceService);
   protected convertService = inject(ConvertService);
   protected router = inject(Router);
+
   editForm: PlanFormGroup = this.planFormService.createPlanFormGroup();
 
   constructor() {
@@ -174,7 +175,11 @@ export class PlanUpdateComponent implements OnInit {
     });
 
     this.checkTargetService.getAllCheckTargets().subscribe(res => {
-      this.checkTargets = res;
+      this.checkTargetBases = res;
+    });
+
+    this.checkerGroupService.getAllCheckerGroups().subscribe(res => {
+      this.checkerGroups = res;
     });
 
     this.reportTypeService.getAllCheckTargets().subscribe(res => {
@@ -193,7 +198,7 @@ export class PlanUpdateComponent implements OnInit {
       .getAllCheckTargets()
       .pipe(
         switchMap(evaluators => {
-          this.evaluator = evaluators;
+          this.evaluators = evaluators;
           evaluators.forEach(e => {});
           return this.checkerGroupService.query();
         }),
@@ -208,6 +213,7 @@ export class PlanUpdateComponent implements OnInit {
 
     this.isCopyMode = history.state.mode === 'COPY' ? true : false;
     this.activatedRoute.data.pipe(take(1)).subscribe(({ plan }) => {
+      if (this.isCopyMode) plan.code = `PLAN-COPY-${plan.code}`;
       this.plan = plan;
       if (plan) {
         this.updateForm(plan);
@@ -229,10 +235,6 @@ export class PlanUpdateComponent implements OnInit {
         });
       }
     });
-  }
-
-  onGroupSelect(groupId: number): void {
-    this.selectedGroupId = groupId;
   }
 
   showHelp(): void {
@@ -278,9 +280,10 @@ export class PlanUpdateComponent implements OnInit {
     if (plan.id === null || this.mode === 'COPY') {
       // Create mode
       const newPlan = { ...plan, id: null };
-      plan.updatedAt = dayjs(new Date());
-      plan.updateBy = this.account?.login;
-      plan.createBy = this.account?.login;
+      newPlan.updatedAt = dayjs(new Date());
+      newPlan.updateBy = this.account?.login;
+      newPlan.createBy = this.account?.login;
+      newPlan.status = 'Mới tạo';
       this.planService.create(newPlan).subscribe(response => {
         const savedPlan = response.body;
         plan.updatedAt = dayjs(new Date());
@@ -396,8 +399,8 @@ export class PlanUpdateComponent implements OnInit {
     });
   }
 
-  openModalUser(data: any): void {
-    this.currentReport = data;
+  openModalUser(index: number, data: any): void {
+    // this.currentReport = data;
     this.modalService
       .open(this.userTesting, {
         ariaLabelledBy: 'modal-basic-title',
@@ -406,18 +409,11 @@ export class PlanUpdateComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log(`Closed with: ${result}`);
+          data.checker = this.userTester.name;
+          this.updateReportName(index, this.userTester.name);
         },
         reason => {},
       );
-  }
-
-  saveUserSelection(modal: any): void {
-    const selectedUser = this.evaluator.find(user => user.id === Number(this.selectedUserId));
-    if (selectedUser) {
-      this.currentReport.user = selectedUser.name;
-    }
-    modal.close();
   }
 
   showDialogEdit(index: number): void {
@@ -428,7 +424,8 @@ export class PlanUpdateComponent implements OnInit {
     }
   }
 
-  removeVietnameseAndSpaces(str: string) {
+  removeVietnameseAndSpaces(str: any) {
+    if (!str) return '';
     return str
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
@@ -440,11 +437,12 @@ export class PlanUpdateComponent implements OnInit {
 
   updateReportCode(data: any, index: number): void {
     const selectedId = +data.target.value;
+    const evaluatorName = this.evaluators[index]?.name ?? '';
     this.listReports[index].code = `${this.sampleReport.find(r => r.id === selectedId).code}-${dayjs().format('DDMMYYYYHHmmssSSS')}`;
-    this.listReports[index].name = `${this.removeVietnameseAndSpaces(this.evaluator[index].name)}-${this.listReports[index].code}`;
+    this.listReports[index].name = `${this.removeVietnameseAndSpaces(evaluatorName)}-${this.listReports[index].code}`;
     this.listReports[index].frequency = this.sampleReport.find(r => r.id === selectedId).frequency;
     this.listReports[index].reportType = this.sampleReport.find(r => r.id === selectedId).reportType;
-    this.listReports[index].checker = this.evaluator[index].name;
+    this.listReports[index].checker = this.evaluators[index].name;
     this.listReports[index].detail = this.sampleReport.find(r => r.id === selectedId).detail;
     this.listTitleBody = JSON.parse(this.listReports[index].detail).body;
     this.listTitleHeaders = JSON.parse(this.listReports[index].detail).header;
@@ -454,8 +452,12 @@ export class PlanUpdateComponent implements OnInit {
     };
   }
 
-  updateReportName(index: number) {
-    this.listReports[index].name = `${this.listReports[index].checker}-${this.listReports[index].code}`;
+  updateReportName(index: number, name: string) {
+    if (name === '' || name === null) {
+      this.listReports[index].name = `${this.removeVietnameseAndSpaces(this.listReports[index].checker)}-${this.listReports[index].code}`;
+    } else {
+      this.listReports[index].name = `${this.removeVietnameseAndSpaces(name)}-${this.listReports[index].code}`;
+    }
   }
 
   addNewRowBBKT(data: any): void {
@@ -534,6 +536,32 @@ export class PlanUpdateComponent implements OnInit {
     this.imageLoadErrors.add(fileName);
   }
 
+  checkTarget() {
+    const checkGroupId = this.checkerGroups.find(x => x.name === this.editForm.get('subjectOfAssetmentPlan')?.value)?.id;
+    this.checkTargets = this.checkTargetBases.filter(x => x.checkGroupId === checkGroupId);
+    if (this.checkTargets.length === 0) {
+      Swal.fire({
+        title: 'Error',
+        text: `Không có dữ liệu đối tượng đánh giá thuộc nhóm đối tượng đánh giá ${this.editForm.get('subjectOfAssetmentPlan')?.value}`,
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
+  }
+
+  checkEvaluator() {
+    const checkGroupId = this.userTester.checkerGroup.id;
+    this.evaluator = this.evaluators.filter(x => x.userGroupId === checkGroupId);
+    if (this.evaluator.length === 0) {
+      Swal.fire({
+        title: 'Error',
+        text: `Không có dữ liệu người dùng thuộc nhóm đối tượng đánh giá ${this.userTester.checkerGroup.name}`,
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
+  }
+
   checkEvent(header: string, selectedIndex: number): void {
     const data = this.listReports[selectedIndex]?.detail?.header.find((element: any) => element.name === header);
     this.sourceService.getListTable().subscribe(tables => {
@@ -564,7 +592,13 @@ export class PlanUpdateComponent implements OnInit {
     });
   }
 
-  protected onSaveSuccess(): void {
+  async onSaveSuccess() {
+    await Swal.fire({
+      title: 'Success',
+      text: 'Lưu thành công',
+      icon: 'success',
+      confirmButtonText: 'OK',
+    });
     this.previousState();
   }
 

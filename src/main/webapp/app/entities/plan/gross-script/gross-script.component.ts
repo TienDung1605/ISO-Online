@@ -104,6 +104,8 @@ export class GrossScriptComponent {
   selectedPlan: any = {};
   minSelectableDate!: Date;
   maxSelectableDate!: Date;
+  selectedReports: any[] = [];
+  originalGrossScripts: any[] = [];
 
   constructor(
     protected modalService: NgbModal,
@@ -123,6 +125,7 @@ export class GrossScriptComponent {
       this.plan = plan;
       this.reportService.getAllByPlanId(plan.id).subscribe(grossScripts => {
         this.grossScripts = grossScripts.map((s: any) => ({ ...s, detail: JSON.parse(s.detail) }));
+        this.originalGrossScripts = [...this.grossScripts];
       });
       this.minSelectableDate = new Date(this.plan.timeStart);
       this.maxSelectableDate = new Date(this.plan.timeEnd);
@@ -136,6 +139,7 @@ export class GrossScriptComponent {
       this.listEvalReportsBase = res.body;
     });
     this.evaluatorService.getAllCheckTargets().subscribe(res => {
+      this.testObjects = res;
       this.evaluator = res;
     });
   }
@@ -145,6 +149,23 @@ export class GrossScriptComponent {
     this.grossScripts.forEach(script => {
       script.merge = this.selectAll;
     });
+  }
+
+  filterGrossScripts(): void {
+    this.grossScripts = this.originalGrossScripts.filter(script => {
+      const matchTestObject = !this.selectedTestObject || script.testOfObject === this.selectedTestObject;
+      const matchConversion = !this.selectedConversion || script.conversion === this.selectedConversion;
+      const matchTemplate = !this.selectedTemplate || script.reportTemplate === this.selectedTemplate;
+
+      return matchTestObject && matchConversion && matchTemplate;
+    });
+  }
+
+  resetFilter(): void {
+    this.grossScripts = [...this.originalGrossScripts];
+    this.selectedTestObject = null;
+    this.selectedConversion = null;
+    this.selectedTemplate = null;
   }
 
   openModalEvaluation(): void {
@@ -193,7 +214,7 @@ export class GrossScriptComponent {
 
   // kiểm tra disable nút lưu
   checkGroupSelected(): void {
-    this.disableSaveGroupReport = this.grossScripts.some(script => script.groupReport === 1);
+    this.disableSaveGroupReport = this.selectedReports.length > 0 ? false : true;
   }
 
   // region
@@ -257,24 +278,33 @@ export class GrossScriptComponent {
   // endregion
 
   generateCode(): string {
-    const uid = crypto.randomUUID();
-    // const currentDate = dayjs().format('DDMMYYYYHHmmssSSS');
+    const uid = window.crypto?.randomUUID?.() || this.fallbackUUID();
     return `PG-${this.plan.id}-${uid}`;
+  }
+
+  private fallbackUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      // eslint-disable-next-line no-bitwise
+      const r = (Math.random() * 16) | 0;
+      // eslint-disable-next-line no-bitwise
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 
   // Lưu kế hoạch gộp
   saveGroupReport(data: any) {
-    const arrReportGroups = this.grossScripts.filter(s => s.groupReport === 1);
+    // const arrReportGroups = this.grossScripts.filter(s => s.groupReport === 1);
     data.code = this.generateCode();
     data.planId = this.plan.id;
-    data.type = arrReportGroups.length > 1 ? 'mutilple' : 'single';
+    data.type = this.selectedReports.length > 1 ? 'mutilple' : 'single';
     data.checkDate = dayjs(data.checkDate).toISOString();
     data.status = 'Mới tạo';
     this.selectedPlan = { ...data };
     this.planService.createGroupHistory(data).subscribe(res => {
       this.selectedPlan.id = res.body;
       const result: any[] = [];
-      arrReportGroups.forEach(item => {
+      this.selectedReports.forEach(item => {
         const groupNames: string[] = [];
         const criterialNames: string[] = [];
         const frequency: string[] = [];
@@ -399,9 +429,24 @@ export class GrossScriptComponent {
         fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
       );
       const createGroupDetailPromise = this.planService.createGroupHistoryDetail(this.planGrEvals).toPromise();
-      this.selectedPlan.status = 'Đang đánh giá';
-      const updateStatusPlanGroup = this.planService.createGroupHistory(this.selectedPlan).toPromise();
-      await Promise.all([...uploadPromises, createGroupDetailPromise, updateStatusPlanGroup]);
+      if (this.selectedPlan.status === 'Mới tạo') {
+        this.selectedPlan.status = 'Đang thực hiện';
+        this.planService.createGroupHistory(this.selectedPlan).toPromise();
+      }
+      if (this.plan.status === 'Mới tạo') {
+        this.plan.status = 'Đang thực hiện';
+        this.planService.update(this.plan).toPromise();
+      }
+      const updateReportStatus = this.selectedReports
+        .filter(item => item.status === 'Mới tạo')
+        .map(item => {
+          item.detail = typeof item.detail === 'string' ? item.detail : JSON.stringify(item.detail);
+          item.status = 'Đang thực hiện';
+          item.createdAt = dayjs(item.createdAt);
+          item.updatedAt = dayjs();
+          return this.reportService.update(item).toPromise();
+        });
+      await Promise.all([...uploadPromises, createGroupDetailPromise, updateReportStatus]);
     } catch (err) {
       console.log(err);
     } finally {

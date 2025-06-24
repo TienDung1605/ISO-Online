@@ -131,40 +131,22 @@ export class CheckTargetUpdateComponent implements OnInit {
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICheckTarget>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+    result.subscribe({
+      next: async () => {
+        await Swal.fire({
+          title: 'Success',
+          text: this.checkTarget?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
           icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.checkTarget?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+          confirmButtonText: 'OK',
         });
         this.onSaveSuccess();
       },
-      error: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+      error: async () => {
+        await Swal.fire({
+          title: 'Error',
+          text: this.checkTarget?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
           icon: 'error',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.checkTarget?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+          confirmButtonText: 'OK',
         });
         this.onSaveError();
       },
@@ -216,9 +198,12 @@ export class CheckTargetUpdateComponent implements OnInit {
       levels: this.checkLevelService.query(),
       groups: this.checkGroupService.query(),
     }).subscribe(({ levels, groups }) => {
-      if (levels.body) this.checkLevels = levels.body;
-      if (groups.body) this.checkGroups = groups.body;
-
+      if (levels.body) {
+        this.checkLevels = levels.body;
+      }
+      if (groups.body) {
+        this.checkGroups = groups.body;
+      }
       setTimeout(() => {
         this.checkTargetFormService.resetForm(this.editForm, checkTarget);
         this.editForm.get('id')?.disable();

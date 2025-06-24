@@ -34,7 +34,7 @@
           </div>
 
           <div class="col-m4-25 col-container-child">
-            <label for="field_subjectOfAssetmentPlan">Đối tượng kế hoạch đánh giá</label>
+            <label for="field_subjectOfAssetmentPlan">Nhóm đối tượng kế hoạch đánh giá</label>
             <select
               class="inp-style"
               name="subjectOfAssetmentPlan"
@@ -42,7 +42,7 @@
               data-cy="subjectOfAssetmentPlan"
               formControlName="subjectOfAssetmentPlan"
             >
-              <option *ngFor="let data of checkTargets" [value]="data.name">
+              <option *ngFor="let data of checkerGroups" [value]="data.name">
                 {{ data.name }}
               </option>
             </select>
@@ -133,15 +133,19 @@
               <input type="text" [(ngModel)]="report.name" [ngModelOptions]="{ standalone: true }" />
             </td>
             <td>
-              <select [(ngModel)]="report.testOfObject" [ngModelOptions]="{ standalone: true }">
+              <select [(ngModel)]="report.testOfObject" [ngModelOptions]="{ standalone: true }" (click)="checkTarget()">
                 <option *ngFor="let data of checkTargets" [value]="data.name">
                   {{ data.name }}
                 </option>
               </select>
             </td>
             <td>
-              <select [(ngModel)]="report.checker" [ngModelOptions]="{ standalone: true }" (change)="updateReportName(index)">
-                <option *ngFor="let data of evaluator" [value]="data.name">
+              <select
+                [(ngModel)]="report.checker"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="updateReportName(index, report.checker)"
+              >
+                <option *ngFor="let data of evaluators" [value]="data.name">
                   {{ data.name }}
                 </option>
               </select>
@@ -202,7 +206,7 @@
                   aria-label="Gross"
                   styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                   [severity]="'help'"
-                  (onClick)="openModalUser(report)"
+                  (onClick)="openModalUser(index, report)"
                 />
                 <p-button
                   icon="pi pi-trash"
@@ -242,17 +246,17 @@
   <div class="modal-body">
     <div class="col-md-12">
       <div class="col-md-6">
-        <label for="userNameGroups">Nhóm người dùng</label>
-        <select class="inp-style" [(ngModel)]="selectedGroupId" (ngModelChange)="onGroupSelect($event)">
-          <option *ngFor="let data of userNameGroups" [value]="data.userGroupId">
+        <label for="checkerGroups">Nhóm người dùng</label>
+        <select class="inp-style" [(ngModel)]="userTester.checkerGroup" name="checkerGroups">
+          <option *ngFor="let data of checkerGroups" [ngValue]="data">
             {{ data.name }}
           </option>
         </select>
       </div>
       <div class="col-md-6">
         <label for="">Người dùng</label>
-        <select class="inp-style" [(ngModel)]="selectedUserId">
-          <option *ngFor="let data of evaluator" [value]="data.id">
+        <select class="inp-style" [(ngModel)]="userTester.name" (click)="checkEvaluator()">
+          <option *ngFor="let data of evaluator" [value]="data.name">
             {{ data.name }}
           </option>
         </select>
@@ -260,7 +264,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="saveUserSelection(modal)">Lưu</button>
+    <button type="button" class="btn btn-primary" (click)="modal.close(true)">Lưu</button>
     <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel click')">Hủy</button>
   </div>
 </ng-template>

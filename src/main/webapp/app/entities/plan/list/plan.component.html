@@ -118,12 +118,12 @@
         <td>{{ rowNode.name }}</td>
         <td>{{ rowNode.subjectOfAssetmentPlan }}</td>
         <td>{{ rowNode.frequency }}</td>
-        <td>{{ rowNode.timeStart }}</td>
-        <td>{{ rowNode.timeEnd }}</td>
+        <td>{{ rowNode.timeStart | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ rowNode.timeEnd | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ rowNode.createBy }}</td>
         <td>{{ rowNode.updateBy }}</td>
-        <td>{{ rowNode.createdAt }}</td>
-        <td>{{ rowNode.updatedAt }}</td>
+        <td>{{ rowNode.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ rowNode.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ rowNode.status }}</td>
         <td>
           <div class="action-buttons">

@@ -1,8 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.PlanStatisticalResponse;
 import com.mycompany.myapp.domain.Report;
 import com.mycompany.myapp.repository.ReportRepository;
-import com.mycompany.myapp.service.dto.PlanStatisticalResponse;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;

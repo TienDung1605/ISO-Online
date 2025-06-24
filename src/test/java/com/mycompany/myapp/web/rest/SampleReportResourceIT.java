@@ -93,7 +93,7 @@ class SampleReportResourceIT {
     public static SampleReport createEntity(EntityManager em) {
         SampleReport sampleReport = new SampleReport()
             .name(DEFAULT_NAME)
-            .status(DEFAULT_STATUS)
+            .status(String.valueOf(DEFAULT_STATUS))
             .createdAt(DEFAULT_CREATED_AT)
             .updatedAt(DEFAULT_UPDATED_AT)
             .updateBy(DEFAULT_UPDATE_BY)
@@ -113,7 +113,7 @@ class SampleReportResourceIT {
     public static SampleReport createUpdatedEntity(EntityManager em) {
         SampleReport sampleReport = new SampleReport()
             .name(UPDATED_NAME)
-            .status(UPDATED_STATUS)
+            .status(String.valueOf(DEFAULT_STATUS))
             .createdAt(UPDATED_CREATED_AT)
             .updatedAt(UPDATED_UPDATED_AT)
             .updateBy(UPDATED_UPDATE_BY)
@@ -235,7 +235,7 @@ class SampleReportResourceIT {
         em.detach(updatedSampleReport);
         updatedSampleReport
             .name(UPDATED_NAME)
-            .status(UPDATED_STATUS)
+            .status(String.valueOf(DEFAULT_STATUS))
             .createdAt(UPDATED_CREATED_AT)
             .updatedAt(UPDATED_UPDATED_AT)
             .updateBy(UPDATED_UPDATE_BY)
@@ -365,7 +365,7 @@ class SampleReportResourceIT {
 
         partialUpdatedSampleReport
             .name(UPDATED_NAME)
-            .status(UPDATED_STATUS)
+            .status(String.valueOf(DEFAULT_STATUS))
             .createdAt(UPDATED_CREATED_AT)
             .updatedAt(UPDATED_UPDATED_AT)
             .updateBy(UPDATED_UPDATE_BY)

@@ -102,16 +102,6 @@ const routes: Routes = [
     loadChildren: () => import('./script/script.routes'),
   },
   {
-    path: 'inspection-report',
-    data: { pageTitle: 'isoApp.inspectionReport.home.title' },
-    loadChildren: () => import('./inspection-report/inspection-report.routes'),
-  },
-  {
-    path: 'gross-script',
-    data: { pageTitle: 'isoApp.grossScript.home.title' },
-    loadChildren: () => import('./gross-script/gross-script.routes'),
-  },
-  {
     path: 'field',
     data: { pageTitle: 'isoApp.field.home.title' },
     loadChildren: () => import('./fields/fields.routes'),

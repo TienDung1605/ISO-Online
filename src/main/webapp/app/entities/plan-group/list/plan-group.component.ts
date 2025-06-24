@@ -160,7 +160,7 @@ export class PlanGroupComponent implements OnInit {
         return 'success';
       case 'Mới tạo':
         return 'danger';
-      case 'Đang đánh giá':
+      case 'Đang thực hiện':
         return 'waring';
     }
   }
@@ -252,7 +252,7 @@ export class PlanGroupComponent implements OnInit {
         fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
       );
       const createGroupDetailPromise = this.planService.createGroupHistoryDetail(this.planGrEvals).toPromise();
-      this.selectedPlan.status = 'Đang đánh giá';
+      this.selectedPlan.status = 'Đang thực hiện';
       const updateStatusPlanGroup = this.planService.createGroupHistory(this.selectedPlan).toPromise();
       await Promise.all([...uploadPromises, createGroupDetailPromise, updateStatusPlanGroup]);
     } catch (err) {

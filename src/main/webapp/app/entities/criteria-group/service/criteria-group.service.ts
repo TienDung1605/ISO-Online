@@ -104,6 +104,10 @@ export class CriteriaGroupService {
     return criteriaGroupCollection;
   }
 
+  getAllCriteriaGroups(): Observable<ICriteriaGroup[]> {
+    return this.http.get<ICriteriaGroup[]>(this.resourceUrl);
+  }
+
   protected convertDateFromClient<T extends ICriteriaGroup | NewCriteriaGroup | PartialUpdateCriteriaGroup>(criteriaGroup: T): RestOf<T> {
     return {
       ...criteriaGroup,
@@ -130,9 +134,5 @@ export class CriteriaGroupService {
     return res.clone({
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
-  }
-
-  getAllCriteriaGroups(): Observable<ICriteriaGroup[]> {
-    return this.http.get<ICriteriaGroup[]>(this.resourceUrl);
   }
 }

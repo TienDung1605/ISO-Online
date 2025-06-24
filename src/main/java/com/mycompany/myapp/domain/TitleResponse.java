@@ -1,4 +1,4 @@
-package com.mycompany.myapp.service.dto;
+package com.mycompany.myapp.domain;
 
 public interface TitleResponse {
     Long getId();

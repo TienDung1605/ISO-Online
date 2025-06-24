@@ -1,7 +1,7 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Title;
-import com.mycompany.myapp.service.dto.TitleResponse;
+import com.mycompany.myapp.domain.TitleResponse;
 import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;

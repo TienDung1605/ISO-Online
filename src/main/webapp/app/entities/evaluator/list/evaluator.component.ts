@@ -43,7 +43,6 @@ export class EvaluatorComponent implements OnInit {
   subscription: Subscription | null = null;
   evaluators?: IEvaluator[];
   isLoading = false;
-  //get list checker group
   checkerGroups: any[] | null = [];
   sortState = sortStateSignal({});
   evaluatorResult: any[] = [];

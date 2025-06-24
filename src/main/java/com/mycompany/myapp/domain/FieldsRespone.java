@@ -1,6 +1,4 @@
-package com.mycompany.myapp.service.dto;
-
-import java.time.ZonedDateTime;
+package com.mycompany.myapp.domain;
 
 public interface FieldsRespone {
     String getName();

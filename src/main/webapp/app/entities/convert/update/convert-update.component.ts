@@ -149,39 +149,21 @@ export class ConvertUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IConvert>>): void {
     result.subscribe({
-      next: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+      next: async () => {
+        await Swal.fire({
+          title: 'Success',
+          text: this.convert?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
           icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.convert?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+          confirmButtonText: 'OK',
         });
         this.onSaveSuccess();
       },
-      error: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+      error: async () => {
+        await Swal.fire({
+          title: 'Error',
+          text: this.convert?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
           icon: 'error',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.convert?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+          confirmButtonText: 'OK',
         });
         this.onSaveError();
       },

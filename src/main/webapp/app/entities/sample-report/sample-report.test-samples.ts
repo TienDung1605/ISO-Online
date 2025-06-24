@@ -16,7 +16,7 @@ export const sampleWithPartialData: ISampleReport = {
 export const sampleWithFullData: ISampleReport = {
   id: 11563,
   name: 'meaty next',
-  status: 27691,
+  status: '27691',
   createdAt: dayjs('2025-01-23T15:35'),
   updatedAt: dayjs('2025-01-24T02:28'),
   updateBy: 'coolly anguished',

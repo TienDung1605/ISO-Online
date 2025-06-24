@@ -62,7 +62,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     {
       provide: PrimeNGConfig,
-      useFactory: () => {
+      useFactory() {
         const config = new PrimeNGConfig();
         config.ripple = true; // Example configuration
         return config;

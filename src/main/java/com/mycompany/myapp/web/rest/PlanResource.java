@@ -1,11 +1,11 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Plan;
+import com.mycompany.myapp.domain.PlanStatisticalResponse;
+import com.mycompany.myapp.domain.ReportResponse;
 import com.mycompany.myapp.repository.PlanRepository;
 import com.mycompany.myapp.repository.ReportRepository;
 import com.mycompany.myapp.service.dto.PlanDetailDTO;
-import com.mycompany.myapp.service.dto.PlanStatisticalResponse;
-import com.mycompany.myapp.service.dto.ReportResponse;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.io.IOException;
 import java.net.URI;

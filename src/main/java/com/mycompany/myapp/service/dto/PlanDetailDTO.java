@@ -1,7 +1,6 @@
 package com.mycompany.myapp.service.dto;
 
-import com.mycompany.myapp.domain.Report;
-import jakarta.persistence.Column;
+import com.mycompany.myapp.domain.ReportResponse;
 import java.time.ZonedDateTime;
 import java.util.List;
 

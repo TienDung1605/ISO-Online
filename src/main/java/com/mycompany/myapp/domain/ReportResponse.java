@@ -1,7 +1,6 @@
-package com.mycompany.myapp.service.dto;
+package com.mycompany.myapp.domain;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 public interface ReportResponse {
     Long getId();

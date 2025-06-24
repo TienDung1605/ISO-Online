@@ -1,8 +1,8 @@
 package com.mycompany.myapp.repository;
 
+import com.mycompany.myapp.domain.PlanStatisticalResponse;
 import com.mycompany.myapp.domain.Report;
-import com.mycompany.myapp.service.dto.PlanStatisticalResponse;
-import com.mycompany.myapp.service.dto.ReportResponse;
+import com.mycompany.myapp.domain.ReportResponse;
 import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;

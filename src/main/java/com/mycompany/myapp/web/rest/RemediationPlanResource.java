@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import tech.jhipster.web.util.HeaderUtil;
 
 @RestController
@@ -89,13 +90,9 @@ public class RemediationPlanResource {
         log.debug("REST request to get RemediationPlan details and rechecks for id : {}", id);
 
         // 1. Lấy RemediationPlan gốc
-        Optional<RemediationPlan> remediationPlanOptional = remediationPlanRepository.findById(id);
-
-        if (remediationPlanOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Không tìm thấy RemediationPlan
-        }
-
-        RemediationPlan remediationPlan = remediationPlanOptional.get();
+        RemediationPlan remediationPlan = remediationPlanRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "RemediationPlan not found with id = " + id));
 
         // 2. Lấy tất cả RemediationPlanDetail liên quan đến RemediationPlan này
         List<RemediationPlanDetail> remediationPlanDetails = remediationPlanDetailRepository.findByRemediationPlanId(
