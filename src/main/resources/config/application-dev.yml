@@ -88,4 +88,5 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  upload-dir: src/main/webapp/content/images/bbkt/

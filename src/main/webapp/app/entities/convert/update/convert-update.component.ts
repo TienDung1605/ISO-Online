@@ -149,23 +149,25 @@ export class ConvertUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IConvert>>): void {
     result.subscribe({
-      next: async () => {
-        await Swal.fire({
+      next: () => {
+        Swal.fire({
           title: 'Success',
           text: this.convert?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
           icon: 'success',
           confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveSuccess();
         });
-        this.onSaveSuccess();
       },
-      error: async () => {
-        await Swal.fire({
+      error: () => {
+        Swal.fire({
           title: 'Error',
           text: this.convert?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
           icon: 'error',
           confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveError();
         });
-        this.onSaveError();
       },
     });
   }

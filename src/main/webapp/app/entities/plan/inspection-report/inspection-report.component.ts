@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -101,6 +101,7 @@ export class InspectionReportComponent implements OnInit {
     private planService: PlanService,
     private convertService: ConvertService,
     private exportExcelService: ExportExcelService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -243,8 +244,18 @@ export class InspectionReportComponent implements OnInit {
   }
 
   generateCode(): string {
-    const uid = crypto.randomUUID();
+    const uid = window.crypto?.randomUUID?.() || this.fallbackUUID();
     return `RP-${this.report.id}-${uid}`;
+  }
+
+  private fallbackUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      // eslint-disable-next-line no-bitwise
+      const r = (Math.random() * 16) | 0;
+      // eslint-disable-next-line no-bitwise
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 
   saveRemediationPlan(data: any) {
@@ -343,6 +354,8 @@ export class InspectionReportComponent implements OnInit {
     }
     this.selectedData = data;
     this.dialogVisibility[rowIndex] = !this.dialogVisibility[rowIndex];
+    this.imageLoadErrors.clear();
+    this.cdr.detectChanges();
   }
 
   onFileSelect(event: any, data: any, index: number): void {
@@ -359,9 +372,10 @@ export class InspectionReportComponent implements OnInit {
     }
     const existingNames = new Set(data.image);
     for (const file of files) {
-      if (!existingNames.has(file.name)) {
-        data.image.push(file.name);
-        existingNames.add(file.name);
+      const safeFileName = this.sanitizeFileName(file.name);
+      if (!existingNames.has(safeFileName)) {
+        data.image.push(safeFileName);
+        existingNames.add(safeFileName);
       }
     }
   }
@@ -391,6 +405,18 @@ export class InspectionReportComponent implements OnInit {
 
   onImageError(fileName: string) {
     this.imageLoadErrors.add(fileName);
+    this.cdr.detectChanges();
+  }
+
+  getTimestamp(): number {
+    return Date.now();
+  }
+
+  sanitizeFileName(filename: string): string {
+    return filename
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_\-\.]/g, '');
   }
 
   async saveReCheckRemePlan() {

@@ -11,6 +11,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
 
+    private String uploadDir; // Tên biến phải khớp với upload-dir (camelCase)
+
+    public String getUploadDir() {
+        return uploadDir;
+    }
+
+    public void setUploadDir(String uploadDir) {
+        this.uploadDir = uploadDir;
+    }
+
     private final Liquibase liquibase = new Liquibase();
 
     // jhipster-needle-application-properties-property

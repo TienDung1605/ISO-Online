@@ -1,4 +1,4 @@
-import { Component, inject, NgZone, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -25,6 +25,7 @@ import Swal from 'sweetalert2';
 import { PlanGroupService } from 'app/entities/plan-group/service/plan-group.service';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
+import { CheckTargetService } from 'app/entities/check-target/service/check-target.service';
 
 interface GroupReport {
   code: string | null;
@@ -73,12 +74,12 @@ export class GrossScriptComponent {
   plan: any = {};
   testObjects: any[] = [];
   conversions: any[] = [];
-  reportTemplates: any[] = [];
+  reportStatus: any[] = ['Mới tạo', 'Đang thực hiện', 'Đã hoàn thành', 'Chưa hoàn thành'];
   listEvalReports: any = [];
   listEvalReportsBase: any = [];
   selectedTestObject: any;
   selectedConversion: any;
-  selectedTemplate: any;
+  selectedStatus: any;
   grossScripts: any[] = [];
   evaluator: any[] = [];
   selectedData: any = null;
@@ -118,6 +119,8 @@ export class GrossScriptComponent {
     protected evaluatorService: EvaluatorService,
     public router: Router,
     protected planGroupService: PlanGroupService,
+    private cdr: ChangeDetectorRef,
+    protected checkTargetService: CheckTargetService,
   ) {}
 
   ngOnInit(): void {
@@ -139,8 +142,10 @@ export class GrossScriptComponent {
       this.listEvalReportsBase = res.body;
     });
     this.evaluatorService.getAllCheckTargets().subscribe(res => {
-      this.testObjects = res;
       this.evaluator = res;
+    });
+    this.checkTargetService.getAllCheckTargets().subscribe(res => {
+      this.testObjects = res;
     });
   }
 
@@ -154,8 +159,8 @@ export class GrossScriptComponent {
   filterGrossScripts(): void {
     this.grossScripts = this.originalGrossScripts.filter(script => {
       const matchTestObject = !this.selectedTestObject || script.testOfObject === this.selectedTestObject;
-      const matchConversion = !this.selectedConversion || script.conversion === this.selectedConversion;
-      const matchTemplate = !this.selectedTemplate || script.reportTemplate === this.selectedTemplate;
+      const matchConversion = !this.selectedConversion || script.convertScore === this.selectedConversion;
+      const matchTemplate = !this.selectedStatus || script.status === this.selectedStatus;
 
       return matchTestObject && matchConversion && matchTemplate;
     });
@@ -165,7 +170,7 @@ export class GrossScriptComponent {
     this.grossScripts = [...this.originalGrossScripts];
     this.selectedTestObject = null;
     this.selectedConversion = null;
-    this.selectedTemplate = null;
+    this.selectedStatus = null;
   }
 
   openModalEvaluation(): void {
@@ -226,6 +231,8 @@ export class GrossScriptComponent {
     }
     this.selectedData = data;
     this.dialogVisibility[rowIndex] = !this.dialogVisibility[rowIndex];
+    this.imageLoadErrors.clear();
+    this.cdr.detectChanges();
   }
 
   onFileSelect(event: any, data: any, index: number): void {
@@ -242,9 +249,10 @@ export class GrossScriptComponent {
     }
     const existingNames = new Set(data.image);
     for (const file of files) {
-      if (!existingNames.has(file.name)) {
-        data.image.push(file.name);
-        existingNames.add(file.name);
+      const safeFileName = this.sanitizeFileName(file.name);
+      if (!existingNames.has(safeFileName)) {
+        data.image.push(safeFileName);
+        existingNames.add(safeFileName);
       }
     }
   }
@@ -274,6 +282,18 @@ export class GrossScriptComponent {
 
   onImageError(fileName: string) {
     this.imageLoadErrors.add(fileName);
+    this.cdr.detectChanges();
+  }
+
+  getTimestamp(): number {
+    return Date.now();
+  }
+
+  sanitizeFileName(filename: string): string {
+    return filename
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_\-\.]/g, '');
   }
   // endregion
 
@@ -330,7 +350,7 @@ export class GrossScriptComponent {
             reportId: item.id,
             reportName: item.name,
             hasEvaluation: 1,
-            status: item.status,
+            status: 'Mới tạo',
             convertScore: item.convertScore,
           });
         }
@@ -354,41 +374,53 @@ export class GrossScriptComponent {
             cancelButtonText: `Cancel`,
           }).then(result => {
             if (result.value) {
-              this.planGroupService.findAllDetail(res.body as number).subscribe(response => {
-                this.planGrDetails = response.body;
-                const seen = new Set<string>();
-                this.criterialData = this.planGrDetails
-                  .map(item => ({
-                    criterialGroupName: item.criterialGroupName,
-                    criterialName: item.criterialName,
-                    frequency: item.frequency,
-                  }))
-                  .filter(item => {
-                    const key = `${item.criterialGroupName}|${item.criterialName}`;
-                    if (seen.has(key)) return false;
-                    seen.add(key);
-                    return true;
-                  })
-                  .sort((a, b) => a.criterialGroupName.localeCompare(b.criterialGroupName));
-                this.modalService
-                  .open(this.criteria, {
-                    ariaLabelledBy: 'modal-criteria-title',
-                    size: 'xl',
-                    backdrop: 'static',
-                  })
-                  .result.then(
-                    result => {
-                      console.log('Modal closed');
-                    },
-                    reason => {
-                      console.log('Modal dismissed');
-                    },
-                  );
-              });
+              this.loadCriteria(res.body as number);
+              this.modalService
+                .open(this.criteria, {
+                  ariaLabelledBy: 'modal-criteria-title',
+                  size: 'xl',
+                  backdrop: 'static',
+                })
+                .result.then(
+                  result => {
+                    console.log('Modal closed');
+                  },
+                  reason => {
+                    console.log('Modal dismissed');
+                  },
+                );
             }
           });
         },
       });
+    });
+  }
+
+  loadCriteria(id: number): void {
+    this.planGroupService.findAllDetail(id).subscribe(res => {
+      this.planGrDetails = res.body;
+      const groupMap = new Map<string, { criterialGroupName: string; criterialName: string; frequency: any; status: string[] }>();
+      for (const item of this.planGrDetails) {
+        const key = `${item.criterialGroupName}|${item.criterialName}`;
+        if (!groupMap.has(key)) {
+          groupMap.set(key, {
+            criterialGroupName: item.criterialGroupName,
+            criterialName: item.criterialName,
+            frequency: item.frequency,
+            status: [item.status],
+          });
+        } else {
+          groupMap.get(key)!.status.push(item.status);
+        }
+      }
+      this.criterialData = Array.from(groupMap.values())
+        .map(group => ({
+          criterialGroupName: group.criterialGroupName,
+          criterialName: group.criterialName,
+          frequency: group.frequency,
+          status: group.status.find(s => s !== 'Mới tạo') || 'Mới tạo',
+        }))
+        .sort((a, b) => a.criterialGroupName.localeCompare(b.criterialGroupName));
     });
   }
 
@@ -419,20 +451,21 @@ export class GrossScriptComponent {
   // Lưu đánh giá
   async saveEvalReport() {
     try {
+      if (this.selectedPlan.status === 'Mới tạo') {
+        this.selectedPlan.status = 'Đang thực hiện';
+        this.planService.createGroupHistory(this.selectedPlan).toPromise();
+      }
       this.planGrEvals = this.planGrEvals.map(item => {
         return {
           ...item,
           image: JSON.stringify(item.image),
+          status: item.result != null || item.hasEvaluation == 0 ? 'Đang thực hiện' : 'Mới tạo',
         };
       });
       const uploadPromises: Promise<any>[] = this.selectedFiles.flatMap(fileGroup =>
         fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
       );
       const createGroupDetailPromise = this.planService.createGroupHistoryDetail(this.planGrEvals).toPromise();
-      if (this.selectedPlan.status === 'Mới tạo') {
-        this.selectedPlan.status = 'Đang thực hiện';
-        this.planService.createGroupHistory(this.selectedPlan).toPromise();
-      }
       if (this.plan.status === 'Mới tạo') {
         this.plan.status = 'Đang thực hiện';
         this.planService.update(this.plan).toPromise();
@@ -451,6 +484,7 @@ export class GrossScriptComponent {
       console.log(err);
     } finally {
       this.dialogVisible = false;
+      this.loadCriteria(this.selectedPlan.id as number);
     }
   }
 

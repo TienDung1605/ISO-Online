@@ -1,7 +1,18 @@
 <div>
   <h2 class="page-heading" id="page-haeding">Danh sách kế hoạch gộp</h2>
 
-  <p-table [value]="listPlanGroups" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-gridlines">
+  <p-table
+    [value]="plantGroupResult"
+    [paginator]="true"
+    [rows]="selectedPageSize"
+    [rowsPerPageOptions]="pageSizeOptions"
+    (onPage)="onPageSizeChange($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-gridlines"
+  >
     <ng-template pTemplate="header">
       <tr>
         <th>STT</th>
@@ -15,22 +26,47 @@
       </tr>
       <tr>
         <th></th>
-        <th>
-          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter>
-        </th>
         <th></th>
+        <th>
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('name', $event)" />
+          </p-iconField>
+        </th>
+        <th>
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('checker', $event)" />
+          </p-iconField>
+        </th>
+        <th>
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('type', $event)" />
+          </p-iconField>
+        </th>
+        <th>
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="date" placeholder="Search" style="padding-left: 30px" (input)="onSearch('checkDate', $event)" />
+          </p-iconField>
+        </th>
+        <th>
+          <p-iconField iconPosition="left" class="ml-auto">
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+            <input pInputText type="text" placeholder="Search" style="padding-left: 30px" (input)="onSearch('status', $event)" />
+          </p-iconField>
+        </th>
         <th></th>
       </tr>
     </ng-template>
@@ -98,6 +134,7 @@
         <th class="text-center border">Nhóm tiêu chí</th>
         <th class="text-center border">Tên tiêu chí</th>
         <th class="text-center border">Tần suất</th>
+        <th class="text-center border">Trạng thái</th>
         <th class="text-center border">Tùy chọn</th>
       </tr>
     </ng-template>
@@ -113,6 +150,7 @@
         </td>
         <td class="text-center border">{{ row.criterialName }}</td>
         <td class="text-center border">{{ row.frequency }}</td>
+        <td class="text-center border">{{ row.status }}</td>
         <td class="text-center border">
           <p-button
             label="Chọn"
@@ -164,17 +202,6 @@
           <th class="text-center border">Nội dung đánh giá</th>
           <th class="text-center border">Hình ảnh đánh giá</th>
           <th class="text-center border">Không đánh giá</th>
-        </tr>
-        <tr>
-          <th class="text-center border"></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"></th>
-          <th class="text-center border"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-report let-index="rowIndex">

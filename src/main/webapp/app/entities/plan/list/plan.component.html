@@ -1122,11 +1122,12 @@
           <input type="text" [(ngModel)]="item.name" required />
         </td>
         <td class="text-center border">
-          <select class="inp-style" [(ngModel)]="item.createdBy" required>
+          {{ report.checker }}
+          <!-- <select class="inp-style" [(ngModel)]="item.createdBy" required>
             <option *ngFor="let data of evaluators" [value]="data.name">
               {{ data.name }}
             </option>
-          </select>
+          </select> -->
         </td>
         <td class="text-center border">
           <!-- <input type="date" [(ngModel)]="item.checkDate" (ngModelChange)="checkEvent(planEvaluations, index)" required /> -->
@@ -1149,7 +1150,7 @@
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'success'"
               (onClick)="showDialogCheckPlanChild(item)"
-              [disabled]="!item.name || !item.createdBy || !item.checkDate || disableSaveCheckDate[index]"
+              [disabled]="!item.name || !item.checkDate || disableSaveCheckDate[index]"
             />
           </div>
           <div class="action-buttons mx-1">
@@ -1263,7 +1264,7 @@
                     >
                       <div style="grid-column: span 4">
                         <img
-                          [src]="'content/images/bbkt/' + fileName"
+                          [src]="'content/images/bbkt/' + fileName + '?t=' + getTimestamp()"
                           (error)="onImageError(fileName)"
                           alt="Image thumbnail"
                           style="width: 100%"

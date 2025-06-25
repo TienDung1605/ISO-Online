@@ -1,4 +1,4 @@
-import { Component, inject, NgZone, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -68,6 +68,17 @@ export class PlanGroupComponent implements OnInit {
   selectedData: any = {};
   imageLoadErrors = new Set<string>();
   selectedFiles: { dataKey: string; files: File[] }[] = [];
+  filters = {
+    name: '',
+    checker: '',
+    type: '',
+    checkDate: '',
+    status: '',
+  };
+  plantGroupResult: any[] = [];
+  pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
+  first: number = 0;
+  selectedPageSize: number = 10;
 
   constructor(
     protected modalService: NgbModal,
@@ -77,14 +88,18 @@ export class PlanGroupComponent implements OnInit {
     protected convertService: ConvertService,
     private planService: PlanService,
     private confirmationService: ConfirmationService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     // Lấy danh sách các kế hoạch nhóm
     this.activatedRoute.data.subscribe(({ plan }) => {
       this.listPlanGroups = Object.keys(plan)
-        .filter(key => !isNaN(Number(key)) && typeof plan[key] === 'object' && plan[key] !== null)
-        .map(key => plan[key]);
+        .filter(key => !isNaN(+key) && typeof plan[key] === 'object' && plan[key] !== null)
+        .map(key => plan[key])
+        .sort((a, b) => new Date(b?.createdAt).getTime() - new Date(a?.createdAt).getTime());
+
+      this.plantGroupResult = [...this.listPlanGroups];
     });
     // lấy kiểu đánh giá
     this.convertService.query().subscribe((res: any) => {
@@ -96,40 +111,82 @@ export class PlanGroupComponent implements OnInit {
     this.selectAll = !this.selectAll;
   }
 
+  searchTable(): void {
+    if (!this.listPlanGroups) {
+      return;
+    }
+
+    this.plantGroupResult = this.listPlanGroups.filter(planGr => {
+      const checkDate = planGr.checkDate ? new Date(planGr.checkDate).toISOString().split('T')[0] : '';
+      const searchCreatedDate = this.filters.checkDate ? new Date(this.filters.checkDate).toISOString().split('T')[0] : '';
+
+      return (
+        (!this.filters.name || planGr.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+        (!this.filters.checker || planGr.checker?.toLowerCase().includes(this.filters.checker.toLowerCase())) &&
+        (!this.filters.type || planGr.type?.toLowerCase().includes(this.filters.type.toLowerCase())) &&
+        (!this.filters.checkDate || checkDate === searchCreatedDate) &&
+        (!this.filters.status || planGr.status?.toString().includes(this.filters.status))
+      );
+    });
+  }
+
+  onSearch(title: keyof typeof this.filters, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filters[title] = value;
+    this.searchTable();
+  }
+
+  onPageSizeChange(event: any): void {
+    this.selectedPageSize = event.rows;
+    this.first = event.first;
+  }
+
+  loadCriteria(id: number): void {
+    this.planGroupService.findAllDetail(id).subscribe(res => {
+      this.planGrDetails = res.body;
+      const groupMap = new Map<string, { criterialGroupName: string; criterialName: string; frequency: any; status: string[] }>();
+      for (const item of this.planGrDetails) {
+        const key = `${item.criterialGroupName}|${item.criterialName}`;
+        if (!groupMap.has(key)) {
+          groupMap.set(key, {
+            criterialGroupName: item.criterialGroupName,
+            criterialName: item.criterialName,
+            frequency: item.frequency,
+            status: [item.status],
+          });
+        } else {
+          groupMap.get(key)!.status.push(item.status);
+        }
+      }
+      this.criterialData = Array.from(groupMap.values())
+        .map(group => ({
+          criterialGroupName: group.criterialGroupName,
+          criterialName: group.criterialName,
+          frequency: group.frequency,
+          status: group.status.find(s => s !== 'Mới tạo') || 'Mới tạo',
+        }))
+        .sort((a, b) => a.criterialGroupName.localeCompare(b.criterialGroupName));
+    });
+  }
+
   // mở dialog tiêu chí và call các detail từ id kế hoạch nhóm để lấy danh sách tiêu trí
   openModalCriteria(data: any): void {
     this.selectedPlan = data;
-    this.planGroupService.findAllDetail(data.id).subscribe(res => {
-      this.planGrDetails = res.body;
-      const seen = new Set<string>();
-      this.criterialData = this.planGrDetails
-        .map(item => ({
-          criterialGroupName: item.criterialGroupName,
-          criterialName: item.criterialName,
-          frequency: item.frequency,
-        }))
-        .filter(item => {
-          const key = `${item.criterialGroupName}|${item.criterialName}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        })
-        .sort((a, b) => a.criterialGroupName.localeCompare(b.criterialGroupName));
-      this.modalService
-        .open(this.criteria, {
-          ariaLabelledBy: 'modal-criteria-title',
-          size: 'xl',
-          backdrop: 'static',
-        })
-        .result.then(
-          result => {
-            console.log('Modal closed');
-          },
-          reason => {
-            console.log('Modal dismissed');
-          },
-        );
-    });
+    this.loadCriteria(data.id);
+    this.modalService
+      .open(this.criteria, {
+        ariaLabelledBy: 'modal-criteria-title',
+        size: 'xl',
+        backdrop: 'static',
+      })
+      .result.then(
+        result => {
+          console.log('Modal closed');
+        },
+        reason => {
+          console.log('Modal dismissed');
+        },
+      );
   }
 
   getRowSpan(groupName: string): number {
@@ -188,6 +245,8 @@ export class PlanGroupComponent implements OnInit {
     }
     this.selectedData = data;
     this.dialogVisibility[rowIndex] = !this.dialogVisibility[rowIndex];
+    this.imageLoadErrors.clear();
+    this.cdr.detectChanges();
   }
 
   onFileSelect(event: any, data: any, index: number): void {
@@ -204,9 +263,10 @@ export class PlanGroupComponent implements OnInit {
     }
     const existingNames = new Set(data.image);
     for (const file of files) {
-      if (!existingNames.has(file.name)) {
-        data.image.push(file.name);
-        existingNames.add(file.name);
+      const safeFileName = this.sanitizeFileName(file.name);
+      if (!existingNames.has(safeFileName)) {
+        data.image.push(safeFileName);
+        existingNames.add(safeFileName);
       }
     }
   }
@@ -236,6 +296,18 @@ export class PlanGroupComponent implements OnInit {
 
   onImageError(fileName: string) {
     this.imageLoadErrors.add(fileName);
+    this.cdr.detectChanges();
+  }
+
+  getTimestamp(): number {
+    return Date.now();
+  }
+
+  sanitizeFileName(filename: string): string {
+    return filename
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_\-\.]/g, '');
   }
   // endregion
 
@@ -246,6 +318,7 @@ export class PlanGroupComponent implements OnInit {
         return {
           ...item,
           image: JSON.stringify(item.image),
+          status: item.result != null || item.hasEvaluation == 0 ? 'Đang thực hiện' : 'Mới tạo',
         };
       });
       const uploadPromises: Promise<any>[] = this.selectedFiles.flatMap(fileGroup =>
@@ -259,6 +332,7 @@ export class PlanGroupComponent implements OnInit {
       console.log(err);
     } finally {
       this.dialogVisible = false;
+      this.loadCriteria(this.selectedPlan.id);
     }
   }
 
@@ -279,7 +353,7 @@ export class PlanGroupComponent implements OnInit {
         icon: 'success',
         title: 'Xóa thành công',
       });
-      this.listPlanGroups.splice(index, 1);
+      this.plantGroupResult.splice(index, 1);
     });
   }
 

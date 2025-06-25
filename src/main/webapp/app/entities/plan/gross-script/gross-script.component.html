@@ -21,9 +21,9 @@
       </div>
 
       <div class="col-md-6">
-        <label for="reportTemplate">Mẫu BBKT</label>
-        <select id="reportTemplate" class="form-control" [(ngModel)]="selectedTemplate">
-          <option *ngFor="let item of reportTemplates" [value]="item">
+        <label for="reportStatus">Trạng thái</label>
+        <select id="reportStatus" class="form-control" [(ngModel)]="selectedStatus">
+          <option *ngFor="let item of reportStatus" [value]="item">
             {{ item }}
           </option>
         </select>
@@ -179,6 +179,7 @@
           <th class="text-center border">Nhóm tiêu chí</th>
           <th class="text-center border">Tên tiêu chí</th>
           <th class="text-center border">Tần suất</th>
+          <th class="text-center border">Trạng thái</th>
           <th class="text-center border">Tùy chọn</th>
         </tr>
       </ng-template>
@@ -194,6 +195,7 @@
           </td>
           <td class="text-center border">{{ row.criterialName }}</td>
           <td class="text-center border">{{ row.frequency }}</td>
+          <td class="text-center border">{{ row.status }}</td>
           <td class="text-center border">
             <p-button
               label="Chọn"
@@ -284,7 +286,7 @@
             <input type="text" [(ngModel)]="report.note" [disabled]="report.hasEvaluation == 0" />
           </td>
           <td class="text-center border">
-            <p-button (click)="showDialogUpLoad(report, index)" label="Show" [disabled]="report.hasEvaluation == 0" />
+            <p-button (click)="showDialogUpLoad(report, index)" label="Attach Files" [disabled]="report.hasEvaluation == 0" />
             <p-dialog
               header="Upload Files"
               [modal]="true"

@@ -36,6 +36,8 @@
     "no-var": "off",
     "no-empty": "off",
     "spaced-comment": "off",
+    "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }],
+    "no-useless-escape": "off",
     "@angular-eslint/component-selector": [
       "error",
       {

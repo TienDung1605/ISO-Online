@@ -1,4 +1,4 @@
-import { Component, NgZone, inject, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, NgZone, inject, OnInit, ViewChild, TemplateRef, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -302,6 +302,7 @@ export class PlanComponent implements OnInit {
     protected evaluatorService: EvaluatorService,
     protected planGrService: PlanGroupService,
     private exportExcelService: ExportExcelService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -613,6 +614,7 @@ export class PlanComponent implements OnInit {
 
   showDialogCheckPlanChild(data: any): void {
     // // Lấy kiểu đánh giá tương ứng với BBKT
+    data.createdBy = this.report.checker;
     this.planGroup = data;
     this.listEvalReports = this.listEvalReportBase.filter((item: any) => item.type === this.report.convertScore);
     if (data.id) {
@@ -773,6 +775,8 @@ export class PlanComponent implements OnInit {
     }
     this.selectedData = data;
     this.dialogVisibility[rowIndex] = !this.dialogVisibility[rowIndex];
+    this.imageLoadErrors.clear();
+    this.cdr.detectChanges();
   }
 
   onFileSelect(event: any, data: any, index: number): void {
@@ -789,9 +793,10 @@ export class PlanComponent implements OnInit {
     }
     const existingNames = new Set(data.image);
     for (const file of files) {
-      if (!existingNames.has(file.name)) {
-        data.image.push(file.name);
-        existingNames.add(file.name);
+      const safeFileName = this.sanitizeFileName(file.name);
+      if (!existingNames.has(safeFileName)) {
+        data.image.push(safeFileName);
+        existingNames.add(safeFileName);
       }
     }
   }
@@ -821,6 +826,18 @@ export class PlanComponent implements OnInit {
 
   onImageError(fileName: string) {
     this.imageLoadErrors.add(fileName);
+    this.cdr.detectChanges();
+  }
+
+  getTimestamp(): number {
+    return Date.now();
+  }
+
+  sanitizeFileName(filename: string): string {
+    return filename
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_\-\.]/g, '');
   }
 
   generateCode(planId: number): string {
@@ -863,12 +880,16 @@ export class PlanComponent implements OnInit {
         planGroupHistoryId: res.body,
         reportId: this.report.id,
         reportName: this.report.name,
-        status: this.report.status,
+        status: item.result != null || item.hasEvaluation == 0 ? 'Đang thực hiện' : 'Mới tạo',
         convertScore: this.report.convertScore,
         image: JSON.stringify(item.image),
       }));
       const uploadPromises = this.selectedFiles.flatMap(fileGroup =>
-        fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
+        fileGroup.files.map(file => {
+          const safeFileName = this.sanitizeFileName(file.name);
+          const safeFile = new File([file], safeFileName, { type: file.type });
+          return this.planService.upLoadFile(safeFile).toPromise();
+        }),
       );
       await Promise.all(uploadPromises);
       this.planGroup.id = res.body;

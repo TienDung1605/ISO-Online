@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.config.ApplicationProperties;
 import com.mycompany.myapp.domain.Plan;
 import com.mycompany.myapp.domain.PlanStatisticalResponse;
 import com.mycompany.myapp.domain.ReportResponse;
@@ -37,7 +38,8 @@ public class PlanResource {
 
     private static final String ENTITY_NAME = "plan";
 
-    private static final String UPLOAD_DIR = "src/main/webapp/content/images/bbkt/";
+    //private static final String UPLOAD_DIR = "src/main/webapp/content/images/bbkt/";
+    private final String uploadDir;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -45,9 +47,10 @@ public class PlanResource {
     private final PlanRepository planRepository;
     private final ReportRepository reportRepository;
 
-    public PlanResource(PlanRepository planRepository, ReportRepository reportRepository) {
+    public PlanResource(PlanRepository planRepository, ReportRepository reportRepository, ApplicationProperties applicationProperties) {
         this.planRepository = planRepository;
         this.reportRepository = reportRepository;
+        this.uploadDir = applicationProperties.getUploadDir();
     }
 
     /**
@@ -304,16 +307,20 @@ public class PlanResource {
     public ResponseEntity<Map<String, String>> upload(@RequestParam("file") MultipartFile file) {
         try {
             String fileName = file.getOriginalFilename();
-            Path path = Paths.get(UPLOAD_DIR + fileName);
-            Files.write(path, file.getBytes());
-
-            String url = UPLOAD_DIR + fileName;
-
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+                log.info("Created upload directory: {}", uploadDir);
+            }
+            Path filePath = Paths.get(uploadDir + fileName);
+            Files.write(filePath, file.getBytes());
+            String responseFileName = fileName;
             Map<String, String> response = new HashMap<>();
-            response.put("imagePath", url);
-
+            response.put("fileName", responseFileName);
+            log.info("File uploaded successfully to: {}", filePath.toString());
             return ResponseEntity.ok(response);
         } catch (IOException e) {
+            log.error("Failed to upload file: {}. Error: {}", file.getOriginalFilename(), e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -321,7 +328,7 @@ public class PlanResource {
     @DeleteMapping("/delete-file")
     public ResponseEntity<String> deleteFile(@RequestParam("fileName") String fileName) {
         try {
-            Path filePath = Paths.get(UPLOAD_DIR + fileName);
+            Path filePath = Paths.get(uploadDir + fileName);
             if (!Files.exists(filePath)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
             }
