@@ -404,8 +404,8 @@
           ></p-calendar>
         </div>
         <div class="col-md-6">
-          <label for="createdBy">Người kiểm tra</label>
-          <select name="createdBy" [(ngModel)]="groupReportData.createdBy" required class="form-control">
+          <label for="checker">Người kiểm tra</label>
+          <select name="checker" [(ngModel)]="groupReportData.checker" required class="form-control">
             <option *ngFor="let data of evaluator" [value]="data.name">
               {{ data.name }}
             </option>

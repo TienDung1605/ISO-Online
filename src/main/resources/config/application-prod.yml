@@ -104,4 +104,4 @@ jhipster:
 # ===================================================================
 
 application:
-  upload-dir: C:/jhipster-uploads/bbkt/
+  upload-dir: src/main/webapp/content/images/bbkt/

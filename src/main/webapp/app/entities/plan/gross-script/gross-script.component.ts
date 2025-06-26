@@ -26,12 +26,14 @@ import { PlanGroupService } from 'app/entities/plan-group/service/plan-group.ser
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckTargetService } from 'app/entities/check-target/service/check-target.service';
+import { AccountService } from 'app/core/auth/account.service';
 
 interface GroupReport {
   code: string | null;
   name: string | null;
   planId: number | null;
   checkDate: dayjs.Dayjs | null;
+  checker: string | null;
   type: string | null;
   createdAt?: dayjs.Dayjs | null;
   updatedAt?: dayjs.Dayjs | null;
@@ -93,6 +95,7 @@ export class GrossScriptComponent {
     name: null,
     planId: null,
     checkDate: null,
+    checker: null,
     type: null,
     createdAt: dayjs(),
     updatedAt: null,
@@ -107,6 +110,7 @@ export class GrossScriptComponent {
   maxSelectableDate!: Date;
   selectedReports: any[] = [];
   originalGrossScripts: any[] = [];
+  account: any = {};
 
   constructor(
     protected modalService: NgbModal,
@@ -121,6 +125,7 @@ export class GrossScriptComponent {
     protected planGroupService: PlanGroupService,
     private cdr: ChangeDetectorRef,
     protected checkTargetService: CheckTargetService,
+    private accountService: AccountService,
   ) {}
 
   ngOnInit(): void {
@@ -146,6 +151,9 @@ export class GrossScriptComponent {
     });
     this.checkTargetService.getAllCheckTargets().subscribe(res => {
       this.testObjects = res;
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
     });
   }
 
@@ -319,6 +327,7 @@ export class GrossScriptComponent {
     data.planId = this.plan.id;
     data.type = this.selectedReports.length > 1 ? 'mutilple' : 'single';
     data.checkDate = dayjs(data.checkDate).toISOString();
+    data.createdBy = this.account.login;
     data.status = 'Mới tạo';
     this.selectedPlan = { ...data };
     this.planService.createGroupHistory(data).subscribe(res => {
@@ -360,6 +369,7 @@ export class GrossScriptComponent {
         name: null,
         planId: null,
         checkDate: null,
+        checker: null,
         type: null,
         createdAt: dayjs(),
         updatedAt: null,
@@ -462,8 +472,12 @@ export class GrossScriptComponent {
           status: item.result != null || item.hasEvaluation == 0 ? 'Đang thực hiện' : 'Mới tạo',
         };
       });
-      const uploadPromises: Promise<any>[] = this.selectedFiles.flatMap(fileGroup =>
-        fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
+      const uploadPromises = this.selectedFiles.flatMap(fileGroup =>
+        fileGroup.files.map(file => {
+          const safeFileName = this.sanitizeFileName(file.name);
+          const safeFile = new File([file], safeFileName, { type: file.type });
+          return this.planService.upLoadFile(safeFile).toPromise();
+        }),
       );
       const createGroupDetailPromise = this.planService.createGroupHistoryDetail(this.planGrEvals).toPromise();
       if (this.plan.status === 'Mới tạo') {

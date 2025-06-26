@@ -35,6 +35,7 @@ import { ExportExcelService } from '../service/export-excel.service';
 import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { AccountService } from 'app/core/auth/account.service';
 
 interface CheckPlanDetail {
   id: number;
@@ -287,6 +288,7 @@ export class PlanComponent implements OnInit {
   currentPage: number = 0;
   minSelectableDate!: Date;
   maxSelectableDate!: Date;
+  account: any = {};
 
   trackId = (_index: number, item: IPlan): number => this.planService.getPlanIdentifier(item);
 
@@ -303,6 +305,7 @@ export class PlanComponent implements OnInit {
     protected planGrService: PlanGroupService,
     private exportExcelService: ExportExcelService,
     private cdr: ChangeDetectorRef,
+    private accountService: AccountService,
   ) {}
 
   ngOnInit(): void {
@@ -325,6 +328,9 @@ export class PlanComponent implements OnInit {
     });
     this.convertService.query().subscribe(res => {
       this.listEvalReportBase = res.body;
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
     });
   }
 
@@ -614,7 +620,8 @@ export class PlanComponent implements OnInit {
 
   showDialogCheckPlanChild(data: any): void {
     // // Lấy kiểu đánh giá tương ứng với BBKT
-    data.createdBy = this.report.checker;
+    data.createdBy = this.account.login;
+    data.checker = this.report.checker;
     this.planGroup = data;
     this.listEvalReports = this.listEvalReportBase.filter((item: any) => item.type === this.report.convertScore);
     if (data.id) {

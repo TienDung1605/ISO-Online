@@ -86,7 +86,7 @@
             <p-button
               icon="pi pi-file-edit"
               aria-label="Đánh giá"
-              *ngIf="group.status != 'Đã hoàn thành'"
+              *ngIf="group.status != 'Đã hoàn thành' && group.checker === account.login"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
               [severity]="'warning'"
               (onClick)="openModalCriteria(group)"
@@ -94,13 +94,14 @@
             <p-button
               icon="pi pi-check"
               (onClick)="completeEvalReport(group)"
-              *ngIf="group.status != 'Đã hoàn thành'"
+              *ngIf="group.status != 'Đã hoàn thành' && group.checker === account.login"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
               severity="success"
             />
             <p-button
               icon="pi pi-trash"
               aria-label="Delete"
+              *ngIf="group.status != 'Đã hoàn thành' && group.checker === account.login"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'danger'"
               (onClick)="deletePlanGr(group, index)"

@@ -114,7 +114,7 @@ export class PlanUpdateComponent implements OnInit {
   listTitleHeaders: any[] = [];
   listTitleBody: any[] = [];
   listSuggestions: any[] = [];
-  listStatusReport: any[] = ['Chưa kiểm tra', 'Mới tạo', 'Đã kiểm tra'];
+  listStatusReport: any[] = ['Đang thực hiện', 'Mới tạo', 'Đã hoàn thành'];
   listConvert: any[] = [];
   listReports: NewReport[] = [];
   helpDialogVisible = false;
@@ -180,6 +180,8 @@ export class PlanUpdateComponent implements OnInit {
 
     this.checkerGroupService.getAllCheckerGroups().subscribe(res => {
       this.checkerGroups = res;
+      const checkGroupId = this.checkerGroups.find(x => x.name === this.plan?.subjectOfAssetmentPlan)?.id;
+      this.checkTargets = this.checkTargetBases.filter(x => x.checkGroupId === checkGroupId);
     });
 
     this.reportTypeService.getAllCheckTargets().subscribe(res => {

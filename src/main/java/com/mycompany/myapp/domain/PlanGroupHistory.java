@@ -22,6 +22,9 @@ public class PlanGroupHistory implements Serializable {
     @Column(name = "plan_id")
     private Long planId; // mã kế hoạch
 
+    @Column(name = "checker")
+    private String checker;
+
     @Column(name = "check_date")
     private ZonedDateTime checkDate; // ngày kiểm tra
 
@@ -70,6 +73,14 @@ public class PlanGroupHistory implements Serializable {
 
     public void setPlanId(Long planId) {
         this.planId = planId;
+    }
+
+    public String getChecker() {
+        return checker;
+    }
+
+    public void setChecker(String checker) {
+        this.checker = checker;
     }
 
     public ZonedDateTime getCheckDate() {

@@ -21,6 +21,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { PlanService } from 'app/entities/plan/service/plan.service';
 import Swal from 'sweetalert2';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { AccountService } from 'app/core/auth/account.service';
 // import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
@@ -79,6 +80,7 @@ export class PlanGroupComponent implements OnInit {
   pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
   first: number = 0;
   selectedPageSize: number = 10;
+  account: any = {};
 
   constructor(
     protected modalService: NgbModal,
@@ -89,6 +91,7 @@ export class PlanGroupComponent implements OnInit {
     private planService: PlanService,
     private confirmationService: ConfirmationService,
     private cdr: ChangeDetectorRef,
+    private accountService: AccountService,
   ) {}
 
   ngOnInit(): void {
@@ -98,12 +101,14 @@ export class PlanGroupComponent implements OnInit {
         .filter(key => !isNaN(+key) && typeof plan[key] === 'object' && plan[key] !== null)
         .map(key => plan[key])
         .sort((a, b) => new Date(b?.createdAt).getTime() - new Date(a?.createdAt).getTime());
-
       this.plantGroupResult = [...this.listPlanGroups];
     });
     // lấy kiểu đánh giá
     this.convertService.query().subscribe((res: any) => {
       this.listEvalReportsBase = res.body;
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
     });
   }
 
@@ -115,11 +120,9 @@ export class PlanGroupComponent implements OnInit {
     if (!this.listPlanGroups) {
       return;
     }
-
     this.plantGroupResult = this.listPlanGroups.filter(planGr => {
       const checkDate = planGr.checkDate ? new Date(planGr.checkDate).toISOString().split('T')[0] : '';
       const searchCreatedDate = this.filters.checkDate ? new Date(this.filters.checkDate).toISOString().split('T')[0] : '';
-
       return (
         (!this.filters.name || planGr.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
         (!this.filters.checker || planGr.checker?.toLowerCase().includes(this.filters.checker.toLowerCase())) &&
@@ -321,8 +324,12 @@ export class PlanGroupComponent implements OnInit {
           status: item.result != null || item.hasEvaluation == 0 ? 'Đang thực hiện' : 'Mới tạo',
         };
       });
-      const uploadPromises: Promise<any>[] = this.selectedFiles.flatMap(fileGroup =>
-        fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise()),
+      const uploadPromises = this.selectedFiles.flatMap(fileGroup =>
+        fileGroup.files.map(file => {
+          const safeFileName = this.sanitizeFileName(file.name);
+          const safeFile = new File([file], safeFileName, { type: file.type });
+          return this.planService.upLoadFile(safeFile).toPromise();
+        }),
       );
       const createGroupDetailPromise = this.planService.createGroupHistoryDetail(this.planGrEvals).toPromise();
       this.selectedPlan.status = 'Đang thực hiện';
@@ -358,7 +365,6 @@ export class PlanGroupComponent implements OnInit {
   }
 
   completeEvalReport(data: any) {
-    console.log(data);
     this.confirmationService.confirm({
       message: 'Bạn có muốn hoành thành bản đánh giá này ?',
       header: 'Hoàn thành đánh giá',
