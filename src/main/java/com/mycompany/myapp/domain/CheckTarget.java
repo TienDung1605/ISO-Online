@@ -29,6 +29,9 @@ public class CheckTarget implements Serializable {
     @Column(name = "evaluation_level_id")
     private Long evaluationLevelId;
 
+    @Column(name = "check_group_id")
+    private Long checkGroupId;
+
     @Column(name = "status")
     private String status;
 
@@ -93,6 +96,14 @@ public class CheckTarget implements Serializable {
 
     public void setEvaluationLevelId(Long evaluationLevelId) {
         this.evaluationLevelId = evaluationLevelId;
+    }
+
+    public Long getCheckGroupId() {
+        return checkGroupId;
+    }
+
+    public void setCheckGroupId(Long checkGroupId) {
+        this.checkGroupId = checkGroupId;
     }
 
     public String getStatus() {

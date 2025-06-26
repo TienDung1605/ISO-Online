@@ -50,18 +50,29 @@
             <span *ngIf="editForm.get('inspectionTarget')?.errors?.['required']">Đối tượng kiểm tra không được để trống</span>
           </div>
         </div>
-
         <div class="mb-3">
           <label class="form-label" for="field_evaluationLevelId">Cấp độ đánh giá</label>
           <select
             class="form-control form-select"
-            name="source"
-            id="field_source"
-            [(ngModel)]="name"
-            [ngModelOptions]="{ standalone: true }"
-            (change)="updateCheckLevel()"
+            id="field_evaluationLevelId"
+            data-cy="evaluationLevelId"
+            formControlName="evaluationLevelId"
+            name="evaluationLevelId"
           >
-            <option *ngFor="let item of checkLevels" [value]="item.name">{{ item.name }}</option>
+            <option *ngFor="let item of checkLevels" [value]="item.id">{{ item.name }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_evaluationLevelId">Nhóm đối tượng đánh giá</label>
+          <select
+            class="form-control form-select"
+            id="field_checkGroupId"
+            data-cy="checkGroupId"
+            formControlName="checkGroupId"
+            name="checkGroupId"
+          >
+            <option *ngFor="let item of checkGroups" [value]="item.id">{{ item.name }}</option>
           </select>
         </div>
 

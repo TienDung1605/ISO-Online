@@ -88,6 +88,9 @@ export class ReportUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.report && this.report.name === control.value) {
+      return of(null);
+    }
     return this.reportService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),
@@ -120,43 +123,26 @@ export class ReportUpdateComponent implements OnInit {
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReport>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
+    result.subscribe({
       next: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+        Swal.fire({
+          title: 'Success',
+          text: this.report?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
           icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.report?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveSuccess();
         });
-        this.onSaveSuccess();
       },
       error: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+        Swal.fire({
+          title: 'Error',
+          text: this.report?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
           icon: 'error',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.report?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveError();
         });
-        this.onSaveError();
       },
     });
   }

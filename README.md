@@ -153,7 +153,7 @@ If you'd like to use Okta instead of Keycloak, it's pretty quick using the [Okta
 okta register
 ```
 
-Then, in your JHipster app's directory, run `okta apps create` and select **JHipster**. This will set up an Okta app for you, create `ROLE_ADMIN` and `ROLE_USER` groups, create a `.okta.env` file with your Okta settings, and configure a `groups` claim in your ID token.
+Then, in your JHipster app's directory, run `okta apps create` and select **JHipster**. This will set up an Okta app for you, create `ROLE_ISO_ADMIN` and `ROLE_USER` groups, create a `.okta.env` file with your Okta settings, and configure a `groups` claim in your ID token.
 
 Run `source .okta.env` and start your app with Maven or Gradle. You should be able to sign in with the credentials you registered with.
 
@@ -183,7 +183,7 @@ security:
 
 Create an OIDC App in Okta to get a `{clientId}` and `{clientSecret}`. To do this, log in to your Okta Developer account and navigate to **Applications** > **Add Application**. Click **Web** and click the **Next** button. Give the app a name you’ll remember, specify `http://localhost:1234` as a Base URI, and `http://localhost:1234/login/oauth2/code/oidc` as a Login Redirect URI. Click **Done**, then Edit and add `http://localhost:1234` as a Logout redirect URI. Copy and paste the client ID and secret into your `application.yml` file.
 
-Create a `ROLE_ADMIN` and `ROLE_USER` group and add users into them. Modify e2e tests to use this account when running integration tests. You'll need to change credentials in `src/test/javascript/e2e/account/account.spec.ts` and `src/test/javascript/e2e/admin/administration.spec.ts`.
+Create a `ROLE_ISO_ADMIN` and `ROLE_USER` group and add users into them. Modify e2e tests to use this account when running integration tests. You'll need to change credentials in `src/test/javascript/e2e/account/account.spec.ts` and `src/test/javascript/e2e/admin/administration.spec.ts`.
 
 Navigate to **API** > **Authorization Servers**, click the **Authorization Servers** tab and edit the default one. Click the **Claims** tab and **Add Claim**. Name it "groups", and include it in the ID Token. Set the value type to "Groups" and set the filter to be a Regex of `.*`.
 
@@ -197,7 +197,7 @@ If you'd like to use [Auth0](https://auth0.com/) instead of Keycloak, follow the
 - Create a new application of type `Regular Web Applications`. Switch to the `Settings` tab, and configure your application settings like:
   - Allowed Callback URLs: `http://localhost:1234/login/oauth2/code/oidc`
   - Allowed Logout URLs: `http://localhost:1234/`
-- Navigate to **User Management** > **Roles** and create new roles named `ROLE_ADMIN`, and `ROLE_USER`.
+- Navigate to **User Management** > **Roles** and create new roles named `ROLE_ISO_ADMIN`, and `ROLE_USER`.
 - Navigate to **User Management** > **Users** and create a new user account. Click on the **Role** tab to assign roles to the newly created user account.
 - Navigate to **Auth Pipeline** > **Rules** and create a new Rule. Choose `Empty rule` template. Provide a meaningful name like `JHipster claims` and replace `Script` content with the following and Save.
 

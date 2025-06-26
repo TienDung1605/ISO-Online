@@ -68,10 +68,8 @@
               </thead>
               <tbody>
                 <tr *ngFor="let item of listTitleBody; let i = index">
-                  <td class="text-center border"></td>
-                  <td class="text-center border" *ngFor="let data of item.data">
-                    <span *ngFor="let item1 of listSuggestions">{{ item1 }}</span>
-                  </td>
+                  <td class="text-center border">{{ i + 1 }}</td>
+                  <td class="text-center border" *ngFor="let data of item.data">{{ data.value }}</td>
                 </tr>
               </tbody>
             </table>

@@ -1,10 +1,8 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Fields;
-import com.mycompany.myapp.service.dto.FieldsDTO;
-import com.mycompany.myapp.service.dto.FieldsRespone;
+import com.mycompany.myapp.domain.FieldsRespone;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 

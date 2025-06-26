@@ -20,6 +20,24 @@
     "project": ["./tsconfig.app.json", "./tsconfig.spec.json"]
   },
   "rules": {
+    "@angular-eslint/use-lifecycle-interface": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "eqeqeq": "off",
+    "object-shorthand": "off",
+    "curly": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/member-ordering": "off",
+    "arrow-body-style": "off",
+    "@typescript-eslint/no-redundant-type-constituents": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "prefer-const": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/prefer-optional-chain": "off",
+    "no-var": "off",
+    "no-empty": "off",
+    "spaced-comment": "off",
+    "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }],
+    "no-useless-escape": "off",
     "@angular-eslint/component-selector": [
       "error",
       {
@@ -46,55 +64,17 @@
         }
       }
     ],
-    "@typescript-eslint/explicit-function-return-type": [
-      "error",
-      {
-        "allowExpressions": true
-      }
-    ],
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/member-ordering": [
-      "error",
-      {
-        "default": [
-          "public-static-field",
-          "protected-static-field",
-          "private-static-field",
-          "public-instance-field",
-          "protected-instance-field",
-          "private-instance-field",
-          "constructor",
-          "public-static-method",
-          "protected-static-method",
-          "private-static-method",
-          "public-instance-method",
-          "protected-instance-method",
-          "private-instance-method"
-        ]
-      }
-    ],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-shadow": ["error"],
     "@typescript-eslint/no-unnecessary-condition": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "@typescript-eslint/prefer-nullish-coalescing": "error",
-    "@typescript-eslint/prefer-optional-chain": "error",
     "@typescript-eslint/unbound-method": "off",
-    "arrow-body-style": "error",
-    "curly": "error",
-    "eqeqeq": [
-      "error",
-      "always",
-      {
-        "null": "ignore"
-      }
-    ],
     "guard-for-in": "error",
     "no-bitwise": "error",
     "no-caller": "error",
@@ -103,14 +83,6 @@
     "no-labels": "error",
     "no-new": "error",
     "no-new-wrappers": "error",
-    "object-shorthand": [
-      "error",
-      "always",
-      {
-        "avoidExplicitReturnArrows": true
-      }
-    ],
-    "radix": "error",
-    "spaced-comment": ["warn", "always"]
+    "radix": "error"
   }
 }

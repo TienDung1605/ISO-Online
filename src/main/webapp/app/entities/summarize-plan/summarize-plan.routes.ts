@@ -2,13 +2,14 @@ import { Routes } from '@angular/router';
 import { SummarizePlanComponent } from './summarize-plan.component';
 import { ASC } from 'app/config/navigation.constants';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
+import planResolve from '../plan/route/plan-routing-resolve.service';
 
 const summarizePlanRoute: Routes = [
   {
-    path: '',
+    path: ':id',
     component: SummarizePlanComponent,
-    data: {
-      defaultSort: 'id' + ASC,
+    resolve: {
+      plan: planResolve,
     },
     canActivate: [UserRouteAccessService],
   },

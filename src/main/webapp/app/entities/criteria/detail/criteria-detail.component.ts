@@ -18,9 +18,9 @@ export class CriteriaDetailComponent implements OnInit {
   ngOnInit(): void {
     this.criterialGroupService.query().subscribe((res: any) => {
       if (res.body) {
-        const criterialGroup = res.body.find((criterialGroup: any) => criterialGroup.id === this.criteria?.criterialGroupId);
-        if (criterialGroup) {
-          this.criteria!.criterialGroup = criterialGroup.name;
+        const crtGroup = res.body.find((criterialGroup: any) => criterialGroup.id === this.criteria?.criterialGroupId);
+        if (crtGroup) {
+          this.criteria!.criterialGroup = crtGroup.name;
         }
       }
     });

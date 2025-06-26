@@ -45,7 +45,7 @@ export default class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.toggleSidebar2()
+    this.toggleSidebar2();
     this.entitiesNavbarItems = EntityNavbarItems;
     this.profileService.getProfileInfo().subscribe(profileInfo => {
       this.inProduction = profileInfo.inProduction;
@@ -88,7 +88,7 @@ export default class NavbarComponent implements OnInit {
     }
     if (isSidebarCollapsed === 'close') {
       this.mainComponent.openNav();
-      document.getElementById('sidebar-id')!.style.width = '250px';
+      document.getElementById('sidebar-id')!.style.width = '300px';
       document.getElementById('navbar-nav')!.style.width = '239px';
       sessionStorage.setItem('showLogo', 'show');
       sessionStorage.setItem('toggleSidebar', 'open');

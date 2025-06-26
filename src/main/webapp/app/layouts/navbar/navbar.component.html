@@ -17,7 +17,7 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <!-- <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a
             class="dropdown-item"
             routerLink="/plan"
@@ -28,10 +28,66 @@
             <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
             <span class="dropdown-item-span">Kế hoạch</span>
           </a>
+        </li> -->
+        <li
+          *jhiHasAnyAuthority="[
+            'ROLE_ISO_ADMIN',
+            'ROLE_ISO_CREATE_PLAN',
+            'ROLE_ISO_CHECK',
+            'ROLE_ISO_CREATE_FIX_PLAN',
+            'ROLE_ISO_VIEW_PLAN'
+          ]"
+          ngbDropdown
+          class="nav-item dropdown pointer"
+          display="dynamic"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
+            <span>
+              <fa-icon icon="asterisk"></fa-icon>
+              <span class="dropdown-item-span">Kế hoạch</span>
+            </span>
+          </a>
+          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
+            <li
+              *jhiHasAnyAuthority="[
+                'ROLE_ISO_ADMIN',
+                'ROLE_ISO_CREATE_PLAN',
+                'ROLE_ISO_CHECK',
+                'ROLE_ISO_CREATE_FIX_PLAN',
+                'ROLE_ISO_VIEW_PLAN'
+              ]"
+            >
+              <a
+                class="dropdown-item"
+                routerLink="/plan"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span class="dropdown-item-span">Quản lý kế hoạch</span>
+              </a>
+            </li>
+            <li *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_FIX_PLAN', 'ROLE_ISO_CHECK']">
+              <a
+                class="dropdown-item"
+                routerLink="/plan-group"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="plus" [fixedWidth]="true"></fa-icon>
+                <span class="dropdown-item-span">Quản lý kế hoạch gộp</span>
+              </a>
+            </li>
+          </ul>
         </li>
 
         @if (account() !== null) {
           <li
+            *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_PLAN', 'ROLE_ISO_VIEW_ITEM']"
             ngbDropdown
             class="nav-item dropdown pointer"
             display="dynamic"
@@ -41,7 +97,7 @@
             <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
               <span>
                 <fa-icon icon="th-list"></fa-icon>
-                <span>Quản lý</span>
+                <span class="dropdown-item-span">Quản lý</span>
               </span>
             </a>
             <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
@@ -189,7 +245,7 @@
                   <span class="dropdown-item-span">Mẫu biên bản kiểm tra</span>
                 </a>
               </li>
-              <li>
+              <!-- <li>
                 <a
                   class="dropdown-item"
                   routerLink="/inspection-report-titles"
@@ -200,8 +256,8 @@
                   <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
                   <span class="dropdown-item-span">Tiêu đề của mẫu BBKT</span>
                 </a>
-              </li>
-              <li>
+              </li> -->
+              <!-- <li>
                 <a
                   class="dropdown-item"
                   routerLink="/sample-report-criteria"
@@ -213,7 +269,7 @@
                   <span class="dropdown-item-span">Tiêu chí mẫu BBKT</span>
                 </a>
               </li>
-              <li></li>
+              <li></li> -->
               <li>
                 <a
                   class="dropdown-item"
@@ -226,7 +282,7 @@
                   <span class="dropdown-item-span">Biên bản kiểm tra đánh giá</span>
                 </a>
               </li>
-              <li>
+              <!-- <li>
                 <a
                   class="dropdown-item"
                   routerLink="/report-criteria"
@@ -237,8 +293,8 @@
                   <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
                   <span class="dropdown-item-span">Tiêu chí báo cáo</span>
                 </a>
-              </li>
-              <li>
+              </li> -->
+              <!-- <li>
                 <a
                   class="dropdown-item"
                   routerLink="/report-title"
@@ -249,8 +305,8 @@
                   <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
                   <span class="dropdown-item-span">Tiêu đề báo cáo</span>
                 </a>
-              </li>
-              <li>
+              </li> -->
+              <!-- <li>
                 <a
                   class="dropdown-item"
                   routerLink="/script"
@@ -261,7 +317,7 @@
                   <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
                   <span class="dropdown-item-span">Kịch bản</span>
                 </a>
-              </li>
+              </li> -->
               <li>
                 <a
                   class="dropdown-item"
@@ -291,7 +347,7 @@
           </li>
         }
         <li
-          *jhiHasAnyAuthority="'ROLE_ADMIN'"
+          *jhiHasAnyAuthority="'ROLE_ISO_ADMIN'"
           ngbDropdown
           class="nav-item dropdown pointer"
           display="dynamic"
@@ -301,7 +357,7 @@
           <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu" data-cy="adminMenu">
             <span>
               <fa-icon icon="users-cog"></fa-icon>
-              <span jhiTranslate="global.menu.admin.main">Quản trị</span>
+              <span class="dropdown-item-span" jhiTranslate="global.menu.admin.main">Quản trị</span>
             </span>
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="admin-menu">
@@ -374,7 +430,7 @@
             @if (!account()?.imageUrl) {
               <span>
                 <fa-icon icon="user"></fa-icon>
-                <span jhiTranslate="global.menu.account.main">Tài khoản</span>
+                <span jhiTranslate="global.menu.account.main" class="dropdown-item-span">Tài khoản</span>
               </span>
             } @else {
               <span>

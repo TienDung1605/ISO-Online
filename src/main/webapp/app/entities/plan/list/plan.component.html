@@ -3,15 +3,16 @@
     <span>Kế hoạch</span>
 
     <div class="d-flex justify-content-end">
-      <p-button
+      <!-- <p-button
         label="Gộp kế hoạch"
         icon="pi pi-file-plus"
         aria-label="Gross"
         styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-plan-btn"
         [severity]="'help'"
         (onClick)="navigateToScript()"
-      />
+      /> -->
       <button
+        *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_PLAN']"
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-plan"
@@ -21,7 +22,7 @@
         <span>Thêm mới</span>
       </button>
     </div>
-    <button (click)="navigateToSummarizePlan()">Check url</button>
+    <!-- <button (click)="navigateToSummarizePlan()">Check url</button> -->
   </h2>
 
   <p-table
@@ -51,17 +52,17 @@
       <tr>
         <th></th>
         <th>STT</th>
-        <th style="min-width: 12rem; width: 10rem">Mã kế hoạch</th>
-        <th style="min-width: 15rem; width: 10rem">Tên kế hoạch</th>
-        <th style="min-width: 12rem; width: 10rem">Đối tượng kế hoạch đánh giá</th>
-        <th style="min-width: 15rem; width: 10rem">Tần suất</th>
-        <th style="min-width: 15rem; width: 10rem">Thời gian bắt đầu</th>
-        <th style="min-width: 12rem; width: 10rem">Thời gian kết thúc</th>
-        <th style="min-width: 12rem; width: 10rem">Người tạo</th>
-        <th style="min-width: 12rem; width: 10rem">Người cập nhật</th>
-        <th style="min-width: 15rem; width: 10rem">Thời gian tạo</th>
-        <th style="min-width: 15rem; width: 10rem">Thời gian cập nhật</th>
-        <th style="min-width: 12rem; width: 10rem">Trạng thái</th>
+        <th style="min-width: 150px; width: 150px">Mã kế hoạch</th>
+        <th style="min-width: 300px; width: 300px">Tên kế hoạch</th>
+        <th style="min-width: 260px; width: 260px">Đối tượng kế hoạch đánh giá</th>
+        <th style="min-width: 120px; width: 120px">Tần suất</th>
+        <th style="min-width: 240px; width: 240px">Thời gian bắt đầu</th>
+        <th style="min-width: 240px; width: 240px">Thời gian kết thúc</th>
+        <th style="min-width: 200px; width: 200px">Người tạo</th>
+        <th style="min-width: 200px; width: 200px">Người cập nhật</th>
+        <th style="min-width: 240px; width: 240px">Thời gian tạo</th>
+        <th style="min-width: 240px; width: 240px">Thời gian cập nhật</th>
+        <th style="min-width: 110px; width: 110px">Trạng thái</th>
         <th>Tuỳ chọn</th>
       </tr>
       <tr>
@@ -94,9 +95,8 @@
           <p-columnFilter type="text" field="updatedAt" placeholder="Search"></p-columnFilter>
         </th>
         <th>
-          <p-columnFilter type="text" field="status" placeholder="Search"></p-columnFilter>
+          <!-- <p-columnFilter type="text" field="status" placeholder="Search"></p-columnFilter> -->
         </th>
-
         <th></th>
       </tr>
     </ng-template>
@@ -118,16 +118,17 @@
         <td>{{ rowNode.name }}</td>
         <td>{{ rowNode.subjectOfAssetmentPlan }}</td>
         <td>{{ rowNode.frequency }}</td>
-        <td>{{ rowNode.timeStart }}</td>
-        <td>{{ rowNode.timeEnd }}</td>
+        <td>{{ rowNode.timeStart | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ rowNode.timeEnd | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ rowNode.createBy }}</td>
         <td>{{ rowNode.updateBy }}</td>
-        <td>{{ rowNode.createdAt }}</td>
-        <td>{{ rowNode.updatedAt }}</td>
+        <td>{{ rowNode.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ rowNode.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>{{ rowNode.status }}</td>
         <td>
           <div class="action-buttons">
             <p-button
+              *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_PLAN']"
               icon="pi pi-copy"
               aria-label="Copy"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
@@ -136,6 +137,7 @@
               (onClick)="copyPlan(rowNode.id)"
             />
             <p-button
+              *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_PLAN']"
               icon="pi pi-pencil"
               aria-label="Edit"
               [rounded]="true"
@@ -145,42 +147,55 @@
               title="Chỉnh sửa"
             />
             <p-button
+              *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CHECK']"
               icon="pi pi-file-plus"
               aria-label="Gross"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'help'"
               title="Gộp"
-              (onClick)="navigateToGrossScript()"
+              [routerLink]="['/plan', rowNode.id, 'gross-script']"
             />
-            <p-button
+            <!-- <p-button
               icon="pi pi-check"
               aria-label="Check"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'success'"
               (onClick)="showDialogCheckScript()"
               title="Kiểm tra"
-            />
+            /> -->
             <p-button
               icon="pi pi-eye"
               aria-label="View"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'info'"
               title="Xem chi tiết"
-              (onClick)="navigateToSummarizePlan()"
+              [routerLink]="['/plan', rowNode.id, 'summarize-plan']"
+            />
+            <p-button
+              *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_FIX_PLAN', 'ROLE_ISO_CHECK']"
+              icon="pi pi-wrench"
+              aria-label="Report"
+              [rounded]="true"
+              [routerLink]="['/plan', rowNode.id, 'inspection-plan']"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'danger'"
+              title="Khai báo kế hoạch khắc phục"
             />
             <p-button
               icon="pi pi-file-excel"
               aria-label="Excel"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'success'"
-              (onClick)="showDialogExcel()"
+              (onClick)="exportSingleItemToExcel(rowNode)"
               title="Xuất excel"
             />
             <p-button
+              *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_PLAN']"
               icon="pi pi-trash"
               aria-label="Delete"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'danger'"
+              (onClick)="delete(rowNode)"
               title="Xoá"
             />
           </div>
@@ -222,19 +237,22 @@
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th style="min-width: 1rem; width: 10rem">STT</th>
-                  <th style="min-width: 12rem; width: 10rem">Mã BBKT</th>
-                  <th style="min-width: 12rem; width: 10rem">Tên mẫu BBKT</th>
-                  <th style="min-width: 12rem; width: 10rem">Đối tượng kiểm tra</th>
-                  <th style="min-width: 12rem; width: 10rem">Loại BBKT (ID)</th>
-                  <th style="min-width: 12rem; width: 10rem">Nhóm BBKT</th>
-                  <th style="min-width: 12rem; width: 10rem">Số lần thực hiện kiểm tra</th>
-                  <th style="min-width: 12rem; width: 10rem">Thời gian bắt đầu</th>
-                  <th style="min-width: 12rem; width: 10rem">Thời gian kết thúc</th>
-                  <th style="min-width: 12rem; width: 10rem">Người thực hiện kiểm tra</th>
-                  <th style="min-width: 12rem; width: 10rem">Tần suất kiểm tra</th>
-                  <th style="min-width: 12rem; width: 10rem">Trạng thái</th>
-                  <th style="min-width: 12rem; width: 10rem">Tuỳ chọn</th>
+                  <th style="min-width: 30px; width: 30px">STT</th>
+                  <th style="min-width: 200px; width: 200px">Mã BBKT</th>
+                  <th style="min-width: 400px; width: 400px">Tên BBKT</th>
+                  <th style="min-width: 200px; width: 200px">Đối tượng kiểm tra</th>
+                  <th style="min-width: 150px; width: 150px">Loại BBKT (ID)</th>
+                  <th style="min-width: 150px; width: 150px">Số lần kiểm tra</th>
+                  <th style="min-width: 150px; width: 150px">Thang điểm</th>
+                  <th style="min-width: 150px; width: 150px">Tổng điểm</th>
+                  <th style="min-width: 150px; width: 150px">Loại quy đổi</th>
+                  <th style="min-width: 30px; width: 30px">NC</th>
+                  <th style="min-width: 30px; width: 30px">LY</th>
+                  <th style="min-width: 180px; width: 180px">Số lượng không đạt</th>
+                  <th style="min-width: 150px; width: 150px">Người kiểm tra</th>
+                  <th style="min-width: 100px; width: 100px">Tần suất</th>
+                  <th style="min-width: 110px; width: 110px">Trạng thái</th>
+                  <th style="min-width: 10rem; width: 10rem">Tuỳ chọn</th>
                 </tr>
                 <tr>
                   <th></th>
@@ -263,14 +281,22 @@
                     <p-columnFilter type="text" field="checkerGroup" placeholder="Search"></p-columnFilter>
                   </th>
                   <th>
+                    <!-- <p-columnFilter type="text" field="checker" placeholder="Search"></p-columnFilter> -->
+                  </th>
+                  <th>
+                    <!-- <p-columnFilter type="text" field="checker" placeholder="Search"></p-columnFilter> -->
+                  </th>
+
+                  <th>
                     <p-columnFilter type="text" field="checker" placeholder="Search"></p-columnFilter>
                   </th>
                   <th>
                     <p-columnFilter type="text" field="frequency" placeholder="Search"></p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="status" placeholder="Search"></p-columnFilter>
+                    <!-- <p-columnFilter type="text" field="status" placeholder="Search"></p-columnFilter> -->
                   </th>
+                  <th></th>
                   <th></th>
                 </tr>
               </ng-template>
@@ -281,22 +307,26 @@
                   <td>{{ detail.name }}</td>
                   <td>{{ detail.testOfObject }}</td>
                   <td>{{ detail.reportType }}</td>
-                  <td>{{ detail.numberOfCheck }}</td>
-                  <td>{{ detail.implementer }}</td>
-                  <td>{{ detail.paticipant }}</td>
-                  <td>{{ detail.checkerGroup }}</td>
+                  <td>{{ detail.sumOfAudit }}</td>
+                  <td>{{ detail.scoreScale }}</td>
+                  <td>{{ getTotalPoit(detail) }}</td>
+                  <td>{{ detail.convertScore }}</td>
+                  <td>{{ detail.sumOfNc }}</td>
+                  <td>{{ detail.sumOfLy }}</td>
+                  <td>{{ detail.sumOfFail }}</td>
                   <td>{{ detail.checker }}</td>
                   <td>{{ detail.frequency }}</td>
                   <td>{{ detail.status }}</td>
                   <td>
                     <div class="action-buttons">
                       <p-button
+                        *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CHECK']"
                         icon="pi pi-check"
                         aria-label="Check"
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                         [severity]="'success'"
                         title="Đánh giá"
-                        (onClick)="showDialogCheckPlan()"
+                        (onClick)="showDialogCheckPlan(rowNode, index)"
                       />
                       <p-button
                         icon="pi pi-eye"
@@ -304,33 +334,28 @@
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                         [severity]="'info'"
                         title="Xem chi tiết"
-                        (onClick)="showDialogGeneralCheckPlan()"
+                        (onClick)="showDialogGeneralCheckPlan(rowNode, detail)"
                       />
                       <p-button
+                        *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_FIX_PLAN', 'ROLE_ISO_CHECK']"
                         icon="pi pi-wrench"
                         aria-label="Report"
                         [rounded]="true"
+                        [routerLink]="['/plan', detail.id, 'inspection-report']"
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                         [severity]="'danger'"
-                        (onClick)="navigateToInspectionReport()"
                         title="Khai báo kế hoạch khắc phục"
-                      />
-                      <p-button
-                        icon="pi pi-exclamation-triangle"
-                        aria-label="ReportAgain"
-                        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-                        [severity]="'warning'"
-                        (onClick)="navigateToInspectionReport()"
-                        title="Đánh giá lại"
                       />
                       <p-button
                         icon="pi pi-file-excel"
                         aria-label="Excel"
+                        (onClick)="exportExcel(detail.id)"
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
                         [severity]="'success'"
                         title="Xuất excel"
                       />
                       <p-button
+                        *jhiHasAnyAuthority="['ROLE_ISO_ADMIN', 'ROLE_ISO_CREATE_PLAN']"
                         icon="pi pi-trash"
                         aria-label="Delete"
                         styleClass="p-button-rounded p-button-info p-button-sm mr-2"
@@ -506,48 +531,6 @@
         />
       </div>
     </div>
-  </ng-template>
-
-  <ng-template #criteria let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-criteria-title">Nội dung kiểm tra</h4>
-      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
-    </div>
-    <p-table [value]="planData" styleClass="p-datatable-gridlines p-datatable-striped">
-      <ng-template pTemplate="header">
-        <tr>
-          <th class="text-center border">STT</th>
-          <th class="text-center border">Nhóm tiêu chí</th>
-          <th class="text-center border">Tên tiêu chí</th>
-          <th class="text-center border">Trạng thái</th>
-          <th class="text-center border">Tuỳ chọn</th>
-        </tr>
-        <tr>
-          <th class="text-center border"></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-          <th class="text-center border"></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-criteria let-index="rowIndex">
-        <tr>
-          <td class="text-center border">{{ index + 1 }}</td>
-          <td class="border">{{ criteria.code }}</td>
-          <td class="border">{{ criteria.name }}</td>
-          <td class="border">{{ criteria.status }}</td>
-          <td class="border">
-            <p-button
-              icon="pi pi-check-square"
-              aria-label="Induce"
-              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-              [severity]="'success'"
-              (onClick)="openModalEvaluation()"
-            />
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
   </ng-template>
 
   <ng-template #evaluationResult let-modal>
@@ -867,117 +850,6 @@
       </p-table>
     </div>
   </ng-template>
-
-  <ng-template #evaluationPlan let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-evaluation-plan-title">Thêm mới kế hoạch đánh giá</h4>
-      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      <div class="col-md-12">
-        <div class="col-md-6">
-          <label for="">Mã kế hoạch</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label for="">Tên kế hoạch</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label for="">Đối tượng kế hoạch đánh giá</label>
-          <input type="text" class="form-control" />
-        </div>
-      </div>
-      <div class="col-md-12">
-        <div class="col-md-6">
-          <label for="">Tần suất</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label for="">Ngày bắt đầu</label>
-          <input type="datetime-local" class="form-control" />
-        </div>
-        <div class="col-md-6">
-          <label for="">Ngày kết thúc</label>
-          <input type="datetime-local" class="form-control" />
-        </div>
-      </div>
-      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary jh-create-entity create-plan">
-        <fa-icon icon="plus"></fa-icon>
-        <span>Thêm mới</span>
-      </button>
-      <p-table [value]="planDetails" styleClass="p-datatable-gridlines p-datatable-striped">
-        <ng-template pTemplate="header">
-          <tr>
-            <th class="text-center border">STT</th>
-            <th class="text-center border">Cấp độ</th>
-            <th class="text-center border">Đối tượng kiểm tra</th>
-            <th class="text-center border">Loại BBKT</th>
-            <th class="text-center border">Mẫu BBKT</th>
-            <th class="text-center border">Mã BBKT</th>
-            <th class="text-center border">Nhóm BBKT</th>
-            <th class="text-center border">Tần suất kiểm tra</th>
-            <th class="text-center border">Thang điểm</th>
-            <th class="text-center border">Tuỳ chọn</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-detail let-index="rowIndex">
-          <tr>
-            <td class="text-center border">{{ index + 1 }}</td>
-            <td class="text-center border">{{ detail.level }}</td>
-            <td class="text-center border">{{ detail.checkTarget }}</td>
-            <td class="text-center border">{{ detail.reportType }}</td>
-            <td class="text-center border">{{ detail.reportTemplate }}</td>
-            <td class="text-center border">{{ detail.reportCode }}</td>
-            <td class="text-center border">{{ detail.reportGroup }}</td>
-            <td class="text-center border">{{ detail.frequency }}</td>
-            <td class="text-center border">{{ detail.scoreScale }}</td>
-            <td class="text-center border">
-              <div class="action-buttons">
-                <p-button
-                  icon="pi pi-pencil"
-                  aria-label="Chỉnh sửa"
-                  styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-                  [severity]="'secondary'"
-                  title="Chỉnh sửa"
-                />
-                <p-button
-                  icon="pi pi-users"
-                  aria-label="Phân quyền người dùng"
-                  [rounded]="true"
-                  styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-                  [severity]="'success'"
-                  title="Phân quyền người dùng"
-                  (onClick)="openModal()"
-                />
-                <p-button
-                  icon="pi pi-trash"
-                  aria-label="Xoá"
-                  styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-                  [severity]="'danger'"
-                  title="Xoá"
-                />
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-      <p-button
-        label="Huỷ"
-        icon="pi pi-times-circle"
-        aria-label="File"
-        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-        [severity]="'danger'"
-      />
-      <p-button
-        label="Lưu"
-        icon="pi pi-save"
-        aria-label="File"
-        styleClass="p-button-rounded p-button-info p-button-sm mr-2"
-        [severity]="'info'"
-      />
-    </div>
-  </ng-template>
 </div>
 
 <p-dialog
@@ -1191,7 +1063,7 @@
 </p-dialog>
 
 <p-dialog
-  header="Đánh giá kế hoạch BBKT"
+  header="Đánh giá BBKT"
   [resizable]="false"
   [modal]="true"
   [maximizable]="true"
@@ -1200,24 +1072,12 @@
   [style]="{ width: '80vw' }"
   [contentStyle]="{ height: '70vh' }"
 >
-  <div class="col-container">
-    <div class="col-m4-25 col-container-child">
-      <label for="">Đối tượng kiểm tra</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="col-m4-25 col-container-child">
-      <label for="">Quy đổi</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="col-m4-25 col-container-child">
-      <label for="">Mẫu BBKT</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="custom-button-apply">
+  <div class="d-flex" style="justify-content: flex-end !important">
+    <div class="custom-button-apply ms-3">
       <p-button
-        label="Apply"
+        label="Thêm dữ liệu"
         icon="pi pi-check"
-        (onClick)="dialogCheckPlan = false"
+        (onClick)="addRowPlanEvaluation()"
         styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
         [raised]="true"
         [severity]="'info'"
@@ -1237,16 +1097,14 @@
     <ng-template pTemplate="header">
       <tr>
         <th class="text-center border">STT</th>
-        <th class="text-center border">Mã kế hoạch</th>
-        <th class="text-center border">Tên kế hoạch</th>
-        <th class="text-center border">Đối tượng kế hoạch đánh giá</th>
-        <th class="text-center border">Tần suất kế hoạch</th>
         <th class="text-center border">Mã BBKT</th>
         <th class="text-center border">Tên mẫu BBKT</th>
         <th class="text-center border">Đối tượng kiểm tra</th>
         <th class="text-center border">Loại BBKT</th>
-        <th class="text-center border">Nhóm BBKT</th>
+        <th class="text-center border">Loại đánh giá</th>
         <th class="text-center border">Trạng thái</th>
+        <th class="text-center border">Tên kế hoạch</th>
+        <th class="text-center border">Người kiểm tra</th>
         <th class="text-center border">Ngày kiểm tra</th>
         <th class="text-center border">Tuỳ chọn</th>
       </tr>
@@ -1254,25 +1112,55 @@
     <ng-template pTemplate="body" let-item let-index="rowIndex">
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
-        <td class="text-center border">{{ item.planCode }}</td>
-        <td class="text-center border">{{ item.planName }}</td>
-        <td class="text-center border">{{ item.evaluationTarget }}</td>
-        <td class="text-center border">{{ item.planFrequency }}</td>
-        <td class="text-center border">{{ item.reportCode }}</td>
-        <td class="text-center border">{{ item.reportTemplateName }}</td>
-        <td class="text-center border">{{ item.checkTarget }}</td>
-        <td class="text-center border">{{ item.reportType }}</td>
-        <td class="text-center border">{{ item.reportGroup }}</td>
-        <td class="text-center border">{{ item.status }}</td>
-        <td class="text-center border"><input type="date" /></td>
+        <td class="text-center border">{{ planParent.code }}</td>
+        <td class="text-center border">{{ planParent.name }}</td>
+        <td class="text-center border">{{ report.testOfObject }}</td>
+        <td class="text-center border">{{ report.reportType }}</td>
+        <td class="text-center border">{{ report.convertScore }}</td>
+        <td class="text-center border">{{ report.status }}</td>
         <td class="text-center border">
-          <div class="action-buttons">
+          <input type="text" [(ngModel)]="item.name" required />
+        </td>
+        <td class="text-center border">
+          {{ report.checker }}
+          <!-- <select class="inp-style" [(ngModel)]="item.createdBy" required>
+            <option *ngFor="let data of evaluators" [value]="data.name">
+              {{ data.name }}
+            </option>
+          </select> -->
+        </td>
+        <td class="text-center border">
+          <!-- <input type="date" [(ngModel)]="item.checkDate" (ngModelChange)="checkEvent(planEvaluations, index)" required /> -->
+          <p-calendar
+            inputId="checkDate"
+            [(ngModel)]="item.checkDate"
+            [minDate]="minSelectableDate"
+            [maxDate]="maxSelectableDate"
+            required
+            class="form-control"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+          ></p-calendar>
+        </td>
+        <td class="text-center border d-flex">
+          <div class="action-buttons mx-1">
             <p-button
               icon="pi pi-check"
               aria-label="Check"
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'success'"
-              (onClick)="showDialogCheckPlanChild()"
+              (onClick)="showDialogCheckPlanChild(item)"
+              [disabled]="!item.name || !item.checkDate || disableSaveCheckDate[index]"
+            />
+          </div>
+          <div class="action-buttons mx-1">
+            <p-button
+              icon="pi pi-trash"
+              aria-label="Delete"
+              styleClass="p-button-rounded p-button-info p-button-sm mr-2"
+              [severity]="'danger'"
+              title="Xoá"
+              (onClick)="deletePlanChild(planEvaluations, index)"
             />
           </div>
         </td>
@@ -1288,20 +1176,6 @@
         styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
         severity="danger"
       />
-      <p-button
-        label="Lưu"
-        icon="pi pi-save"
-        (onClick)="dialogCheckPlan = false"
-        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
-        severity="info"
-      />
-      <p-button
-        label="Apply"
-        icon="pi pi-check"
-        (onClick)="dialogCheckPlan = false"
-        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
-        severity="success"
-      />
     </div>
   </ng-template>
 </p-dialog>
@@ -1316,30 +1190,6 @@
   [style]="{ width: '80vw' }"
   [contentStyle]="{ height: '70vh' }"
 >
-  <div class="col-container">
-    <div class="col-m4-25 col-container-child">
-      <label for="">Tên biên bản kiểm tra</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="col-m4-25 col-container-child">
-      <label for="">Mẫu biên bản kiểm tra</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="col-m4-25 col-container-child">
-      <label for="">Ngày kiểm tra</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
-    </div>
-    <div class="custom-button-apply">
-      <p-button
-        label="Apply"
-        icon="pi pi-check"
-        (onClick)="dialogCheckPlanChild = false"
-        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
-        [raised]="true"
-        [severity]="'info'"
-      />
-    </div>
-  </div>
   <p-table
     paginator="true"
     [rows]="100"
@@ -1347,32 +1197,108 @@
     styleClass="p-datatable-gridlines"
     [rowsPerPageOptions]="[5, 10, 20]"
     [autoLayout]="true"
+    [value]="planGrDetail"
   >
     <ng-template pTemplate="header">
       <tr>
         <th class="text-center border">STT</th>
         <th class="text-center border">Nhóm tiêu chí</th>
         <th class="text-center border">Tên tiêu chí</th>
-        <th class="text-center border">Đối tượng kế hoạch đánh giá</th>
         <th class="text-center border">Tần suất</th>
+        <th class="text-center border">Đối tượng đánh giá</th>
         <th class="text-center border">Đánh giá</th>
         <th class="text-center border">Nội dung đánh giá</th>
         <th class="text-center border">Hình ảnh đánh giá</th>
-        <th class="text-center border">Trạng thái</th>
+        <th class="text-center border">Không đánh giá</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item let-index="rowIndex">
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
-        <td class="text-center border">{{ item.planCode }}</td>
-        <td class="text-center border">{{ item.planName }}</td>
-        <td class="text-center border">{{ item.evaluationTarget }}</td>
-        <td class="text-center border">{{ item.planFrequency }}</td>
-        <td class="text-center border">{{ item.reportCode }}</td>
-        <td class="text-center border">{{ item.reportTemplateName }}</td>
-        <td class="text-center border">{{ item.checkTarget }}</td>
-        <td class="text-center border">{{ item.status }}</td>
-        <td class="text-center border"><input type="date" /></td>
+        <td class="text-center border">{{ item.criterialGroupName }}</td>
+        <td class="text-center border">{{ item.criterialName }}</td>
+        <td class="text-center border">{{ item.frequency }}</td>
+        <td class="text-center border">{{ item.createdBy }}</td>
+        <td class="text-center border">
+          <select [(ngModel)]="item.result" name="report.result" [disabled]="item.hasEvaluation == 0">
+            <option *ngFor="let item1 of listEvalReports" [value]="item1.name">{{ item1.name }}</option>
+          </select>
+        </td>
+        <td class="text-center border">
+          <input type="text" [(ngModel)]="item.note" [disabled]="item.hasEvaluation == 0" />
+        </td>
+        <td class="text-center border">
+          <p-button (click)="showDialogUpLoad(item, index)" label="Attach files" [disabled]="item.hasEvaluation == 0" />
+          <p-dialog
+            header="Upload Files"
+            [modal]="true"
+            [(visible)]="dialogVisibility[index]"
+            [style]="{ width: '50rem' }"
+            [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+            [maximizable]="true"
+          >
+            <ng-container *ngIf="selectedData">
+              <p-fileUpload
+                name="files"
+                [url]="''"
+                [multiple]="true"
+                accept="image/*"
+                maxFileSize="1000000"
+                mode="advanced"
+                [auto]="false"
+                [customUpload]="true"
+                preview="true"
+                (onSelect)="onFileSelect($event, selectedData, index)"
+                (onClear)="onClear(selectedData)"
+                (onRemove)="removeImg($event, selectedData)"
+                [showUploadButton]="false"
+              >
+                <ng-template pTemplate="empty">
+                  <div>Drag and drop files to here to upload.</div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                  <div *ngFor="let fileName of selectedData.image">
+                    <div
+                      *ngIf="!imageLoadErrors.has(fileName)"
+                      style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; align-items: center"
+                    >
+                      <div style="grid-column: span 4">
+                        <img
+                          [src]="'content/images/bbkt/' + fileName + '?t=' + getTimestamp()"
+                          (error)="onImageError(fileName)"
+                          alt="Image thumbnail"
+                          style="width: 100%"
+                          class="thumbnail-image"
+                        />
+                      </div>
+                      <div style="grid-column: span 4">
+                        <div class="file-name">{{ fileName }}</div>
+                      </div>
+                      <div style="grid-column: span 4">
+                        <button
+                          type="button"
+                          (click)="deleteFile(fileName, selectedData)"
+                          class="p-button p-button-icon-only p-button-text p-button-danger p-button-sm"
+                        >
+                          <span class="pi pi-times"></span>
+                        </button>
+                      </div>
+                      <br />
+                    </div>
+                  </div>
+                </ng-template>
+              </p-fileUpload>
+            </ng-container>
+            <ng-template pTemplate="footer">
+              <div class="flex justify-content-end">
+                <p-button label="Xong" icon="pi pi-check" styleClass="p-button-text" (click)="dialogVisibility[index] = false"></p-button>
+              </div>
+            </ng-template>
+          </p-dialog>
+        </td>
+        <td class="text-center border">
+          <p-checkbox [binary]="true" [(ngModel)]="item.hasEvaluation" [trueValue]="0" [falseValue]="1"></p-checkbox>
+        </td>
       </tr>
     </ng-template>
   </p-table>
@@ -1381,23 +1307,16 @@
       <p-button
         label="Huỷ"
         icon="pi pi-ban"
-        (onClick)="dialogCheckPlan = false"
+        (onClick)="dialogCheckPlanChild = false"
         styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
         severity="danger"
       />
       <p-button
         label="Lưu"
         icon="pi pi-save"
-        (onClick)="dialogCheckPlan = false"
+        (onClick)="savePlanGrAndDetail()"
         styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
         severity="info"
-      />
-      <p-button
-        label="Apply"
-        icon="pi pi-check"
-        (onClick)="dialogCheckPlan = false"
-        styleClass="p-button-rounded p-button-info p-button-sm mr-2 gross-btn"
-        severity="success"
       />
     </div>
   </ng-template>
@@ -1415,23 +1334,23 @@
 >
   <div class="col-container">
     <div class="col-m4-25 col-container-child">
-      <label for="">Mã kế hoạch</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+      <label for="">Mã BBKT</label>
+      <input type="text" class="inp-style" [(ngModel)]="reportSelected.code" readonly />
     </div>
 
     <div class="col-m4-25 col-container-child">
-      <label for="">Tên kế hoạch</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+      <label for="">Tên BBKT</label>
+      <input type="text" class="inp-style" [(ngModel)]="reportSelected.name" readonly />
     </div>
 
     <div class="col-m4-25 col-container-child">
       <label for="">Đối tượng kế hoạch đánh giá</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+      <input type="text" class="inp-style" [(ngModel)]="reportSelected.testOfObject" readonly />
     </div>
 
     <div class="col-m4-25 col-container-child">
-      <label for="">Tần suất</label>
-      <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
+      <label for="">Kiểu quy đổi</label>
+      <input type="text" class="inp-style" [(ngModel)]="reportSelected.convertScore" readonly />
     </div>
   </div>
   <p-table
@@ -1447,11 +1366,16 @@
       <tr>
         <th class="text-center border">STT</th>
         <th class="text-center border">Điểm theo đợt kiểm tra</th>
-        <th class="text-center border">Tên BBKT</th>
+        <th class="text-center border">Mã kế hoạch</th>
+        <th class="text-center border">Tên kế hoạch</th>
         <th class="text-center border">Ngày kiểm tra</th>
-        <th class="text-center border">NC</th>
-        <th class="text-center border">LY</th>
-        <th class="text-center border">Không đạt</th>
+        <ng-container *ngIf="reportSelected.convertScore == 'Tính điểm'; else buocNhayTH">
+          <th class="text-center border">NC</th>
+          <th class="text-center border">LY</th>
+        </ng-container>
+        <ng-template #buocNhayTH>
+          <th class="text-center border">Không đạt</th>
+        </ng-template>
         <th class="text-center border">Tuỳ chọn</th>
       </tr>
       <tr>
@@ -1462,18 +1386,23 @@
         <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
         <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
         <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
-        <th class="text-center border"></th>
+        <th class="text-center border" *ngIf="reportSelected.convertScore == 'Tính điểm'"></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-detail let-index="rowIndex">
+    <ng-template pTemplate="body" let-reportSum let-index="rowIndex">
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
-        <td class="text-center border">{{ detail.score }}</td>
-        <td class="text-center border">{{ detail.reportName }}</td>
-        <td class="text-center border">{{ detail.checkDate }}</td>
-        <td class="text-center border">{{ detail.nc }}</td>
-        <td class="text-center border">{{ detail.ly }}</td>
-        <td class="text-center border">{{ detail.notPass }}</td>
+        <td class="text-center border">{{ totalPointSummarize(reportSum) }}</td>
+        <td class="text-center border">{{ reportSum.planGroupHistoryCode }}</td>
+        <td class="text-center border">{{ reportSum.planGroupHistoryName }}</td>
+        <td class="text-center border">{{ reportSum.checkDate }}</td>
+        <ng-container *ngIf="reportSelected.convertScore == 'Tính điểm'; else buocNhay">
+          <td class="text-center border">{{ reportSum.sumOfNc }}</td>
+          <td class="text-center border">{{ reportSum.sumOfLy }}</td>
+        </ng-container>
+        <ng-template #buocNhay>
+          <td class="text-center border">{{ reportSum.sumOfFail }}</td>
+        </ng-template>
         <td class="text-center border">
           <div class="action-buttons">
             <p-button
@@ -1482,7 +1411,7 @@
               styleClass="p-button-rounded p-button-info p-button-sm mr-2"
               [severity]="'info'"
               title="Chi tiết"
-              (onClick)="showDialogSummaryOfCriteriaConclusion()"
+              (onClick)="showDialogSummaryOfCriteriaConclusion(reportSum)"
             />
           </div>
         </td>
@@ -1501,7 +1430,7 @@
   [style]="{ width: '80vw' }"
   [contentStyle]="{ height: '70vh' }"
 >
-  <div class="col-container">
+  <!-- <div class="col-container">
     <div class="col-m4-25 col-container-child">
       <label for="">Ngày kiểm tra</label>
       <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
@@ -1511,7 +1440,7 @@
       <label for="">Tên BBKT</label>
       <input type="text" class="inp-style" name="code" id="field_code" data-cy="code" />
     </div>
-  </div>
+  </div> -->
   <p-table [value]="criteriaSummaries">
     <ng-template
       pTemplate="header"
@@ -1529,11 +1458,9 @@
         <th class="text-center border">Kết luận</th>
         <th class="text-center border">Nội dung đánh giá</th>
         <th class="text-center border">Hình ảnh đánh giá</th>
-        <th class="text-center border">Trạng thái</th>
       </tr>
       <tr>
         <th class="text-center border"></th>
-        <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
         <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
         <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
         <th class="text-center border"><p-columnFilter type="text" placeholder="Search " ariaLabel="Filter Country"></p-columnFilter></th>
@@ -1544,13 +1471,23 @@
     <ng-template pTemplate="body" let-criteria let-index="rowIndex">
       <tr>
         <td class="text-center border">{{ index + 1 }}</td>
-        <td class="text-center border">{{ criteria.criteriaGroup }}</td>
-        <td class="text-center border">{{ criteria.criteriaName }}</td>
-        <td class="text-center border">{{ criteria.conclusion }}</td>
-        <td class="text-center border">{{ criteria.evaluationContent }}</td>
-        <td class="text-center border">{{ criteria.evaluationImage }}</td>
-        <td class="text-center border"><p-tag [value]="criteria.status" [severity]="getSeverity(criteria.status)" /></td>
+        <td class="text-center border">{{ criteria.criterialGroupName }}</td>
+        <td class="text-center border">{{ criteria.criterialName }}</td>
+        <td class="text-center border">{{ criteria.result ? criteria.result : 'PASS' }}</td>
+        <td class="text-center border">{{ criteria.note }}</td>
+        <td class="text-center border">
+          <p-button (onClick)="showDialogViewImg(criteria.image)" label="Xem ảnh" />
+        </td>
       </tr>
     </ng-template>
   </p-table>
+</p-dialog>
+
+<p-dialog header="Xem ảnh báo cáo" [(visible)]="dialogViewImage" [modal]="true" [style]="{ width: '70vw' }" [baseZIndex]="1100">
+  <ng-container *ngIf="listImgReports && listImgReports.length > 0; else notImg">
+    <img *ngFor="let image of listImgReports" [src]="'content/images/bbkt/' + image" class="img-fluid mb-3" />
+  </ng-container>
+  <ng-template #notImg>
+    <h1>Chưa có ảnh đánh giá</h1>
+  </ng-template>
 </p-dialog>

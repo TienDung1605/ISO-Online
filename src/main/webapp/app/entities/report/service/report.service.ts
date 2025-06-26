@@ -113,6 +113,10 @@ export class ReportService {
     return reportCollection;
   }
 
+  getAllStatisticalByReportId(planId: number, reportId: number): Observable<HttpResponse<any>> {
+    return this.http.get<any>(`${this.resourceUrl}/statistical/plan/${planId}/report/${reportId}`, { observe: 'response' });
+  }
+
   protected convertDateFromClient<T extends IReport | NewReport | PartialUpdateReport>(report: T): RestOf<T> {
     return {
       ...report,

@@ -71,6 +71,9 @@ export class CriteriaUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.criteria && this.criteria.name === control.value) {
+      return of(null);
+    }
     return this.criteriaService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),
@@ -122,42 +125,26 @@ export class CriteriaUpdateComponent implements OnInit {
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICriteria>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
+    result.subscribe({
       next: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+        Swal.fire({
+          title: 'Success',
+          text: this.criteria?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
           icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.criteria?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveSuccess();
         });
-        this.onSaveSuccess();
       },
       error: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+        Swal.fire({
+          title: 'Error',
+          text: this.criteria?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
           icon: 'error',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.criteria?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveError();
         });
-        this.onSaveError();
       },
     });
   }
@@ -174,7 +161,8 @@ export class CriteriaUpdateComponent implements OnInit {
     this.isSaving = false;
   }
   protected loadCriateriaGroups(): void {
-    this.criteriaService.getAllCriteriaGroups().subscribe(data => {
+    this.criteriaGroupService.getAllCriteriaGroups().subscribe(data => {
+      console.log('criteria groups', data);
       this.criteriaGroups = data;
     });
   }

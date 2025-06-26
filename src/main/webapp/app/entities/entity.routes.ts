@@ -77,6 +77,11 @@ const routes: Routes = [
     loadChildren: () => import('./plan/plan.routes'),
   },
   {
+    path: 'plan-group',
+    data: { pageTitle: 'isoApp.planGroup.home.title' },
+    loadChildren: () => import('./plan-group/plan-group.routes'),
+  },
+  {
     path: 'report',
     data: { pageTitle: 'isoApp.report.home.title' },
     loadChildren: () => import('./report/report.routes'),
@@ -95,16 +100,6 @@ const routes: Routes = [
     path: 'script',
     data: { pageTitle: 'isoApp.script.home.title' },
     loadChildren: () => import('./script/script.routes'),
-  },
-  {
-    path: 'inspection-report',
-    data: { pageTitle: 'isoApp.inspectionReport.home.title' },
-    loadChildren: () => import('./inspection-report/inspection-report.routes'),
-  },
-  {
-    path: 'gross-script',
-    data: { pageTitle: 'isoApp.grossScript.home.title' },
-    loadChildren: () => import('./gross-script/gross-script.routes'),
   },
   {
     path: 'field',

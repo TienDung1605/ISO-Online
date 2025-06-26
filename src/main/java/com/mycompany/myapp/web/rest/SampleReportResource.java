@@ -212,6 +212,13 @@ public class SampleReportResource {
         return query.getResultList();
     }
 
+    @PostMapping("/listfull")
+    public List<Object> getListFull(@RequestBody SampleReportRequestDTO requestDTO) {
+        String sql = "SELECT id," + requestDTO.getField_name() + " FROM iso." + requestDTO.getSource_table() + " ;";
+        Query query = this.entityManager.createNativeQuery(sql);
+        return query.getResultList();
+    }
+
     @GetMapping("/all")
     public List<Object> getSampleReports() {
         List<Object> list = this.sampleReportRepository.getSampleReports();

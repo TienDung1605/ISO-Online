@@ -16,7 +16,7 @@ export const sampleWithPartialData: ICriteria = {
 export const sampleWithFullData: ICriteria = {
   id: 14386,
   name: 'openly in-joke',
-  criterialGroupId: 'boo phony whether',
+  criterialGroupId: 457,
   status: 'who electric',
   createdAt: dayjs('2025-01-23T06:16'),
   updatedAt: dayjs('2025-01-23T05:56'),

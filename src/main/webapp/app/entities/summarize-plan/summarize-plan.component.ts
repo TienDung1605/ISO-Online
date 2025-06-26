@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormatMediumDatetimePipe } from 'app/shared/date';
 import { SortByDirective, SortDirective } from 'app/shared/sort';
@@ -379,25 +379,32 @@ export class SummarizePlanComponent implements OnInit {
       status: 'Đạt',
     },
   ];
-  protected summarizePlanService = inject(SummarizePlanService);
-  constructor() {
-    console.log('SummarizePlanComponent constructed');
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    protected summarizePlanService: SummarizePlanService,
+  ) {
+    // console.log('SummarizePlanComponent constructed');
   }
 
   ngOnInit(): void {
     console.log('aaa');
-    this.summarizePlanService.getSummarizePlan().subscribe(res => {
-      this.summarizePlanResult = res.map((item: SummarizePlanItem) => ({
-        bbktCode: item.code,
-        bbktName: item.name,
-        inspectionObject: item.inspectionObject,
-        totalInspection: item.totalInspection,
-        pointScale: item.pointScale,
-        totalErrorPoints: item.totalErrorPoints,
-        totalBbktPoints: item.totalBbktPoints,
-        averagePoints: item.averagePoints,
-        totalErrors: item.totalErrors,
-      }));
+    // this.summarizePlanService.getSummarizePlan().subscribe(res => {
+    //   this.summarizePlanResult = res.map((item: SummarizePlanItem) => ({
+    //     bbktCode: item.code,
+    //     bbktName: item.name,
+    //     inspectionObject: item.inspectionObject,
+    //     totalInspection: item.totalInspection,
+    //     pointScale: item.pointScale,
+    //     totalErrorPoints: item.totalErrorPoints,
+    //     totalBbktPoints: item.totalBbktPoints,
+    //     averagePoints: item.averagePoints,
+    //     totalErrors: item.totalErrors,
+    //   }));
+    // });
+    this.activatedRoute.data.subscribe(({ plan }) => {
+      this.summarizePlanService.getStaitcatial(plan.id).subscribe(res => {
+        console.log(res);
+      });
     });
   }
 

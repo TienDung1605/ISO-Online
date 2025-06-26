@@ -55,6 +55,9 @@ export class CheckLevelUpdateComponent implements OnInit {
     if (!control.value) {
       return of(null);
     }
+    if (this.checkLevel && this.checkLevel.name === control.value) {
+      return of(null);
+    }
     return this.checkLevelService.checkNameExists(control.value).pipe(
       map(isDuplicate => (isDuplicate ? { duplicate: true } : null)),
       catchError(() => of(null)),
@@ -106,42 +109,26 @@ export class CheckLevelUpdateComponent implements OnInit {
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICheckLevel>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
+    result.subscribe({
       next: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+        Swal.fire({
+          title: 'Success',
+          text: this.checkLevel?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
           icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.checkLevel?.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveSuccess();
         });
-        this.onSaveSuccess();
       },
       error: () => {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
+        Swal.fire({
+          title: 'Error',
+          text: this.checkLevel?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
           icon: 'error',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen(toast) {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
-          icon: 'success',
-          title: this.checkLevel?.id ? 'Cập nhật thất bại!' : 'Thêm mới thất bại!',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.onSaveError();
         });
-        this.onSaveError();
       },
     });
   }

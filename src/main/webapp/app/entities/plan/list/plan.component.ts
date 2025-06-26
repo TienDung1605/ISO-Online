@@ -1,8 +1,9 @@
-import { Component, NgZone, inject, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, NgZone, inject, OnInit, ViewChild, TemplateRef, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode } from 'primeng/api'; // Import TreeNode
+import Swal from 'sweetalert2';
 
 import SharedModule from 'app/shared/shared.module';
 import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
@@ -21,6 +22,20 @@ import { InputIconModule } from 'primeng/inputicon';
 import { DialogModule } from 'primeng/dialog';
 import { SummarizePlanComponent } from 'app/entities/summarize-plan/summarize-plan.component';
 import { TagModule } from 'primeng/tag';
+import { ReportService } from 'app/entities/report/service/report.service';
+import { EvaluatorService } from 'app/entities/evaluator/service/evaluator.service';
+import { ConvertService } from 'app/entities/convert/service/convert.service';
+import { FileUploadModule } from 'primeng/fileupload';
+import dayjs from 'dayjs/esm';
+import { PlanGroupService } from 'app/entities/plan-group/service/plan-group.service';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { HttpResponse } from '@angular/common/http';
+import { ExportExcelService } from '../service/export-excel.service';
+import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
+import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
+import { AccountService } from 'app/core/auth/account.service';
 
 interface CheckPlanDetail {
   id: number;
@@ -47,20 +62,6 @@ interface CriteriaSummary {
   selector: 'jhi-plan',
   templateUrl: './plan.component.html',
   styleUrls: ['../../shared.component.css'],
-  // animations: [
-  //   trigger('overlayContentAnimation', [
-  //     state('void', style({
-  //       transform: 'translateY(5%)',
-  //       opacity: 0
-  //     })),
-  //     state('visible', style({
-  //       transform: 'translateY(0)',
-  //       opacity: 1
-  //     })),
-  //     transition('void => visible', animate('225ms ease-out')),
-  //     transition('visible => void', animate('195ms ease-in'))
-  //   ])
-  // ],
   imports: [
     RouterModule,
     FormsModule,
@@ -77,12 +78,12 @@ interface CriteriaSummary {
     NgbModule,
     DialogModule,
     TagModule,
-    // BrowserAnimationsModule,
-    // CommonModule
+    FileUploadModule,
+    HasAnyAuthorityDirective,
+    CalendarModule,
+    CheckboxModule,
   ],
-  providers: [
-    SummarizePlanComponent, // Add this
-  ],
+  providers: [SummarizePlanComponent],
 })
 export class PlanComponent implements OnInit {
   subscription: Subscription | null = null;
@@ -96,115 +97,25 @@ export class PlanComponent implements OnInit {
   @ViewChild('dt2') dt2!: any;
   planDetailResults: any[] = [];
   sampleReportName: any[] = [];
+  planParent: any = {};
+  checkLevels: any[] = [];
+  listOfFrequency: any[] = [];
+  checkTargets: any[] = [];
+  reportTypes: any[] = [];
+  sampleReport: any[] = [];
   // userTesting: any;
   @ViewChild('userTesting') userTesting!: TemplateRef<any>;
   @ViewChild('gross') gross!: TemplateRef<any>;
-  @ViewChild('criteria') criteria!: TemplateRef<any>;
   @ViewChild('evaluationResult') evaluationResult!: TemplateRef<any>;
   @ViewChild('inspectionData') inspectionData!: TemplateRef<any>;
   @ViewChild('detailInspectionData') detailInspectionData!: TemplateRef<any>;
   @ViewChild('criteriaConclusion') criteriaConclusion!: TemplateRef<any>;
-  @ViewChild('evaluationPlan') evaluationPlan!: TemplateRef<any>;
-  planData = [
-    {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
-      orders: [
-        {
-          id: '1000-0',
-          productCode: 'f230fh0g3',
-          date: '2020-09-13',
-          amount: 65,
-          quantity: 1,
-          customer: 'David James',
-          status: 'PENDING',
-        },
-        {
-          id: '1000-1',
-          productCode: 'f230fh0g3',
-          date: '2020-05-14',
-          amount: 130,
-          quantity: 2,
-          customer: 'Leon Rodrigues',
-          status: 'DELIVERED',
-        },
-        {
-          id: '1000-2',
-          productCode: 'f230fh0g3',
-          date: '2019-01-04',
-          amount: 65,
-          quantity: 1,
-          customer: 'Juan Alejandro',
-          status: 'RETURNED',
-        },
-        {
-          id: '1000-3',
-          productCode: 'f230fh0g3',
-          date: '2020-09-13',
-          amount: 195,
-          quantity: 3,
-          customer: 'Claire Morrow',
-          status: 'CANCELLED',
-        },
-      ],
-    },
-  ];
-
-  planDetails = [
-    {
-      id: 1,
-      level: 'Cấp 1',
-      checkTarget: 'Đối tượng 1',
-      reportType: 'Loại 1',
-      reportTemplate: 'Mẫu 1',
-      reportCode: 'BBKT001',
-      reportGroup: 'Nhóm 1',
-      frequency: 'Hàng ngày',
-      scoreScale: '10',
-    },
-    {
-      id: 2,
-      level: 'Cấp 2',
-      checkTarget: 'Đối tượng 2',
-      reportType: 'Loại 2',
-      reportTemplate: 'Mẫu 2',
-      reportCode: 'BBKT002',
-      reportGroup: 'Nhóm 2',
-      frequency: 'Hàng tuần',
-      scoreScale: '10',
-    },
-    {
-      id: 3,
-      level: 'Cấp 2',
-      checkTarget: 'Đối tượng 3',
-      reportType: 'Loại 2',
-      reportTemplate: 'Mẫu 2',
-      reportCode: 'BBKT003',
-      reportGroup: 'Nhóm 2',
-      frequency: 'Hàng tháng',
-      scoreScale: '10',
-    },
-  ];
+  protected reportService = inject(ReportService);
 
   columnWidths = {
     'min-width': '960px',
     width: '100%',
   };
-
-  options = [
-    { label: 5, value: 5 },
-    { label: 10, value: 10 },
-    { label: 20, value: 20 },
-    { label: 120, value: 120 },
-  ];
 
   scriptEvaluations = [
     {
@@ -344,365 +255,10 @@ export class PlanComponent implements OnInit {
     },
   ];
 
-  planEvaluations = [
-    {
-      planCode: 'KH001',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Sản xuất',
-      planFrequency: 'Hàng ngày',
-      reportCode: 'BB001',
-      reportTemplateName: 'BBKT Sản xuất',
-      checkTarget: 'Máy A1',
-      reportType: 'Định kỳ',
-      reportGroup: 'Sản xuất',
-      status: 'Mới',
-      checkDate: '2024-01-15',
-    },
-    {
-      planCode: 'KH002',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng QC',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB002',
-      reportTemplateName: 'BBKT Chất lượng',
-      checkTarget: 'Quy trình QC',
-      reportType: 'Đột xuất',
-      reportGroup: 'Chất lượng',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-16',
-    },
-    {
-      planCode: 'KH003',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Nhà xưởng 1',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB003',
-      reportTemplateName: 'BBKT An toàn',
-      checkTarget: 'PCCC',
-      reportType: 'Định kỳ',
-      reportGroup: 'An toàn',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-17',
-    },
-    {
-      planCode: 'KH004',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Kho nguyên liệu',
-      planFrequency: 'Hàng quý',
-      reportCode: 'BB004',
-      reportTemplateName: 'BBKT Kho',
-      checkTarget: 'Khu A',
-      reportType: 'Định kỳ',
-      reportGroup: 'Kho',
-      status: 'Mới',
-      checkDate: '2024-01-18',
-    },
-    {
-      planCode: 'KH005',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng R&D',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB005',
-      reportTemplateName: 'BBKT R&D',
-      checkTarget: 'Phòng Lab',
-      reportType: 'Đột xuất',
-      reportGroup: 'R&D',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-19',
-    },
-    {
-      planCode: 'KH006',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Bảo trì',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB006',
-      reportTemplateName: 'BBKT Thiết bị',
-      checkTarget: 'Máy B2',
-      reportType: 'Định kỳ',
-      reportGroup: 'Bảo trì',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-20',
-    },
-    {
-      planCode: 'KH007',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng HR',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB007',
-      reportTemplateName: 'BBKT Nhân sự',
-      checkTarget: 'Đào tạo',
-      reportType: 'Định kỳ',
-      reportGroup: 'HR',
-      status: 'Mới',
-      checkDate: '2024-01-21',
-    },
-    {
-      planCode: 'KH008',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng IT',
-      planFrequency: 'Hàng quý',
-      reportCode: 'BB008',
-      reportTemplateName: 'BBKT CNTT',
-      checkTarget: 'Hệ thống',
-      reportType: 'Đột xuất',
-      reportGroup: 'IT',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-22',
-    },
-    {
-      planCode: 'KH009',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Nhà xưởng 2',
-      planFrequency: 'Hàng ngày',
-      reportCode: 'BB009',
-      reportTemplateName: 'BBKT 5S',
-      checkTarget: 'Khu B',
-      reportType: 'Định kỳ',
-      reportGroup: '5S',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-23',
-    },
-    {
-      planCode: 'KH010',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Marketing',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB010',
-      reportTemplateName: 'BBKT Marketing',
-      checkTarget: 'Chiến dịch',
-      reportType: 'Định kỳ',
-      reportGroup: 'Marketing',
-      status: 'Mới',
-      checkDate: '2024-01-24',
-    },
-    {
-      planCode: 'KH011',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Kế toán',
-      planFrequency: 'Hàng quý',
-      reportCode: 'BB011',
-      reportTemplateName: 'BBKT Tài chính',
-      checkTarget: 'Sổ sách',
-      reportType: 'Định kỳ',
-      reportGroup: 'Kế toán',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-25',
-    },
-    {
-      planCode: 'KH012',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng Mua hàng',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB012',
-      reportTemplateName: 'BBKT Mua hàng',
-      checkTarget: 'Nhà cung cấp',
-      reportType: 'Đột xuất',
-      reportGroup: 'Mua hàng',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-26',
-    },
-    {
-      planCode: 'KH013',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng KCS',
-      planFrequency: 'Hàng ngày',
-      reportCode: 'BB013',
-      reportTemplateName: 'BBKT KCS',
-      checkTarget: 'QC Line',
-      reportType: 'Định kỳ',
-      reportGroup: 'KCS',
-      status: 'Mới',
-      checkDate: '2024-01-27',
-    },
-    {
-      planCode: 'KH014',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng ISO',
-      planFrequency: 'Hàng tháng',
-      reportCode: 'BB014',
-      reportTemplateName: 'BBKT ISO',
-      checkTarget: 'Quy trình',
-      reportType: 'Định kỳ',
-      reportGroup: 'ISO',
-      status: 'Đang thực hiện',
-      checkDate: '2024-01-28',
-    },
-    {
-      planCode: 'KH015',
-      planName: 'Kế hoạch Q1/2024',
-      evaluationTarget: 'Phòng CSKH',
-      planFrequency: 'Hàng tuần',
-      reportCode: 'BB015',
-      reportTemplateName: 'BBKT CSKH',
-      checkTarget: 'Khiếu nại',
-      reportType: 'Đột xuất',
-      reportGroup: 'CSKH',
-      status: 'Hoàn thành',
-      checkDate: '2024-01-29',
-    },
-  ];
-
-  checkPlanDetails: CheckPlanDetail[] = [
-    { id: 1, score: 85, reportName: 'BBKT-2024-001', checkDate: '2024-03-01', nc: 2, ly: 1, notPass: 3 },
-    { id: 2, score: 92, reportName: 'BBKT-2024-002', checkDate: '2024-03-02', nc: 1, ly: 0, notPass: 1 },
-    { id: 3, score: 78, reportName: 'BBKT-2024-003', checkDate: '2024-03-03', nc: 3, ly: 2, notPass: 4 },
-    { id: 4, score: 95, reportName: 'BBKT-2024-004', checkDate: '2024-03-04', nc: 0, ly: 1, notPass: 1 },
-    { id: 5, score: 88, reportName: 'BBKT-2024-005', checkDate: '2024-03-05', nc: 2, ly: 0, notPass: 2 },
-    { id: 6, score: 90, reportName: 'BBKT-2024-006', checkDate: '2024-03-06', nc: 1, ly: 1, notPass: 2 },
-    { id: 7, score: 82, reportName: 'BBKT-2024-007', checkDate: '2024-03-07', nc: 2, ly: 2, notPass: 3 },
-    { id: 8, score: 87, reportName: 'BBKT-2024-008', checkDate: '2024-03-08', nc: 1, ly: 1, notPass: 2 },
-    { id: 9, score: 93, reportName: 'BBKT-2024-009', checkDate: '2024-03-09', nc: 0, ly: 2, notPass: 2 },
-    { id: 10, score: 85, reportName: 'BBKT-2024-010', checkDate: '2024-03-10', nc: 2, ly: 0, notPass: 2 },
-    { id: 11, score: 91, reportName: 'BBKT-2024-011', checkDate: '2024-03-11', nc: 1, ly: 1, notPass: 1 },
-    { id: 12, score: 89, reportName: 'BBKT-2024-012', checkDate: '2024-03-12', nc: 1, ly: 2, notPass: 3 },
-    { id: 13, score: 94, reportName: 'BBKT-2024-013', checkDate: '2024-03-13', nc: 0, ly: 1, notPass: 1 },
-    { id: 14, score: 86, reportName: 'BBKT-2024-014', checkDate: '2024-03-14', nc: 2, ly: 1, notPass: 2 },
-    { id: 15, score: 88, reportName: 'BBKT-2024-015', checkDate: '2024-03-15', nc: 1, ly: 0, notPass: 1 },
-  ];
-
-  criteriaSummaries: CriteriaSummary[] = [
-    {
-      id: 1,
-      criteriaGroup: 'Quản lý văn bản',
-      criteriaName: 'QT01 - Kiểm soát tài liệu',
-      conclusion: 'Đầy đủ hồ sơ',
-      evaluationContent: 'Các tài liệu được lưu trữ đúng quy định',
-      evaluationImage: 'image1.jpg',
-      status: 'Đạt',
-    },
-    {
-      id: 2,
-      criteriaGroup: 'Quản lý văn bản',
-      criteriaName: 'QT02 - Kiểm soát hồ sơ',
-      conclusion: 'Thiếu một số hồ sơ',
-      evaluationContent: 'Cần bổ sung hồ sơ còn thiếu',
-      evaluationImage: 'image2.jpg',
-      status: 'Không đạt',
-    },
-    {
-      id: 3,
-      criteriaGroup: 'Quản lý văn bản',
-      criteriaName: 'QT03 - Quản lý tài liệu nội bộ',
-      conclusion: 'Hoàn thành',
-      evaluationContent: 'Tài liệu được cập nhật đầy đủ',
-      evaluationImage: 'image3.jpg',
-      status: 'Đạt',
-    },
-
-    {
-      id: 4,
-      criteriaGroup: 'Quản lý nhân sự',
-      criteriaName: 'NS01 - Đào tạo nhân viên',
-      conclusion: 'Đúng kế hoạch',
-      evaluationContent: 'Thực hiện đúng kế hoạch đào tạo',
-      evaluationImage: 'image4.jpg',
-      status: 'Đạt',
-    },
-    {
-      id: 5,
-      criteriaGroup: 'Quản lý nhân sự',
-      criteriaName: 'NS02 - Đánh giá năng lực',
-      conclusion: 'Chưa hoàn thành',
-      evaluationContent: 'Còn thiếu báo cáo đánh giá',
-      evaluationImage: 'image5.jpg',
-      status: 'Không đạt',
-    },
-
-    {
-      id: 6,
-      criteriaGroup: 'Quy trình sản xuất',
-      criteriaName: 'SX01 - Kiểm soát quy trình',
-      conclusion: 'Tuân thủ',
-      evaluationContent: 'Thực hiện đúng quy trình',
-      evaluationImage: 'image6.jpg',
-      status: 'Đạt',
-    },
-    {
-      id: 7,
-      criteriaGroup: 'Quy trình sản xuất',
-      criteriaName: 'SX02 - An toàn lao động',
-      conclusion: 'Cần cải thiện',
-      evaluationContent: 'Một số khu vực chưa đảm bảo',
-      evaluationImage: 'image7.jpg',
-      status: 'Không đạt',
-    },
-
-    {
-      id: 8,
-      criteriaGroup: 'Quản lý thiết bị',
-      criteriaName: 'TB01 - Bảo trì thiết bị',
-      conclusion: 'Đúng lịch',
-      evaluationContent: 'Thực hiện bảo trì định kỳ',
-      evaluationImage: 'image8.jpg',
-      status: 'Đạt',
-    },
-    {
-      id: 9,
-      criteriaGroup: 'Quản lý thiết bị',
-      criteriaName: 'TB02 - Hiệu chuẩn',
-      conclusion: 'Đang thực hiện',
-      evaluationContent: 'Đang trong quá trình hiệu chuẩn',
-      evaluationImage: 'image9.jpg',
-      status: 'Chờ đánh giá',
-    },
-
-    {
-      id: 10,
-      criteriaGroup: 'Quản lý chất lượng',
-      criteriaName: 'CL01 - Kiểm soát sản phẩm',
-      conclusion: 'Đạt yêu cầu',
-      evaluationContent: 'Sản phẩm đạt tiêu chuẩn',
-      evaluationImage: 'image10.jpg',
-      status: 'Đạt',
-    },
-    {
-      id: 11,
-      criteriaGroup: 'Quản lý chất lượng',
-      criteriaName: 'CL02 - Xử lý sự cố',
-      conclusion: 'Kịp thời',
-      evaluationContent: 'Xử lý sự cố nhanh chóng',
-      evaluationImage: 'image11.jpg',
-      status: 'Đạt',
-    },
-
-    {
-      id: 12,
-      criteriaGroup: 'Môi trường',
-      criteriaName: 'MT01 - Quản lý rác thải',
-      conclusion: 'Chưa đạt',
-      evaluationContent: 'Cần cải thiện phân loại',
-      evaluationImage: 'image12.jpg',
-      status: 'Không đạt',
-    },
-    {
-      id: 13,
-      criteriaGroup: 'Môi trường',
-      criteriaName: 'MT02 - Tiết kiệm năng lượng',
-      conclusion: 'Tốt',
-      evaluationContent: 'Thực hiện đúng quy định',
-      evaluationImage: 'image13.jpg',
-      status: 'Đạt',
-    },
-
-    {
-      id: 14,
-      criteriaGroup: 'An toàn thông tin',
-      criteriaName: 'ATTT01 - Bảo mật dữ liệu',
-      conclusion: 'Đạt',
-      evaluationContent: 'Tuân thủ quy định bảo mật',
-      evaluationImage: 'image14.jpg',
-      status: 'Đạt',
-    },
-    {
-      id: 15,
-      criteriaGroup: 'An toàn thông tin',
-      criteriaName: 'ATTT02 - Sao lưu dữ liệu',
-      conclusion: 'Thực hiện định kỳ',
-      evaluationContent: 'Sao lưu đúng quy định',
-      evaluationImage: 'image15.jpg',
-      status: 'Đạt',
-    },
-  ];
+  planEvaluations: any[] = [];
+  checkPlanDetails: any[] = [];
+  criteriaSummaries: any = [];
+  listImgReports: any[] = [];
 
   pageSizeOptions: number[] = [5, 10, 20, 30, 50, 100];
   selectedPageSize: number = 10;
@@ -715,16 +271,42 @@ export class PlanComponent implements OnInit {
   conclusionCretia = false;
   dialogGeneralCheckPlan = false;
   dialogSummaryOfCriteriaConclusion = false;
-
-  public router = inject(Router);
-  protected planService = inject(PlanService);
-  protected activatedRoute = inject(ActivatedRoute);
-  protected sortService = inject(SortService);
-  protected modalService = inject(NgbModal);
-  protected ngZone = inject(NgZone);
-  protected summarizePlanDiaglog = inject(SummarizePlanComponent);
+  dialogViewImage = false;
+  groupReportData: any = {};
+  evaluators: any[] = [];
+  planGrDetail: any[] = [];
+  listEvalReports: any = [];
+  listEvalReportBase: any = [];
+  planGroup: any = {};
+  selectedData: any = null;
+  dialogVisibility: { [key: string]: boolean } = {};
+  disableSaveCheckDate: { [key: string]: boolean } = {};
+  selectedFiles: { dataKey: string; files: File[] }[] = [];
+  imageLoadErrors = new Set<string>();
+  report: any = {};
+  reportSelected: any = {};
+  currentPage: number = 0;
+  minSelectableDate!: Date;
+  maxSelectableDate!: Date;
+  account: any = {};
 
   trackId = (_index: number, item: IPlan): number => this.planService.getPlanIdentifier(item);
+
+  constructor(
+    public router: Router,
+    protected planService: PlanService,
+    protected activatedRoute: ActivatedRoute,
+    protected modalService: NgbModal,
+    protected convertService: ConvertService,
+    protected sortService: SortService,
+    protected ngZone: NgZone,
+    protected summarizePlanDiaglog: SummarizePlanComponent,
+    protected evaluatorService: EvaluatorService,
+    protected planGrService: PlanGroupService,
+    private exportExcelService: ExportExcelService,
+    private cdr: ChangeDetectorRef,
+    private accountService: AccountService,
+  ) {}
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -740,39 +322,39 @@ export class PlanComponent implements OnInit {
     this.planService.getPlanDetail().subscribe(res => {
       this.planDetailResults = res;
       this.loadTreeNodes();
-      console.log('db trả về', res);
     });
-    // this.loadTreeNodes();
-    // console.log('plans', this.plans);
-
-    // this.columnDefinitions = [
-    //   {
-    //     id: 'id',
-    //     name: 'ID',
-    //     field: 'id',
-    //     sortable: true,
-    //     filterable: true,
-    //     resizable: true,
-    //     width: 100,
-    //   },
-    //   {
-    //   }
-    // ]
+    this.evaluatorService.getAllCheckTargets().subscribe(res => {
+      this.evaluators = res;
+    });
+    this.convertService.query().subscribe(res => {
+      this.listEvalReportBase = res.body;
+    });
+    this.accountService.identity().subscribe(account => {
+      this.account = account;
+    });
   }
 
-  // expandAll():void {
-  //   this.expandedRows = this.planData.reduce((acc, p) => (acc[p.id] = true) && acc, {});
-  // }
-
-  // collapseAll():void {
-  //   this.expandedRows = {};
-  // }
+  loadEvalTable(planId: number) {
+    this.planGrService.findAllPlanGrByReportId(planId).subscribe(res => {
+      this.planEvaluations = res.body || [];
+      this.planEvaluations = this.planEvaluations
+        .filter((item: any) => item.type === 'single')
+        .map((item: any) => {
+          const dateOnly = item.checkDate ? new Date(item.checkDate) : '';
+          return {
+            ...item,
+            checkDate: dateOnly,
+          };
+        });
+      if (this.planEvaluations.length === 0) {
+        this.planEvaluations.push({});
+      }
+    });
+  }
 
   onPageSizeChange(event: any): void {
-    console.log('event', event);
     this.selectedPageSize = event.rows;
     this.first = event.first;
-    // this.load();
   }
 
   delete(plan: IPlan): void {
@@ -786,21 +368,15 @@ export class PlanComponent implements OnInit {
       .subscribe();
   }
 
-  // onFilter(event: Event, field: string):void {
-  //   const element = event.target as HTMLInputElement;
-  //   if (this.dt2) {
-  //     this.dt2.filter(element.value, field, 'contains');
-  //   }
-  // }
-
   load(): void {
+    this.isLoading = true;
     this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-        this.loadTreeNodes();
-        this.totalRecords = this.planDetailResults.length;
-        console.log('res ', res);
-        console.log('tree node', this.loadTreeNodes);
+      next: res => {
+        if (res.body) {
+          this.planDetailResults = res.body;
+          this.totalRecords = this.planDetailResults.length;
+          this.isLoading = false;
+        }
       },
     });
   }
@@ -824,10 +400,10 @@ export class PlanComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log('Modal closed');
+          // console.log('Modal closed');
         },
         reason => {
-          console.log('Modal dismissed');
+          // console.log('Modal dismissed');
         },
       );
   }
@@ -845,10 +421,10 @@ export class PlanComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log('Modal closed');
+          // console.log('Modal closed');
         },
         reason => {
-          console.log('Modal dismissed');
+          // console.log('Modal dismissed');
         },
       );
   }
@@ -870,23 +446,6 @@ export class PlanComponent implements OnInit {
     this.router.navigate(['summarize-plan']);
   }
 
-  openModalCriteria(): void {
-    this.modalService
-      .open(this.criteria, {
-        ariaLabelledBy: 'modal-criteria-title',
-        size: 'xl',
-        backdrop: 'static',
-      })
-      .result.then(
-        result => {
-          console.log('Modal closed');
-        },
-        reason => {
-          console.log('Modal dismissed');
-        },
-      );
-  }
-
   openModalEvaluation(): void {
     this.modalService
       .open(this.evaluationResult, {
@@ -896,10 +455,10 @@ export class PlanComponent implements OnInit {
       })
       .result.then(
         result => {
-          console.log('Modal closed');
+          // console.log('Modal closed');
         },
         reason => {
-          console.log('Modal dismissed');
+          // console.log('Modal dismissed');
         },
       );
   }
@@ -955,33 +514,37 @@ export class PlanComponent implements OnInit {
       );
   }
 
-  openModalEvaluationPlan(): void {
-    this.modalService
-      .open(this.evaluationPlan, {
-        ariaDescribedBy: 'modal-evaluation-plan-title',
-        size: 'xl',
-        backdrop: 'static',
-      })
-      .result.then(
-        result => {
-          console.log('Modal closed');
-        },
-        reason => {
-          console.log('Modal dismissed');
-        },
-      );
-  }
-
   onRowExpand(event: any): void {
+    if (this.dt2 && this.dt2.paginator) {
+      this.currentPage = this.dt2.first / this.dt2.rows;
+    }
     const rowData = event.data;
     this.expandedRows[rowData.id] = true;
     this.loadPlanDetails(rowData.id);
-    console.log('rowData', rowData);
+    // console.log('rowData', rowData);
+  }
+
+  restorePaginatorState() {
+    if (this.dt2 && this.dt2.paginator) {
+      this.dt2.first = this.currentPage * this.dt2.rows;
+      // Kích hoạt lại phân trang để nó áp dụng trạng thái mới
+      this.dt2.onLazyLoad.emit({
+        first: this.dt2.first,
+        rows: this.dt2.rows,
+        sortField: this.dt2.sortField,
+        sortOrder: this.dt2.sortOrder,
+        filters: this.dt2.filters,
+        globalFilter: this.dt2.globalFilter,
+      });
+    }
   }
 
   loadPlanDetails(planId: number): void {
     this.planService.getPlanDetail().subscribe(res => {
       this.planDetailResults = res;
+      setTimeout(() => {
+        this.restorePaginatorState();
+      }, 0);
     });
   }
 
@@ -1044,11 +607,46 @@ export class PlanComponent implements OnInit {
     this.dialogCheckScript = true;
   }
 
-  showDialogCheckPlan(): void {
+  showDialogCheckPlan(data: any, index: number): void {
+    this.planParent = data;
+    this.report = data.planDetail[index];
+    this.loadEvalTable(data.planDetail[index].id);
+    this.minSelectableDate = new Date(this.planParent.timeStart);
+    this.maxSelectableDate = new Date(this.planParent.timeEnd);
+    this.minSelectableDate.setHours(0, 0, 0, 0);
+    this.maxSelectableDate.setHours(23, 59, 59, 999);
     this.dialogCheckPlan = true;
   }
 
-  showDialogCheckPlanChild(): void {
+  showDialogCheckPlanChild(data: any): void {
+    // // Lấy kiểu đánh giá tương ứng với BBKT
+    data.createdBy = this.account.login;
+    data.checker = this.report.checker;
+    this.planGroup = data;
+    this.listEvalReports = this.listEvalReportBase.filter((item: any) => item.type === this.report.convertScore);
+    if (data.id) {
+      this.planGrService.findAllDetail(data.id).subscribe(res => {
+        this.planGrDetail = res.body.map((item: any) => {
+          return {
+            ...item,
+            image: JSON.parse(item.image),
+          };
+        });
+      });
+    } else {
+      this.report.detail = typeof this.report.detail === 'string' ? JSON.parse(this.report.detail) : this.report.detail;
+      this.planGrDetail = this.report.detail.body.map((row: any) => {
+        const criterialGroup = row.data.find((item: any) => item.index === 1)?.value || '';
+        const criterial = row.data.find((item: any) => item.index === 2)?.value || '';
+        return {
+          criterialGroupName: criterialGroup,
+          criterialName: criterial,
+          createdBy: data.createdBy,
+          frequency: row.frequency,
+        };
+      });
+      this.planGrDetail.sort((a, b) => a.criterialGroupName.localeCompare(b.criterialGroupName));
+    }
     this.dialogCheckPlanChild = true;
   }
 
@@ -1058,14 +656,25 @@ export class PlanComponent implements OnInit {
 
   showSummarizeDialog(): void {
     this.summarizePlanDiaglog.dialogGeneralCheckPlan = true;
-    console.log('click open modal');
   }
 
-  showDialogGeneralCheckPlan(): void {
+  showDialogGeneralCheckPlan(Parentdata: any, data: any): void {
+    this.reportSelected = data;
+    this.reportService.getAllStatisticalByReportId(Parentdata.id, data.id).subscribe(res => {
+      this.checkPlanDetails = res.body;
+    });
     this.dialogGeneralCheckPlan = true;
   }
 
-  showDialogSummaryOfCriteriaConclusion(): void {
+  showDialogSummaryOfCriteriaConclusion(data: any): void {
+    this.planGrService.findAllDetailByHistoryAndReportId(data.planGroupHistoryId, this.reportSelected.id).subscribe(res => {
+      this.criteriaSummaries = res.body;
+      this.criteriaSummaries.sort((a: any, b: any) => {
+        if (a.criterialGroupName < b.criterialGroupName) return -1;
+        if (a.criterialGroupName > b.criterialGroupName) return 1;
+        return 0;
+      });
+    });
     this.dialogSummaryOfCriteriaConclusion = true;
   }
 
@@ -1079,26 +688,6 @@ export class PlanComponent implements OnInit {
         return 'warning';
     }
   }
-
-  // deleteRow(index: number): void {
-  //   this.planDetailResults = this.planDetailResults.filter((_, i) => i !== index);
-  //   const Toast = Swal.mixin({
-  //     toast: true,
-  //     position: 'top-end',
-  //     showConfirmButton: false,
-  //     timer: 3000,
-  //     timerProgressBar: true,
-  //     didOpen: toast => {
-  //       toast.onmouseenter = Swal.stopTimer;
-  //       toast.onmouseleave = Swal.resumeTimer;
-  //     },
-  //   });
-  //   Toast.fire({
-  //     icon: 'success',
-  //     title: 'Xóa thành công',
-  //   });
-  //   console.log('Row deleted at index:', index);
-  // }
 
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {
     this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data[DEFAULT_SORT_DATA]));
@@ -1160,5 +749,443 @@ export class PlanComponent implements OnInit {
       data: plan,
       children: [],
     }));
+  }
+
+  addRowPlanEvaluation(): void {
+    this.planEvaluations.push({});
+  }
+
+  deletePlanChild(data: any, index: number): void {
+    if (data && data.length > 0) {
+      if (data[index].id) {
+        this.planGrService.delete(data[index].id).subscribe({
+          next: () => {
+            console.log('Xóa thành công kế hoạch con');
+            data.splice(index, 1);
+          },
+          error: error => {
+            console.error('Lỗi khi xóa kế hoạch con:', error);
+          },
+        });
+      } else {
+        data.splice(index, 1);
+      }
+    }
+  }
+
+  // region
+  // xử lý uploda file
+  showDialogUpLoad(data: any, rowIndex: number): void {
+    data.image = typeof data.image == 'string' ? JSON.parse(data.image) : data.image;
+    if (!Array.isArray(data.image)) {
+      data.image = [];
+    }
+    this.selectedData = data;
+    this.dialogVisibility[rowIndex] = !this.dialogVisibility[rowIndex];
+    this.imageLoadErrors.clear();
+    this.cdr.detectChanges();
+  }
+
+  onFileSelect(event: any, data: any, index: number): void {
+    const files: File[] = Array.from(event.files);
+    const dataKey = data.reportCode + '-' + index;
+    const existing = this.selectedFiles.find(item => item.dataKey === dataKey);
+    if (existing) {
+      existing.files = [...existing.files, ...files];
+    } else {
+      this.selectedFiles.push({ dataKey, files });
+    }
+    if (!Array.isArray(data.image)) {
+      data.image = [];
+    }
+    const existingNames = new Set(data.image);
+    for (const file of files) {
+      const safeFileName = this.sanitizeFileName(file.name);
+      if (!existingNames.has(safeFileName)) {
+        data.image.push(safeFileName);
+        existingNames.add(safeFileName);
+      }
+    }
+  }
+
+  deleteFile(filename: string, data: any): void {
+    const index = data.image.indexOf(filename);
+    if (index > -1) {
+      data.image.splice(index, 1);
+      this.planService.deleteFile(filename).subscribe(response => {
+        console.log('File deleted successfully:', response);
+      });
+    }
+  }
+
+  removeImg(event: any, data: any) {
+    const index = data.image.indexOf(event.file.name);
+    if (index > -1) {
+      data.image.splice(index, 1);
+    }
+  }
+
+  onClear(data: any): void {
+    if (data) {
+      data.image = [];
+    }
+  }
+
+  onImageError(fileName: string) {
+    this.imageLoadErrors.add(fileName);
+    this.cdr.detectChanges();
+  }
+
+  getTimestamp(): number {
+    return Date.now();
+  }
+
+  sanitizeFileName(filename: string): string {
+    return filename
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_\-\.]/g, '');
+  }
+
+  generateCode(planId: number): string {
+    const uid = window.crypto?.randomUUID?.() || this.fallbackUUID();
+    const currentDate = dayjs().format('DDMMYYYYHHmmssSSS');
+    return `PG-${planId}-${uid}-${currentDate}`;
+  }
+
+  private fallbackUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      // eslint-disable-next-line no-bitwise
+      const r = (Math.random() * 16) | 0;
+      // eslint-disable-next-line no-bitwise
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
+  async savePlanGrAndDetail() {
+    // Gán các giá trị khởi tạo nếu là tạo mới
+    if (this.planGroup.id === undefined || this.planGroup.id === null) {
+      this.planGroup.code = this.generateCode(this.planParent.id);
+      this.planGroup.planId = this.planParent.id;
+      this.planGroup.checkDate = dayjs(this.planGroup.checkDate).toISOString();
+      this.planGroup.type = 'single';
+      this.planGroup.createdAt = dayjs();
+      this.planGroup.status = 'Mới tạo';
+    } else {
+      this.planGroup.checkDate = dayjs(this.planGroup.checkDate).toISOString();
+      if (this.planGroup.status !== 'Đang thực hiện') {
+        this.planGroup.status = 'Đang thực hiện';
+      }
+    }
+    try {
+      const res = await this.planService.createGroupHistory(this.planGroup).toPromise();
+      const arrRptGrDetail = this.planGrDetail.map(item => ({
+        ...item,
+        createdAt: this.planGroup.checkDate,
+        createdBy: this.planGroup.createdBy,
+        planGroupHistoryId: res.body,
+        reportId: this.report.id,
+        reportName: this.report.name,
+        status: item.result != null || item.hasEvaluation == 0 ? 'Đang thực hiện' : 'Mới tạo',
+        convertScore: this.report.convertScore,
+        image: JSON.stringify(item.image),
+      }));
+      const uploadPromises = this.selectedFiles.flatMap(fileGroup =>
+        fileGroup.files.map(file => {
+          const safeFileName = this.sanitizeFileName(file.name);
+          const safeFile = new File([file], safeFileName, { type: file.type });
+          return this.planService.upLoadFile(safeFile).toPromise();
+        }),
+      );
+      await Promise.all(uploadPromises);
+      this.planGroup.id = res.body;
+      if (this.planGroup.status !== 'Đang thực hiện') {
+        this.planGroup.status = 'Đang thực hiện';
+      }
+      if (arrRptGrDetail.length > 0) {
+        await this.planService.createGroupHistoryDetail(arrRptGrDetail).toPromise();
+      }
+      if (this.report.status == 'Mới tạo') {
+        this.report.detail = typeof this.report.detail === 'string' ? this.report.detail : JSON.stringify(this.report.detail);
+        this.report.status = 'Đang thực hiện';
+        this.report.createdAt = dayjs(this.report.createdAt);
+        this.report.updatedAt = dayjs();
+        await this.reportService.update(this.report).toPromise();
+      }
+      if (this.planParent.status == 'Mới tạo') {
+        this.planParent.status = 'Đang thực hiện';
+        this.planParent.timeStart = dayjs(this.planParent.timeStart);
+        this.planParent.timeEnd = dayjs(this.planParent.timeEnd);
+        this.planParent.createdAt = dayjs(this.planParent.createdAt);
+        this.planParent.updatedAt = dayjs();
+        await this.planService.update(this.planParent).toPromise();
+      }
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'center-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen(toast) {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: 'success',
+        title: 'Lưu dữ liệu thành công',
+      });
+      this.loadEvalTable(this.report.id);
+      this.dialogCheckPlanChild = false;
+    } catch (error) {
+      console.error('Lỗi khi lưu dữ liệu:', error);
+      Swal.fire('Lỗi', 'Đã xảy ra lỗi khi lưu dữ liệu.', 'error');
+    }
+  }
+
+  // Xuất excel
+  exportSingleItemToExcel(selectedParentItem: any): void {
+    if (!selectedParentItem || !selectedParentItem.id) {
+      console.error('Không có dữ liệu cha hợp lệ để xuất Excel.');
+      return;
+    }
+
+    // Bước 1: Tải dữ liệu con cho thằng cha được chọn
+    this.planService.getAllStatisReportByPlanId(selectedParentItem.id).subscribe(res => {
+      const details = res.body || [];
+      this.generateExcelFile(selectedParentItem, details);
+    });
+  }
+
+  /**
+   * Tạo và xuất file Excel từ dữ liệu cha và con.
+   * @param parentData Đối tượng PlanGroupHistory (cha).
+   * @param childDetails Mảng các đối tượng PlanGroupHistoryDetail (con).
+   */
+  private generateExcelFile(parentData: any, childDetails: any[]): void {
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([]);
+
+    // --- Cấu hình tiêu đề cho dữ liệu cha ---
+    const parentHeaderRow = [
+      'ID Kế hoạch',
+      'Mã Kế hoạch',
+      'Tên Kế hoạch',
+      'Đối tượng đánh giá',
+      'Tần suất',
+      'Thời gian bắt đầu',
+      'Thời gian kết thúc',
+    ];
+
+    // --- Cấu hình tiêu đề cho dữ liệu chi tiết ---
+    const detailHeaderRow = [
+      '', // Cột trống để thụt lề
+      'Mã BBKT',
+      'Tên BBKT',
+      'Đối tượng kiểm tra',
+      'Loại BBKT',
+      'Số lần thực hiện kiểm tra',
+      'Thang điểm',
+      'Tổng điểm',
+      'Loại quy đổi',
+      'NC',
+      'LC',
+      'Số lượng không đạt',
+      'Người kiểm tra',
+      'Tần suất',
+      'Trạng thái',
+    ];
+
+    // --- Dữ liệu cha ---
+    let currentRowIndex = 0; // Theo dõi hàng hiện tại
+
+    XLSX.utils.sheet_add_aoa(ws, [['Dữ liệu Kế hoạch Kiểm tra']], { origin: -1 });
+    currentRowIndex++;
+
+    XLSX.utils.sheet_add_aoa(ws, [parentHeaderRow], { origin: -1 });
+    currentRowIndex++;
+
+    const parentDataRow = [
+      parentData.id,
+      parentData.code,
+      parentData.name,
+      parentData.subjectOfAssetmentPlan,
+      parentData.frequency,
+      parentData.timeStart, // Giữ nguyên chuỗi ISO 8601
+      parentData.timeEnd, // Giữ nguyên chuỗi ISO 8601
+    ];
+    XLSX.utils.sheet_add_aoa(ws, [parentDataRow], { origin: -1 });
+    currentRowIndex++;
+
+    // --- Dữ liệu con ---
+    XLSX.utils.sheet_add_aoa(ws, [['']], { origin: -1 }); // Hàng trống
+    currentRowIndex++;
+
+    XLSX.utils.sheet_add_aoa(ws, [['Chi tiết Kế hoạch Kiểm tra']], { origin: -1 });
+    currentRowIndex++;
+
+    if (childDetails && childDetails.length > 0) {
+      XLSX.utils.sheet_add_aoa(ws, [detailHeaderRow], { origin: -1 });
+      currentRowIndex++;
+
+      childDetails.forEach(detail => {
+        const detailDataRow = [
+          '', // Cột thụt lề
+          detail.code,
+          detail.name,
+          detail.testOfObject,
+          detail.reportType,
+          detail.sumOfAudit,
+          detail.scoreScale,
+          this.getTotalPoit(detail), // Gọi hàm tính toán
+          detail.convertScore,
+          detail.sumOfNc,
+          detail.sumOfLy,
+          detail.sumOfFail,
+          detail.checker,
+          detail.frequency,
+          detail.status,
+        ];
+        XLSX.utils.sheet_add_aoa(ws, [detailDataRow], { origin: -1 });
+        currentRowIndex++;
+      });
+    } else {
+      XLSX.utils.sheet_add_aoa(ws, [['Không có dữ liệu chi tiết cho kế hoạch này.']], { origin: -1 });
+      currentRowIndex++;
+    }
+
+    // --- CẤU HÌNH ĐỘ RỘNG CỘT TỰ ĐỘNG VÀ ĐỊNH DẠNG ---
+
+    // Đây là phần quan trọng để làm đẹp cột
+    // Cấu hình độ rộng cho các cột của dữ liệu cha và con
+    // Các số là độ rộng ký tự (character width)
+    const columnWidthsParent = [
+      { wch: 10 }, // ID Kế hoạch
+      { wch: 25 }, // Mã Kế hoạch
+      { wch: 30 }, // Tên Kế hoạch
+      { wch: 25 }, // Đối tượng đánh giá
+      { wch: 15 }, // Tần suất
+      { wch: 25 }, // Thời gian bắt đầu (cho chuỗi ngày giờ đầy đủ)
+      { wch: 25 }, // Thời gian kết thúc (cho chuỗi ngày giờ đầy đủ)
+    ];
+
+    const columnWidthsDetail = [
+      { wch: 5 }, // Cột trống thụt lề
+      { wch: 15 }, // Mã BBKT
+      { wch: 25 }, // Tên BBKT
+      { wch: 25 }, // Đối tượng kiểm tra
+      { wch: 15 }, // Loại BBKT
+      { wch: 25 }, // Số lần thực hiện kiểm tra
+      { wch: 15 }, // Thang điểm
+      { wch: 15 }, // Tổng điểm
+      { wch: 18 }, // Loại quy đổi
+      { wch: 8 }, // NC
+      { wch: 8 }, // LC
+      { wch: 18 }, // Số lượng không đạt
+      { wch: 20 }, // Người kiểm tra
+      { wch: 15 }, // Tần suất
+      { wch: 15 }, // Trạng thái
+    ];
+
+    // Gán độ rộng cột cho worksheet
+    // Lưu ý: ws['!cols'] sẽ áp dụng cho toàn bộ các cột.
+    // Nếu bạn muốn độ rộng khác nhau cho phần cha và con, bạn sẽ phải tạo 2 sheet riêng biệt.
+    // Với 1 sheet, bạn phải chọn độ rộng lớn nhất hoặc phù hợp nhất cho mỗi cột.
+    // Ở đây, tôi sẽ gộp các cấu hình độ rộng.
+    // Giả định số lượng cột tối đa là số cột của detailHeaderRow
+    const maxCols = Math.max(parentHeaderRow.length, detailHeaderRow.length);
+    const commonColumnWidths: XLSX.ColInfo[] = [];
+
+    for (let i = 0; i < maxCols; i++) {
+      let width = 10; // Default width
+      if (columnWidthsParent[i] && columnWidthsParent[i].wch) {
+        width = Math.max(width, columnWidthsParent[i].wch || 0);
+      }
+      if (columnWidthsDetail[i] && columnWidthsDetail[i].wch) {
+        width = Math.max(width, columnWidthsDetail[i].wch || 0);
+      }
+      commonColumnWidths.push({ wch: width });
+    }
+
+    ws['!cols'] = commonColumnWidths;
+
+    // --- Định dạng cho các ô Header (in đậm) ---
+    // Để in đậm tiêu đề, bạn cần truy cập trực tiếp vào các ô (cells) và gán thuộc tính 's' (style)
+    // Điều này phức tạp hơn với aoa_to_sheet. Cách đơn giản hơn là sau khi tạo sheet, bạn lặp qua các ô header.
+    // Với cấu trúc hiện tại, chúng ta sẽ biết các hàng header nằm ở đâu.
+
+    // Header Cha: Hàng 1 (index 1)
+    parentHeaderRow.forEach((_, colIndex) => {
+      const cellAddress = XLSX.utils.encode_cell({ r: 2, c: colIndex }); // Hàng 1, cột 0, 1, 2...
+      if (!ws[cellAddress]) ws[cellAddress] = { t: 's', v: parentHeaderRow[colIndex] };
+      if (!ws[cellAddress].s) ws[cellAddress].s = {};
+      ws[cellAddress].s.font = { bold: true };
+    });
+
+    // Header Con: Hàng ngay sau tiêu đề "Chi tiết Kế hoạch Kiểm tra"
+    // (Giả định nằm ở hàng 'currentRowIndex - childDetails.length - 1' sau khi thêm detail data)
+    // Tốt hơn là lưu trữ chỉ số hàng cụ thể của header khi nó được thêm vào
+    let detailHeaderRowIndex = 0;
+    // Tìm chỉ số hàng của "Chi tiết Kế hoạch Kiểm tra"
+    for (let r = 0; r < currentRowIndex; r++) {
+      const cell = ws[XLSX.utils.encode_cell({ r: r, c: 0 })];
+      if (cell && cell.v === 'Chi tiết Kế hoạch Kiểm tra') {
+        detailHeaderRowIndex = r + 1; // Header con sẽ nằm ở hàng tiếp theo
+        break;
+      }
+    }
+    if (detailHeaderRowIndex > 0) {
+      detailHeaderRow.forEach((_, colIndex) => {
+        const cellAddress = XLSX.utils.encode_cell({ r: detailHeaderRowIndex, c: colIndex });
+        if (!ws[cellAddress]) ws[cellAddress] = { t: 's', v: detailHeaderRow[colIndex] };
+        if (!ws[cellAddress].s) ws[cellAddress].s = {};
+        ws[cellAddress].s.font = { bold: true };
+      });
+    }
+
+    // --- Tạo và xuất workbook ---
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Chi tiết Kế hoạch');
+
+    const fileName = `ChiTietKeHoach_${parentData.code || parentData.id}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  }
+
+  getTotalPoit(data: any) {
+    if (data.convertScore == 'Tính điểm') {
+      const markNC = this.listEvalReportBase.find((item: any) => item.name == 'NC');
+      const markLC = this.listEvalReportBase.find((item: any) => item.name == 'LY');
+      const totalPointSummarize = data.scoreScale * data.sumOfAudit - (data.sumOfLy * markLC.mark + data.sumOfNc * markNC.mark);
+      return totalPointSummarize;
+    } else {
+      return data.scoreScale;
+    }
+  }
+
+  converTotalPointError(data: any) {
+    const markNC = this.listEvalReportBase.find((item: any) => item.name == 'NC');
+    const markLC = this.listEvalReportBase.find((item: any) => item.name == 'LY');
+    const totalPointError = data.sumOfLy * markLC.mark + data.sumOfNc * markNC.mark;
+    return data.convertScore == 'Tính điểm' ? totalPointError : data.sumOfFail;
+  }
+
+  totalPointSummarize(data: any) {
+    if (this.reportSelected.convertScore == 'Tính điểm') {
+      const markNC = this.listEvalReportBase.find((item: any) => item.name == 'NC');
+      const markLC = this.listEvalReportBase.find((item: any) => item.name == 'LY');
+      const totalPointSummarize = this.reportSelected.scoreScale - (data.sumOfLy * markLC.mark + data.sumOfNc * markNC.mark);
+      return totalPointSummarize;
+    } else {
+      return this.reportSelected.scoreScale;
+    }
+  }
+
+  showDialogViewImg(data: any) {
+    this.listImgReports = JSON.parse(data);
+    this.dialogViewImage = true;
+  }
+
+  exportExcel(reportId: number) {
+    this.exportExcelService.exportToExcel(reportId);
   }
 }

@@ -1,9 +1,9 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.FieldsRespone;
 import com.mycompany.myapp.repository.FieldsRepository;
 import com.mycompany.myapp.service.FieldsService;
 import com.mycompany.myapp.service.dto.FieldsDTO;
-import com.mycompany.myapp.service.dto.FieldsRespone;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -1,7 +1,6 @@
 package com.mycompany.myapp.service.dto;
 
-import com.mycompany.myapp.domain.Report;
-import jakarta.persistence.Column;
+import com.mycompany.myapp.domain.ReportResponse;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class PlanDetailDTO {
     private ZonedDateTime updatedAt;
 
     private String updateBy;
-    private List<Report> planDetail;
+    private List<ReportResponse> planDetail;
 
     public PlanDetailDTO() {}
 
@@ -280,11 +279,11 @@ public class PlanDetailDTO {
         this.updateBy = updateBy;
     }
 
-    public List<Report> getPlanDetail() {
+    public List<ReportResponse> getPlanDetail() {
         return planDetail;
     }
 
-    public void setPlanDetail(List<Report> planDetail) {
+    public void setPlanDetail(List<ReportResponse> planDetail) {
         this.planDetail = planDetail;
     }
 }

@@ -1,22 +1,28 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.config.ApplicationProperties;
 import com.mycompany.myapp.domain.Plan;
+import com.mycompany.myapp.domain.PlanStatisticalResponse;
+import com.mycompany.myapp.domain.ReportResponse;
 import com.mycompany.myapp.repository.PlanRepository;
 import com.mycompany.myapp.repository.ReportRepository;
 import com.mycompany.myapp.service.dto.PlanDetailDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -32,15 +38,19 @@ public class PlanResource {
 
     private static final String ENTITY_NAME = "plan";
 
+    //private static final String UPLOAD_DIR = "src/main/webapp/content/images/bbkt/";
+    private final String uploadDir;
+
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final PlanRepository planRepository;
     private final ReportRepository reportRepository;
 
-    public PlanResource(PlanRepository planRepository, ReportRepository reportRepository) {
+    public PlanResource(PlanRepository planRepository, ReportRepository reportRepository, ApplicationProperties applicationProperties) {
         this.planRepository = planRepository;
         this.reportRepository = reportRepository;
+        this.uploadDir = applicationProperties.getUploadDir();
     }
 
     /**
@@ -286,9 +296,61 @@ public class PlanResource {
             planDetailDTO.setCreatedAt(plan.getCreatedAt());
             planDetailDTO.setUpdatedAt(plan.getUpdatedAt());
             planDetailDTO.setUpdateBy(plan.getUpdateBy());
-            planDetailDTO.setPlanDetail(this.reportRepository.findAllByPlanId(plan.getId()));
+            List<ReportResponse> response = this.reportRepository.getDetailByPlanId(plan.getId());
+            planDetailDTO.setPlanDetail(response);
             planDetailDTOS.add(planDetailDTO);
         }
         return planDetailDTOS;
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> upload(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = file.getOriginalFilename();
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+                log.info("Created upload directory: {}", uploadDir);
+            }
+            Path filePath = Paths.get(uploadDir + fileName);
+            Files.write(filePath, file.getBytes());
+            String responseFileName = fileName;
+            Map<String, String> response = new HashMap<>();
+            response.put("fileName", responseFileName);
+            log.info("File uploaded successfully to: {}", filePath.toString());
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            log.error("Failed to upload file: {}. Error: {}", file.getOriginalFilename(), e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/delete-file")
+    public ResponseEntity<String> deleteFile(@RequestParam("fileName") String fileName) {
+        try {
+            Path filePath = Paths.get(uploadDir + fileName);
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
+            }
+            Files.delete(filePath);
+            return ResponseEntity.ok("File deleted successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
+        }
+    }
+
+    @PostMapping("/statistical/{id}")
+    public List<PlanStatisticalResponse> getAllPlanStatistical(@PathVariable Long id) {
+        return this.planRepository.getAllPlanStatistical(id);
+    }
+
+    @PostMapping("/statistical/plan/{id}/report")
+    public List<PlanStatisticalResponse> getAllPlanStatistical(@PathVariable Long id, @RequestBody Long reportId) {
+        return this.planRepository.getPlanStatisticalByReportId(id, reportId);
+    }
+
+    @GetMapping("plan-detail-summarize/{planId}")
+    public List<ReportResponse> getPlanDetailByPlanId(@PathVariable Long planId) {
+        return reportRepository.getDetailByPlanId(planId);
     }
 }
