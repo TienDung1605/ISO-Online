@@ -327,19 +327,29 @@ export class InspectionPlanComponent implements OnInit {
   }
 
   async saveRemediationPlanDetail(data: any[]) {
-    const arrSubmit = data.map(item => {
-      return {
-        remediationPlanDetailId: item.id,
-        result: item.result,
-        image: JSON.stringify(item.image),
-        reason: item.reason,
-        note: item.content,
-        createdBy: item.createdBy,
-        createdAt: dayjs(),
-      };
-    });
+    const arrSubmit = data
+      .filter(item => item.result != null)
+      .map(item => {
+        return {
+          remediationPlanDetailId: item.id,
+          result: item.result,
+          image: JSON.stringify(item.image),
+          reason: item.reason,
+          note: item.content,
+          createdBy: item.createdBy,
+          createdAt: dayjs(),
+        };
+      });
     await this.remediationPlanService.createRecheckRemePlan(arrSubmit).toPromise();
-    await Promise.all(this.selectedFiles.flatMap(fileGroup => fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise())));
+    await Promise.all(
+      this.selectedFiles.flatMap(fileGroup =>
+        fileGroup.files.map(file => {
+          const safeFileName = this.sanitizeFileName(file.name);
+          const safeFile = new File([file], safeFileName, { type: file.type });
+          return this.planService.upLoadFile(safeFile).toPromise();
+        }),
+      ),
+    );
     this.dialogRepairCriterial = false;
   }
 
@@ -382,7 +392,13 @@ export class InspectionPlanComponent implements OnInit {
       await this.remediationPlanService.createRemediationPlanDetail([this.criterialSelected]).toPromise();
       await this.remediationPlanService.createRecheckRemePlan(result).toPromise();
       await Promise.all(
-        this.selectedFiles.flatMap(fileGroup => fileGroup.files.map(file => this.planService.upLoadFile(file).toPromise())),
+        this.selectedFiles.flatMap(fileGroup =>
+          fileGroup.files.map(file => {
+            const safeFileName = this.sanitizeFileName(file.name);
+            const safeFile = new File([file], safeFileName, { type: file.type });
+            return this.planService.upLoadFile(safeFile).toPromise();
+          }),
+        ),
       );
       this.dialogCheckCriterial = false;
       this.LoadlistCriterialRepairTable(this.remediationPlanSelected.id);
